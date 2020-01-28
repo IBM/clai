@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+import sys
+
+from clai.obtain_command_id import obtain_command_id
+
+if __name__ == '__main__':
+    sys.stdout.write(obtain_command_id())
+    sys.stdout.flush()
+    sys.exit(0)

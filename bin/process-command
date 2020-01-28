@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+import sys
+
+from clai.process_command import process_command
+
+if __name__ == '__main__':
+    COMMAND_ID = sys.argv[1]
+    USER_NAME = sys.argv[2]
+    COMMAND_TO_CHECK = ' '.join(map(str, sys.argv[3:]))
+
+    process_command(COMMAND_ID, USER_NAME, COMMAND_TO_CHECK)

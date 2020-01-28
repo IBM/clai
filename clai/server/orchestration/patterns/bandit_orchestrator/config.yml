@@ -1,0 +1,10 @@
+# Config file using the contextual/thompson pattern and providing its parameters
+# This configuration causes the bandit to do no logging of its activity
+
+pattern: contextual/thompson
+num_actions: 10
+dim: 10
+
+# Dimension set to a maximum of n=10 skills
+# The i-th dimension is the confidence returned by skill i
+# Thus number of arms is equal to the dimension for now

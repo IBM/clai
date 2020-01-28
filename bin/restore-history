@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+import sys
+
+from clai.post_execution_command import post_process_command
+from clai.restore_history import restore_history
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        ORIGINAL_COMMAND = sys.argv[1]
+        restore_history(ORIGINAL_COMMAND)

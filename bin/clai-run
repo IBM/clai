@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+import argparse
+
+from clai.clai_run import launcher_server, NEW_DIRECTIVE, START_DIRECTIVE
+
+DEFAULT_PORT = '8010'
+
+
+def parse_params():
+    parser = argparse.ArgumentParser(description='Start server clai.')
+    subparsers = parser.add_subparsers(help='new, start', dest='directive')
+
+    parser_new = subparsers.add_parser(NEW_DIRECTIVE, help='run the server on startup')
+    parser_new.add_argument(
+        '--host',
+        help="host to up client and server",
+        default="localhost"
+    )
+    parser_new.add_argument(
+        '--port',
+        help="port listen server",
+        type=int,
+        default=DEFAULT_PORT
+    )
+
+    parser_new.add_argument(
+        '--websocket',
+        help="websocket version for the web server",
+        action='store_true'
+    )
+
+    parser_start = subparsers.add_parser(START_DIRECTIVE, help='start the server')
+    parser_start.add_argument(
+        '--host',
+        help="host to up client and server",
+        default="localhost"
+    )
+    parser_start.add_argument(
+        '--port',
+        help="port listen server",
+        type=int,
+        default=DEFAULT_PORT
+    )
+
+    parser_start.add_argument(
+        '--websocket',
+        help="websocket version for the web server",
+        action='store_true'
+    )
+
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    ARGS = parse_params()
+    HOST, PORT, DIRECTIVE, WEBSOCKET = ARGS.host, int(ARGS.port), ARGS.directive, ARGS.websocket
+    launcher_server(HOST, PORT, DIRECTIVE, WEBSOCKET)
