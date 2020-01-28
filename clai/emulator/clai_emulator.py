@@ -54,42 +54,42 @@ class ClaiEmulator:
 
     def on_server_running(self):
         self.run_button.configure(image=self.stop_image)
+        self.loading_text.set("Starting CLAI. It will take a while")
 
     def on_server_stopped(self):
         self.run_button.configure(image=self.run_image)
 
     # pylint: disable=unused-argument
     def on_skill_selected(self, *args):
+        self.loading_text.set("")
         print(f"new skills {self.selected_skills.get()}")
         skill_name, installed = self.extract_skill_name(self.selected_skills.get())
-        self.presenter.select_skill(skill_name, installed)
+        self.presenter.select_skill(skill_name)
 
-    def add_row(self, response: Action, response_post: Action):
-        command_executed = response.suggested_command
-        if not command_executed:
-            command_executed = f"{response.origin_command} (executed origin)"
-        toggled_frame = ToggledFrame(self.frame, text=command_executed, relief=tk.RAISED, borderwidth=1)
+    def add_row(self, response: str):
+
+        toggled_frame = ToggledFrame(self.frame, text=response, relief=tk.RAISED, borderwidth=1)
         toggled_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
         first_row = ttk.Frame(toggled_frame.sub_frame)
         first_row.pack(fill="x", expand=True)
-        ttk.Label(first_row, text=f"Original: {response.origin_command}").pack(side=tk.LEFT, padx=10)
-        ttk.Label(first_row, text=f"Id: {self.presenter.command_id - 1}").pack(side=tk.RIGHT, padx=10)
+        ttk.Label(first_row, text=f"Original: ").pack(side=tk.LEFT, padx=10)
+        ttk.Label(first_row, text=f"Id: {0}").pack(side=tk.RIGHT, padx=10)
 
         second_row = ttk.Frame(toggled_frame.sub_frame)
         second_row.pack(fill="x", expand=True)
-        ttk.Label(second_row, text=f'Description: {self.remove_emoji(response.description)}') \
+        ttk.Label(second_row, text=f'Description: {self.remove_emoji("")}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(second_row, text=f"Confidence:{response.confidence} Force: {response.execute}") \
+        ttk.Label(second_row, text=f"Confidence:{0} Force: ") \
             .pack(side=tk.RIGHT, padx=10)
 
         ttk.Label(toggled_frame.sub_frame, text=f'Post execution:').pack(side=tk.LEFT, padx=10)
 
         third_row = ttk.Frame(toggled_frame.sub_frame)
         third_row.pack(fill="x", expand=True)
-        ttk.Label(third_row, text=f'Description: {self.remove_emoji(response_post.description)}') \
+        ttk.Label(third_row, text=f'Description: {self.remove_emoji("")}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(third_row, text=f"Confidence:{response_post.confidence}") \
+        ttk.Label(third_row, text=f"Confidence:") \
             .pack(side=tk.RIGHT, padx=10)
 
     def add_send_command_box(self, root):
@@ -106,6 +106,8 @@ class ClaiEmulator:
         toolbar = tk.Frame(root, bd=1, relief=tk.RAISED)
         self.add_button(toolbar)
         self.add_skills_selector(root, toolbar)
+        self.add_loading_progress(toolbar)
+
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
     def add_skills_selector(self, root, toolbar):
@@ -126,6 +128,11 @@ class ClaiEmulator:
         self.run_button = ttk.Button(toolbar, image=self.run_image, command=self.on_run_click)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+    def add_loading_progress(self, toolbar):
+        self.loading_text = tk.StringVar()
+        loading_label = ttk.Label(toolbar, textvariable=self.loading_text)
+        loading_label.pack(side=tk.LEFT, padx=2)
+
     # pylint: disable=unused-argument
     def on_enter(self, event):
         self.send_command(self.text_input.get())
@@ -134,8 +141,8 @@ class ClaiEmulator:
         self.send_command(self.text_input.get())
 
     def send_command(self, command):
-        response, response_post = self.presenter.send_message(command)
-        self.add_row(response, response_post)
+        response = self.presenter.send_message(command)
+        self.add_row(response)
         self.text_input.set("")
 
     def on_run_click(self):
