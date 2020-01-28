@@ -1,0 +1,18 @@
+language: python
+
+services: 
+  - docker
+
+python:
+  - "3.6"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+# command to run tests
+script:
+- pytest ./test
+- pytest ./test_integration -s
+
+before_script:
+  - pylint --ignore-patterns="venv/[\S+].py" *.py --rcfile .pylintrc clai test test_integration

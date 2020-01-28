@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clai-service
+  labels:
+    name: clai-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8085
+      targetPort: 8081
+  selector:
+    app: clai-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clai-app
+  labels:
+    name: clai-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clai-app
+  template:
+    metadata:
+      labels:
+        app: clai-app
+    spec:
+      containers:
+      - image: us.icr.io/<enter-namespace>/app:v1
+        name: clai-app
+        imagePullPolicy: Always
+        env:
+        - name: HOST
+          value: 0.0.0.0
+        - name: PORT
+          value: 8081

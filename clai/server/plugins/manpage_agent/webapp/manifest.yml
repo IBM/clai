@@ -1,0 +1,6 @@
+applications:
+- name: clai-manpage-agent
+  memory: 1G
+  path: .
+  buildpacks: 
+    - python_buildpack

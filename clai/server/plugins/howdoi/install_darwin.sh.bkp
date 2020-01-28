@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+DIR="data/"
+FORUM_DIR="data/forum"
+MANPAGES_DIR="data/manpages"
+
+# Remove data folder if exists already
+if [[ -d "${DIR}" ]]; then rm -Rf ${DIR}; fi
+mkdir "${DIR}"
+
+echo "==============================================================="
+echo ""
+echo " Phase 1: Installing necessary tools"
+echo ""
+echo "==============================================================="
+if [[ $(command -v brew) == "" ]]; then
+    echo ">> Installing Hombrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+else
+    echo ">> Updating Homebrew"
+    brew update
+fi
+
+# Install elasticsearch
+echo ">> Installing elasticsearch"
+if brew ls --versions elasticsearch > /dev/null; then
+  brew ls --versions elasticsearch
+else
+  brew install elasticsearch
+fi
+
+if brew ls --versions wget > /dev/null; then
+  brew ls --versions wget
+else
+  brew install wget
+fi
+
+# Install p7zip
+echo ">> Installing p7zip"
+if brew ls --versions p7zip > /dev/null; then
+  brew ls --versions p7zip
+else
+  brew install p7zip
+fi
+
+# Install Python3 dependencies
+echo ">> Installing python dependencies"
+pip3 install -r -q requirements.txt
+
+echo "==============================================================="
+echo ""
+echo " Phase 2: Downloading stack exchange unix forum"
+echo ""
+echo "==============================================================="
+# Remove forum folder if exists already
+if [[ -d "${FORUM_DIR}" ]]; then rm -Rf ${FORUM_DIR}; fi
+
+echo " >> Making forum directory"
+mkdir "${FORUM_DIR}"
+
+cd "${FORUM_DIR}"
+echo " >> Downloading forum"
+wget https://archive.org/download/stackexchange/unix.stackexchange.com.7z
+
+echo " >> Unzipping forum"
+7za x unix.stackexchange.com.7z
+
+# Traverse back to parent directory
+cd ../..
+echo "==============================================================="
+echo ""
+echo " Phase 3: Recovering manpages from the operating system"
+echo ""
+echo "==============================================================="
+# Remove manpages folder if exists already
+if [[ -d "${MANPAGES_DIR}" ]]; then rm -Rf ${MANPAGES_DIR}; fi
+
+echo " >> Making manpages directory"
+mkdir "${MANPAGES_DIR}"
+
+echo " >> Getting a list of commands"
+# Get a list of commands and store in file
+man -k . | awk '{print $1}' | sed 's/(.*//' > "${MANPAGES_DIR}/cmds.txt"
+
+echo " >> Getting manual page data for each command"
+# Read each command from the file and extract man page content
+while read -r line
+do
+
+	man ${line} 2> /dev/null | col -b > "${MANPAGES_DIR}/${line}.txt"
+
+done< "${MANPAGES_DIR}/cmds.txt"
+
+echo "==============================================================="
+echo ""
+echo " Phase 4: Building Elastic search index for forum and manpages"
+echo ""
+echo "==============================================================="
+brew services start elasticsearch
+python3 install.py

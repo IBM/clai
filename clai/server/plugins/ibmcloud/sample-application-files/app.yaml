@@ -1,0 +1,39 @@
+apiVersion: {tag}
+kind: Service
+metadata:
+  name: clai-service
+  labels:
+    name: clai-service
+spec:
+  type: {protocol}
+  ports:
+    - port: {host_port}
+      targetPort: {local_port}
+  selector:
+    app: clai-app
+---
+apiVersion: apps/{tag}
+kind: Deployment
+metadata:
+  name: clai-app
+  labels:
+    name: clai-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clai-app
+  template:
+    metadata:
+      labels:
+        app: clai-app
+    spec:
+      containers:
+      - image: us.icr.io/{namespace}/{name}:{tag}
+        name: clai-app
+        imagePullPolicy: Always
+        env:
+        - name: HOST
+          value: 0.0.0.0
+        - name: PORT
+          value: {local_port}
