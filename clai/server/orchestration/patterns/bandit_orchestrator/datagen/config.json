@@ -1,0 +1,38 @@
+{
+    "system" : ["Linux", "MacOS"],
+    "generic" : ["ls", "cd", "cat", "echo", "more", "exit", "emacs"], 
+    "skills" : [
+        {
+            "name" : "nlc2cmd",
+            "pre_process" : [["compress this directory into a bz2 file", "tar -cjf <archive-file> <directory>"], 
+                             ["extract files from an archive", "tar -xf <archive-file>"],
+                             ["grep for all files with \"clai\" in this directory, show me details and line numbers", "grep -rnv \"clai\" <directory>"]],
+            "post_process" : []
+        },
+        {
+            "name" : "fixit",
+            "pre_process" : [],
+            "post_process" : [["clear", "clean"], ["puthon", "python"], ["git brnch", "git branch"]]
+        },
+        {
+            "name" : "man page explorer",
+            "pre_process" : [["how to clear screen", "man clean"], ["how do I change the file owner", "man chown"], ["how to compile java class file", "man javac"], ["how to compress a file into a tar file?", "man tar"]],
+            "post_process" : []
+        },
+        {
+            "name" : "howdoi",
+            "pre_process" : [["when to use sudo vs su?", "man su"], ["find out disk usage per user?", "man df"], ["how to process gz files?", "man gzip"]],
+            "post_process" : []
+        },
+        {
+            "name" : "helpme",
+            "pre_process" : [],
+            "post_process" : []
+        },
+        {
+            "name" : "ibmcloud",
+            "pre_process" : [["deploy to kube", "<plan>"], ["run dockerfile", "<plan>"], ["build yaml", "<plan>"]],
+            "post_process" : []
+        }
+    ]
+}
