@@ -182,4 +182,4 @@ post and suggest a fix when the user encounters and error).
 
 -----
 
-**Get started!** &nbsp; [`CLAI API`](../clai/server/plugins/) &nbsp; [`Community on Slack`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md)
+**Get started!** &nbsp; [`Home`](http://ibm.biz/clai-home) &nbsp; [`API`](clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](docs/FAQ.md) &nbsp; [`Whitepaper`](http://ibm.biz/clai-whitepaper) &nbsp; [`Feedback`](http://ibm.biz/clai-survey)
