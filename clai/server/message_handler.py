@@ -66,7 +66,7 @@ class MessageHandler:
 
         return action
 
-    def __process_command(self, message) -> Action:
+    def __process_command(self, message: State) -> Action:
         if not message.is_already_processed():
             message.previous_execution = self.server_status_datasource.get_last_message(message.user_name)
             actions = self.__process_command_ai(message)
@@ -89,7 +89,10 @@ class MessageHandler:
             )
 
         action.origin_command = message.command
-        message.action_suggested = action
+        if message.is_post_process():
+            message.action_post_suggested = action
+        else:
+            message.action_suggested = action
         self.server_status_datasource.store_info(message)
         action.execute = action.execute or self.server_status_datasource.is_power()
 

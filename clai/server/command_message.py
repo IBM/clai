@@ -76,7 +76,9 @@ class State:
                  stderr: Optional[str] = None,
                  previous_execution: Optional['State'] = None,
                  already_processed: bool = False,
-                 action_suggested: 'Action' = None):
+                 action_suggested: 'Action' = None,
+                 action_post_suggested: 'Action' = None
+                 ):
         self.command_id = command_id
         self.command = command
         self.root = root
@@ -89,6 +91,7 @@ class State:
         self.user_name = user_name
         self.already_processed = already_processed
         self.action_suggested = action_suggested
+        self.action_post_suggested = action_post_suggested
         self.values_executed = []
         self.suggested_executed = False
 
@@ -111,6 +114,8 @@ class State:
             self.already_processed = state.already_processed
         if not self.action_suggested:
             self.action_suggested = state.action_suggested
+        if not self.action_post_suggested:
+            self.action_post_suggested = state.action_post_suggested
 
     def is_post_process(self) -> bool:
         return self.result_code is not None

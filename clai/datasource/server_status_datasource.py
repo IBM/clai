@@ -35,7 +35,7 @@ class ServerStatusDatasource:
     def get_last_messages(self, user_name: str):
         return self.__find_messages_by_user(user_name)
 
-    def get_last_message(self, user_name: str):
+    def get_last_message(self, user_name: str) -> State:
         last_message = None
         messages_by_user = self.__find_messages_by_user(user_name)
         if messages_by_user and len(messages_by_user) > 1:
