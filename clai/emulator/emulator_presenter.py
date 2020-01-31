@@ -4,7 +4,7 @@
 # See LICENSE.txt file in the root directory
 # of this source tree for licensing information.
 #
-
+import json
 import os
 import subprocess
 import sys
@@ -20,6 +20,7 @@ from clai.server.clai_client import send_command
 from clai.server.command_message import Action
 
 # pylint: disable=too-many-instance-attributes
+from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
 from clai.tools.docker_utils import execute_cmd
 
 
@@ -67,16 +68,20 @@ class EmulatorPresenter:
 
     def send_message(self, message):
 
-        response = self._send_to_emulator(message)
-        print(response)
+        stdout = self._send_to_emulator(message)
+        info_as_string = self._send_to_emulator("clai last-info 1")
+        info_as_string = info_as_string[info_as_string.index('{'):]
+        info_as_string = info_as_string[:info_as_string.index('\n')]
+        print(f"----> {info_as_string}")
+        info = InfoDebug(**json.loads(info_as_string))
 
-        return response
+        return stdout, info
 
     def _send_select(self, skill_name: str):
-        self._send_to_emulator(f'clai select {skill_name}')
+        self._send_to_emulator(f'clai activate {skill_name}')
 
     def _send_unselect(self, skill_name: str):
-        self._send_to_emulator(f'clai unselect {skill_name}')
+        self._send_to_emulator(f'clai deactivate {skill_name}')
 
     def _send_to_emulator(self, command: str) -> str:
         response = execute_cmd(self.my_clai, command)
@@ -128,13 +133,3 @@ class EmulatorPresenter:
         print(f"container run {self.my_clai.status}")
 
         self.request_skills()
-
-        # self.server_process.wait()
-        # stdout, stderr = self.server_process.communicate()
-        # return_code = self.server_process.returncode
-        # self.server_running = False
-        # self.on_server_stopped()
-        #
-        # print(f"code {return_code}")
-        # print(f"out {stdout}")
-        # print(f"err {stderr}")

@@ -14,8 +14,10 @@ from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
 from clai.server.command_message import Action
 
-
 # pylint: disable=too-many-instance-attributes,protected-access,attribute-defined-outside-init,too-many-public-methods
+from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
+
+
 class ClaiEmulator:
 
     def __init__(self):
@@ -66,30 +68,36 @@ class ClaiEmulator:
         skill_name, installed = self.extract_skill_name(self.selected_skills.get())
         self.presenter.select_skill(skill_name)
 
-    def add_row(self, response: str):
+    def add_row(self, response: str, info: InfoDebug):
 
         toggled_frame = ToggledFrame(self.frame, text=response, relief=tk.RAISED, borderwidth=1)
         toggled_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
         first_row = ttk.Frame(toggled_frame.sub_frame)
         first_row.pack(fill="x", expand=True)
-        ttk.Label(first_row, text=f"Original: ").pack(side=tk.LEFT, padx=10)
-        ttk.Label(first_row, text=f"Id: {0}").pack(side=tk.RIGHT, padx=10)
+        ttk.Label(first_row, text=f"Original: {info.command}").pack(side=tk.LEFT, padx=10)
+        ttk.Label(first_row, text=f"Id: {info.command_id}").pack(side=tk.RIGHT, padx=10)
 
         second_row = ttk.Frame(toggled_frame.sub_frame)
         second_row.pack(fill="x", expand=True)
-        ttk.Label(second_row, text=f'Description: {self.remove_emoji("")}') \
+        ttk.Label(second_row, text=f'Description: {self.remove_emoji(info.action_suggested.description)}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(second_row, text=f"Confidence:{0} Force: ") \
+        ttk.Label(second_row,
+                  text=f"Confidence:{info.action_suggested.confidence} Force: {info.action_suggested.execute}") \
             .pack(side=tk.RIGHT, padx=10)
 
         ttk.Label(toggled_frame.sub_frame, text=f'Post execution:').pack(side=tk.LEFT, padx=10)
 
         third_row = ttk.Frame(toggled_frame.sub_frame)
         third_row.pack(fill="x", expand=True)
-        ttk.Label(third_row, text=f'Description: {self.remove_emoji("")}') \
+        post_description = ""
+        post_confidence = 0
+        if info.action_post_suggested:
+            post_description = info.action_post_suggested.description
+            post_confidence = info.action_post_suggested.confidence
+        ttk.Label(third_row, text=f'Description: {self.remove_emoji(post_description)}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(third_row, text=f"Confidence:") \
+        ttk.Label(third_row, text=f"Confidence: {post_confidence}") \
             .pack(side=tk.RIGHT, padx=10)
 
     def add_send_command_box(self, root):
@@ -141,8 +149,8 @@ class ClaiEmulator:
         self.send_command(self.text_input.get())
 
     def send_command(self, command):
-        response = self.presenter.send_message(command)
-        self.add_row(response)
+        stdout, info = self.presenter.send_message(command)
+        self.add_row(stdout, info)
         self.text_input.set("")
 
     def on_run_click(self):

@@ -17,6 +17,7 @@ from clai.server.logger import current_logger as logger
 
 # pylint: disable=too-few-public-methods
 class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
+    LAST_DIRECTIVE_DIRECTIVE = 'clai last-info'
 
     def __init__(self, server_status_datasource: ServerStatusDatasource):
         self.server_status_datasource = server_status_datasource
@@ -28,12 +29,20 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
                       )
 
     def execute_post(self, state: State) -> Action:
-        last_message = self.server_status_datasource.get_last_message(state.user_name)
+        offset_last = state.command.replace(f'{self.LAST_DIRECTIVE_DIRECTIVE}', '').strip()
+        if not offset_last:
+            return Action()
+
+        if not offset_last.isdigit():
+            return Action()
+
+        offset_last_as_int = int(offset_last)
+        last_message = self.server_status_datasource.get_last_message(state.user_name, offset=offset_last_as_int)
 
         if not last_message:
             return Action()
 
-        info_to_show = InfoToShow(
+        info_to_show = InfoDebug(
             command_id=last_message.command_id,
             user_name=last_message.user_name,
             command=last_message.command,
@@ -52,7 +61,7 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
         )
 
 
-class InfoToShow(BaseModel):
+class InfoDebug(BaseModel):
     command_id: str
     user_name: str
     command: str = None
@@ -63,5 +72,5 @@ class InfoToShow(BaseModel):
     result_code: Optional[str] = None
     stderr: Optional[str] = None
     already_processed: bool = False
-    action_suggested: 'Action' = None
-    action_post_suggested: 'Action' = None
+    action_suggested: Optional[Action] = None
+    action_post_suggested: Optional[Action] = None
