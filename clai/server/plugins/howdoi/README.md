@@ -29,7 +29,7 @@ Watch this space!
 
 ## Example Usage
 
-![howdoi](https://www.dropbox.com/s/x0iclad93s7pacf/howdoi.gif?raw=1)
+![howdoi](https://www.dropbox.com/s/lje4afzr8pu8r8a/howdoi.gif?raw=1)
 
 The skill will respond to how/what questions if it finds a reasonable solution. Try out:
 
