@@ -18,7 +18,7 @@ in general and is quite brittle. See the `nlc2cmd Challenge` below for more on t
 
 ## Example Usage
 
-![nlc2cmd](https://www.dropbox.com/s/x0nxcujpzsyv6vd/nlc2cmd.gif?raw=1)
+![nlc2cmd](https://www.dropbox.com/s/ybuwyixqobjo8za/nlc2cmd.gif?raw=1)
 
 Right now this skills only supports `grep` and `tar` commands. Try these out!
 
