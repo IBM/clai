@@ -86,6 +86,20 @@ class ClaiEmulator:
                   text=f"Confidence:{info.action_suggested.confidence} Force: {info.action_suggested.execute}") \
             .pack(side=tk.RIGHT, padx=10)
 
+        third_row = ttk.Frame(toggled_frame.sub_frame)
+        third_row.pack(fill="x", expand=True)
+        ttk.Label(third_row, text=f'Agent: {info.action_suggested.agent_owner}') \
+            .pack(side=tk.LEFT, padx=10)
+        ttk.Label(third_row,
+                  text=f"Sugestion:{info.action_suggested.suggested_command}  Applied: {info.already_processed}") \
+            .pack(side=tk.RIGHT, padx=10)
+
+        fourth_row = ttk.Frame(toggled_frame.sub_frame)
+        fourth_row.pack(fill="x", expand=True)
+        process_text = ','.join(list(map(lambda process: process.name,info.processes.last_processes)))
+        ttk.Label(fourth_row, text=f'Processes: {process_text}') \
+            .pack(side=tk.LEFT, padx=10)
+
         ttk.Label(toggled_frame.sub_frame, text=f'Post execution:').pack(side=tk.LEFT, padx=10)
 
         third_row = ttk.Frame(toggled_frame.sub_frame)
