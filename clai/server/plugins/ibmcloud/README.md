@@ -20,7 +20,7 @@ While this skill illustrates an integration of automated planning technologies i
 
 ## Example Usage
 
-![ibmcloud-gif](https://www.dropbox.com/s/jhjw7l9a7bjvo6k/ibmcloud.gif?raw=1)
+![ibmcloud-gif](https://www.dropbox.com/s/zkhqldf35xvih4t/ibmcloud.gif?raw=1)
 
 Try this out (folllow instructions as they show up):
 
