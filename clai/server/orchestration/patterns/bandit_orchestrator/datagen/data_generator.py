@@ -8,9 +8,9 @@ globals
 '''
 path_to_config_file = 'config.json'
 saved_user_profiles = {"generic",
+                       "ignore_clai",
                        "ignore_nlc2cmd",
-                       "prioritize_manpages_over_forum",
-                       "ignore_clai"}
+                       "prioritize_manpages_over_forum"}
 
 prob_low = 0.2
 prob_high = 0.8
@@ -71,11 +71,14 @@ class Simulation():
             for command in skill.return_post_process_list():
                 self.commands.add( command[0] )
 
+        # make a dummy skill corresponding to none selection        
+        dummy_skill_defn = {"name" : "None", "pre_process" : [], "post_process" : []}
+
         for command in self.config["generic"]:
+            dummy_skill_defn["pre_process"].append( [command, "None"] )
             self.commands.add( command )
 
-        self.normal   = self.config["generic"]
-
+        self.skills.add(Skill(dummy_skill_defn))
 
     def simulate(self, select_skill_name:str = None) -> Dict:
 
@@ -147,9 +150,6 @@ class Simulation():
 
         if suggested_command:
 
-            if new_command in self.normal:
-                return 0.0
-
             if user_response == "y":
                 return 1.0
             
@@ -157,11 +157,6 @@ class Simulation():
                 return 0.0
 
             return float(len( set( suggested_command.split() ).intersection( set( next_command.split() )))) / len( set( suggested_command.split() )) 
-
-        else:
-
-            if new_command in self.normal:
-                return 1.0
 
         return 0.0
 
@@ -192,14 +187,19 @@ class Simulation():
 
     # this user wants to ignore CLAI altogether
     def __ignore_clai__(self, new_command, active_skills, selected_skill, suggested_command, next_command, user_response) -> float:
+
+        if selected_skill:
+            if selected_skill.get_name() == "None":
+                return 1.0
+
         return 0.0
 
 
 def main():
-    new_simulation = Simulation(user_profile = "prioritize_manpages_over_forum")
+    new_simulation = Simulation(user_profile = "generic")
 
     for i in range(10):
-        result = new_simulation.simulate("man page explorer")
+        result = new_simulation.simulate()
 
         if result["selected_skill"]:
             print( i, result, result["selected_skill"].get_name() )
