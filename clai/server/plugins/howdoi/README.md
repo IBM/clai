@@ -33,9 +33,9 @@ Watch this space!
 
 The skill will respond to how/what questions if it finds a reasonable solution. Try out:
 
-1. `when to use sudo vs su?`
-2. `find out disk usage per user?`
-3. `how to process gz files?`
+1. `clai "howdoi" when to use sudo vs su?`
+2. `clai "howdoi" find out disk usage per user?`
+3. `clai "howdoi" how to process gz files?`
 
 ## [xkcd](https://uni.xkcd.com/)
 Sadly, this is a true story.  At least I learned about the OS X 'say' command.
