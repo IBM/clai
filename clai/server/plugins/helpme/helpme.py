@@ -72,6 +72,10 @@ class HelpMeAgent(Agent):
 
                     command = manpages['commands'][-1]
                     confidence = manpages['dists'][-1]
+
+                    # FIXME: Artificially boosted confidence
+                    confidence = 1.0
+
                     logger.info("Command: {} \t Confidence:{}".format(command, confidence))
 
                     return Action(suggested_command="man {}".format(command),
