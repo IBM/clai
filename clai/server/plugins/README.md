@@ -114,7 +114,7 @@ We support utf8 text and Unix color codes in the suggested_command, description,
  + **normal** to come back to the normal color code.
  + **to_console** to get the text formatted and ready for printing and return the console to the original state.
 
-See an example [here](search_agent/search_agent.py#L72).
+See an example [here](howdoi/howdoi.py#L51).
 
 ## Interaction Patterns
 

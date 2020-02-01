@@ -33,6 +33,7 @@ to identify relevant stack exchange post and the corresponding answer.
 Note that this is merely illustrative of the "help me" interaction pattern on the CLAI-enabled command line
 and the accuracy of the recommendations is highly dependent on the quality of the implemented search on the 
 Stack Exchange Unix forum data as well as the answer quality of the matched question. 
+For now, the confidence is [boosted artificially](Lx) to illustrate this interaction pattern.
 We hope to build, as a community, standards and benchmarks to make this more accurate over time.
 Watch this space!
 
