@@ -4,7 +4,7 @@ Comman Line Artificial Intelligence `CLAI` is an open-sourced project aimed to b
 
 ## Getting Started
 
-[`More`](docs/Overview.md) [`API`](clai/server/plugins/) [`Community`](http://ibm.biz/clai-slack) [`FAQs`](docs/FAQ.md) 
+[`Home`](http://ibm.biz/clai-home) &nbsp; [`More`](docs/Overview.md) &nbsp; [`API`](clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](docs/FAQ.md) &nbsp; [`Whitepaper`](http://ibm.biz/clai-whitepaper) &nbsp; [`Feedback`](http://ibm.biz/clai-survey) 
 
 ### Prerequisites
 
@@ -198,7 +198,7 @@ As before, CLAI skill will not execute without your permission unless `auto` mod
 
 ## :robot: Want to build your own skills?
 
-[`fixit`](clai/server/plugins/fix_bot)  [`nlc2cmd`](clai/server/plugins/nlc2cmd)  [`helpme`](clai/server/plugins/retrieval_agent)  [`howdoi`](clai/server/plugins/search_agent)  [`man page explorer`](clai/server/plugins/manpage_agent)  [`ibmcloud`](clai/server/plugins/ibmcloud)  
+[`fixit`](clai/server/plugins/fix_bot) &nbsp; [`nlc2cmd`](clai/server/plugins/nlc2cmd) &nbsp; [`helpme`](clai/server/plugins/helpme) &nbsp; [`howdoi`](clai/server/plugins/howdoi) &nbsp; [`man page explorer`](clai/server/plugins/manpage_agent) &nbsp; [`ibmcloud`](clai/server/plugins/ibmcloud)  
 
 Project CLAI is intended to rekindle the spirit of AI softbots by providing a plug-and-play framework and simple interface abstractions to the Bash and its underlying operating system. Developers can access the command line through a simple `sense-act` API for rapid prototyping of newer and more complex AI capabilities.
 

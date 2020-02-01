@@ -95,7 +95,7 @@ clai: command p
 clai: command q
 ```
 
-The [`man page explorer`](../clai/server/plugins/manpage_agent) [`fixit`](../clai/server/plugins/fix_bot) [`helpme`](../clai/server/plugins/retrieval_agent) [`howdoi`](../clai/server/plugins/search_agent) skills are examples of on-remise immediate support in action.
+The [`man page explorer`](../clai/server/plugins/manpage_agent) [`fixit`](../clai/server/plugins/fix_bot) [`helpme`](../clai/server/plugins/helpme) [`howdoi`](../clai/server/plugins/howdoi) skills are examples of on-remise immediate support in action.
 
 ### Natural Language Support
 
@@ -182,4 +182,4 @@ post and suggest a fix when the user encounters and error).
 
 -----
 
-**Get started!** &nbsp; [`CLAI API`](../clai/server/plugins/) &nbsp; [`Community on Slack`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md)
+**Get started!** &nbsp; [`Home`](http://ibm.biz/clai-home) &nbsp; [`API`](../clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md) &nbsp; [`Whitepaper`](http://ibm.biz/clai-whitepaper) &nbsp; [`Feedback`](http://ibm.biz/clai-survey)
