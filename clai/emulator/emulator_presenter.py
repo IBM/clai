@@ -45,8 +45,10 @@ class EmulatorPresenter:
         return '.'
 
     def stop_server(self):
-        if self.server_process:
-            self.server_process.kill()
+        if self.my_clai and self.my_clai.status is 'running':
+            self.my_clai.kill()
+            self.server_running = False
+        self.on_server_stopped()
 
     def select_skill(self, skill_name: str):
         if skill_name == self.current_active_skill:
