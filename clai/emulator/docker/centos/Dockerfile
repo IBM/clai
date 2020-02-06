@@ -66,7 +66,7 @@ RUN mkdir -p /opt/IBM/clai/
 WORKDIR /opt/IBM/clai/
 add . .
 RUN pip3 install -r requirements.txt
-RUN sudo python3 install.py --unassisted --no-skills --shell bash
+RUN sudo python3 install.py --unassisted --shell bash
 
 #############################################################################
 # END Install the shell                                                     #
