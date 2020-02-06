@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+import tarfile
 import threading
 from typing import Optional
 
@@ -16,8 +17,6 @@ from pytest_docker_tools.utils import wait_for_callable
 from pytest_docker_tools.wrappers import Container
 
 from clai.server.agent_datasource import AgentDatasource
-from clai.server.clai_client import send_command
-from clai.server.command_message import Action
 
 # pylint: disable=too-many-instance-attributes
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
@@ -40,7 +39,6 @@ class EmulatorPresenter:
     @staticmethod
     def __get_base_path():
         root_path = os.getcwd()
-        print(f"the path {root_path}")
         if 'bin' in root_path:
             return '../'
 
@@ -133,3 +131,32 @@ class EmulatorPresenter:
         print(f"container run {self.my_clai.status}")
 
         self.request_skills()
+
+    def refresh_files(self):
+        self.copy_files()
+        strout = self._send_to_emulator("clai reload")
+
+    def copy_files(self):
+        old_path = os.getcwd()
+        print(f'Building {old_path}')
+        srcpath = os.path.join(self.__get_base_path(),
+                               'clai', 'server', 'plugins')
+        os.chdir(srcpath)
+
+        tar = tarfile.open('temp.tar', mode='w')
+        try:
+            tar.add('.', recursive=True)
+        finally:
+            tar.close()
+
+        data = open('temp.tar', 'rb').read()
+
+        destdir = os.path.join(
+            os.path.expanduser('/opt/local/share'),
+            'clai', 'bin', 'clai', 'server', 'plugins'
+        )
+        self.my_clai._container.put_archive(destdir, data)
+
+        os.chdir(old_path)
+
+        print("Done the refresh")

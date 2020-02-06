@@ -19,6 +19,7 @@ from clai.server.command_runner.clai_last_info_command_runner import ClaiLastInf
 from clai.server.command_runner.clai_plugins_command_runner import ClaiPluginsCommandRunner
 from clai.server.command_runner.clai_power_command_runner import ClaiPowerCommandRunner
 from clai.server.command_runner.clai_power_disable_command_runner import ClaiPowerDisableCommandRunner
+from clai.server.command_runner.clai_reload_command_runner import ClaiReloadCommandRunner
 from clai.server.command_runner.clai_select_command_runner import ClaiSelectCommandRunner
 from clai.server.command_runner.clai_unselect_command_runner import ClaiUnselectCommandRunner
 from clai.server.command_runner.command_runner import CommandRunner, PostCommandRunner
@@ -42,6 +43,7 @@ class CommandRunnerFactory:
             "auto": ClaiPowerCommandRunner(server_status_datasource),
             "install": ClaiInstallCommandRunner(agent_datasource),
             "last-info": ClaiLastInfoCommandRunner(server_status_datasource),
+            "reload": ClaiReloadCommandRunner(agent_datasource),
             "help": ClaiHelpCommandRunner()
         }
         self.clai_post_commands: Dict[str, PostCommandRunner] = {

@@ -126,7 +126,8 @@ class ClaiEmulator:
 
     def add_toolbar(self, root):
         toolbar = tk.Frame(root, bd=1, relief=tk.RAISED)
-        self.add_button(toolbar)
+        self.add_play_button(toolbar)
+        self.add_refresh_button(toolbar)
         self.add_skills_selector(root, toolbar)
         self.add_loading_progress(toolbar)
 
@@ -143,12 +144,18 @@ class ClaiEmulator:
         self.selected_skills_dropmenu.configure(state="disabled")
         self.selected_skills_dropmenu.pack(side=tk.LEFT, padx=2)
 
-    def add_button(self, toolbar):
+    def add_play_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
         self.run_image = tk.PhotoImage(file=f"{path}/run.gif")
         self.stop_image = tk.PhotoImage(file=f"{path}/stop.gif")
         self.run_button = ttk.Button(toolbar, image=self.run_image, command=self.on_run_click)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_refresh_button(self, toolbar):
+        path = os.path.dirname(os.path.abspath(__file__))
+        self.refresh_image = tk.PhotoImage(file=f"{path}/refresh.png")
+        refresh_button = ttk.Button(toolbar, image=self.refresh_image, command=self.on_refresh_click)
+        refresh_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def add_loading_progress(self, toolbar):
         self.loading_text = tk.StringVar()
@@ -172,6 +179,9 @@ class ClaiEmulator:
             self.presenter.run_server()
         else:
             self.presenter.stop_server()
+
+    def on_refresh_click(self):
+        self.presenter.refresh_files()
 
     @staticmethod
     def on_configure(canvas):
