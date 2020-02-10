@@ -12,8 +12,6 @@ from clai.datasource.server_status_datasource import ServerStatusDatasource
 from clai.server.command_message import State, Action, ProcessesValues, FilesChangesValues, NetworkValues
 from clai.server.command_runner.command_runner import CommandRunner, PostCommandRunner
 
-from clai.server.logger import current_logger as logger
-
 
 # pylint: disable=too-few-public-methods
 class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
@@ -64,10 +62,10 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
 class InfoDebug(BaseModel):
     command_id: str
     user_name: str
+    file_changes: Optional[FilesChangesValues] = None
     command: str = None
     root: bool = False
     processes: Optional[ProcessesValues] = None
-    file_changes: Optional[FilesChangesValues] = None
     network: Optional[NetworkValues] = None
     result_code: Optional[str] = None
     stderr: Optional[str] = None

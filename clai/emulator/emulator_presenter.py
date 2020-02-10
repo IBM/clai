@@ -6,7 +6,6 @@
 #
 import json
 import os
-import subprocess
 import sys
 import tarfile
 import threading
@@ -45,7 +44,7 @@ class EmulatorPresenter:
         return '.'
 
     def stop_server(self):
-        if self.my_clai and self.my_clai.status is 'running':
+        if self.my_clai and self.my_clai.status == 'running':
             self.my_clai.kill()
             self.server_running = False
         self.on_server_stopped()
@@ -105,7 +104,7 @@ class EmulatorPresenter:
                 rm=True
             )
 
-            for line in logs:
+            for _ in logs:
                 sys.stdout.write('.')
                 sys.stdout.flush()
 
@@ -136,7 +135,7 @@ class EmulatorPresenter:
 
     def refresh_files(self):
         self.copy_files()
-        strout = self._send_to_emulator("clai reload")
+        self._send_to_emulator("clai reload")
 
     def copy_files(self):
         old_path = os.getcwd()
@@ -157,6 +156,8 @@ class EmulatorPresenter:
             os.path.expanduser('/opt/local/share'),
             'clai', 'bin', 'clai', 'server', 'plugins'
         )
+
+        # pylint: disable=protected-access
         self.my_clai._container.put_archive(destdir, data)
 
         os.chdir(old_path)

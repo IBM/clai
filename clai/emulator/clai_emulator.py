@@ -12,7 +12,6 @@ from typing import List
 
 from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
-from clai.server.command_message import Action
 
 # pylint: disable=too-many-instance-attributes,protected-access,attribute-defined-outside-init,too-many-public-methods
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
@@ -65,7 +64,7 @@ class ClaiEmulator:
     def on_skill_selected(self, *args):
         self.loading_text.set("")
         print(f"new skills {self.selected_skills.get()}")
-        skill_name, installed = self.extract_skill_name(self.selected_skills.get())
+        skill_name = self.extract_skill_name(self.selected_skills.get())[0]
         self.presenter.select_skill(skill_name)
 
     def add_row(self, response: str, info: InfoDebug):
@@ -96,7 +95,7 @@ class ClaiEmulator:
 
         fourth_row = ttk.Frame(toggled_frame.sub_frame)
         fourth_row.pack(fill="x", expand=True)
-        process_text = ','.join(list(map(lambda process: process.name,info.processes.last_processes)))
+        process_text = ','.join(list(map(lambda process: process.name, info.processes.last_processes)))
         ttk.Label(fourth_row, text=f'Processes: {process_text}') \
             .pack(side=tk.LEFT, padx=10)
 

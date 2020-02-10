@@ -4,16 +4,9 @@
 # See LICENSE.txt file in the root directory
 # of this source tree for licensing information.
 #
-from typing import Optional
-
-from pydantic import BaseModel
-
-from clai.datasource.server_status_datasource import ServerStatusDatasource
 from clai.server.agent_datasource import AgentDatasource
-from clai.server.command_message import State, Action, ProcessesValues, FilesChangesValues, NetworkValues
-from clai.server.command_runner.command_runner import CommandRunner, PostCommandRunner
-
-from clai.server.logger import current_logger as logger
+from clai.server.command_message import State, Action
+from clai.server.command_runner.command_runner import CommandRunner
 
 # pylint: disable=too-few-public-methods
 from clai.tools.colorize_console import Colorize
