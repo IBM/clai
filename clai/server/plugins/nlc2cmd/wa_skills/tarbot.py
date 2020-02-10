@@ -15,8 +15,9 @@ wa_endpoint = 'http://nlc2cmd-chipper-impala.us-east.mybluemix.net/tarbot'
 
 def wa_skill_processor_tarbot(msg):
 
-    # Confidence remains at 0 unless an intent has been detected
-    confidence = 0.0 
+    # Confidence remains at 0 and data is None unless an intent has been detected
+    confidence = 0.0
+    data = None
 
     if msg.startswith('tar'):
         return None, 0.0
