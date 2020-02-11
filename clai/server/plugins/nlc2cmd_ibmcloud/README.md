@@ -55,6 +55,7 @@ challenge and host a leaderboard of competing solutions.
 Contribute [here](https://forms.gle/MXWfGYCtiVDNfNdU8).
 
 ## xkcd
-I don't know what's worse--the fact that after 15 years of using tar I still can't keep the flags straight, or that after 15 years of technological advancement I'm still mucking with tar flags that were 15 years old when I started. 
+
+There's planned downtime every night when we turn on the Roomba and it runs over the cord.
 
 ![alt text](https://imgs.xkcd.com/comics/the_cloud.png "There's planned downtime every night when we turn on the Roomba and it runs over the cord.")
