@@ -231,7 +231,7 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
         enable_report = \
             ask_to_user(
                 "Would you like anonymously send debugging and usage information"
-                "to the CLAI team in order to help improve it? (y/n)")
+                "to the CLAI team in order to help improve it?")
 
     agent_datasource.mark_report_enable(enable_report)
     stats_tracker = StatsTracker(sync=True, anonymizer=Anonymizer(alternate_path=f'{bin_path}/anonymize.json'))
