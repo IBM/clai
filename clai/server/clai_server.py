@@ -9,9 +9,9 @@
 # pylint: disable=invalid-name,redefined-outer-name
 import json
 
-from clai.datasource.action_remote_storage import ActionRemoteStorage, action_remote_storage
+from clai.datasource.action_remote_storage import ActionRemoteStorage
 from clai.datasource.server_status_datasource import current_status_datasource, ServerStatusDatasource
-from clai.datasource.stats_tracker import stats_tracker
+from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import State, Action, StateDTO
 from clai.server.message_handler import MessageHandler
@@ -26,16 +26,14 @@ class ClaiServer:
     def __init__(self,
                  server_status_datasource: ServerStatusDatasource = current_status_datasource,
                  connector: ServerConnector = SocketServerConnector(current_status_datasource),
-                 remote_storage: ActionRemoteStorage = action_remote_storage,
-                 agent_datasource=AgentDatasource(),
-                 stats=stats_tracker
+                 agent_datasource=AgentDatasource()
                  ):
         self.connector = connector
         self.agent_datasource = agent_datasource
         self.server_status_datasource = server_status_datasource
+        self.remote_storage = ActionRemoteStorage()
         self.message_handler = MessageHandler(server_status_datasource, agent_datasource=agent_datasource)
-        self.remote_storage = remote_storage
-        self.stats_tracker = stats
+        self.stats_tracker = StatsTracker()
 
     def init_server(self):
         self.message_handler.init_server()
