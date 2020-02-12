@@ -6,7 +6,7 @@
 #
 
 from clai.datasource.config_storage import ConfigStorage
-from clai.datasource.stats_tracker import stats_tracker
+from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.clai_message_builder import create_message_list, create_error_select
 from clai.server.command_message import State, Action
@@ -20,8 +20,9 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
     SELECT_DIRECTIVE = 'clai activate'
 
     def __init__(self, config_storage: ConfigStorage, agent_datasource: AgentDatasource):
-        self.config_storage = config_storage
         self.agent_datasource = agent_datasource
+        self.config_storage = config_storage
+        self.stats_tracker = StatsTracker()
 
     def execute(self, state: State) -> Action:
         plugin_to_select = state.command.replace(f'{self.SELECT_DIRECTIVE}', '').strip()
@@ -50,7 +51,7 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
     def select_plugin(self, plugin_to_select, state):
         selected_plugin = self.agent_datasource.select_plugin(plugin_to_select, state.user_name)
         if selected_plugin:
-            stats_tracker.log_activate_skills(state.user_name, plugin_to_select)
+            self.stats_tracker.log_activate_skills(state.user_name, plugin_to_select)
             plugins_config = self.config_storage.read_config(state.user_name)
             if plugins_config.selected is None:
                 plugins_config.selected = [selected_plugin.name]

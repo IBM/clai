@@ -22,7 +22,22 @@ URL_SERVER = "https://us-south.functions.cloud.ibm.com/" \
 
 
 class ActionRemoteStorage:
-    def __init__(self):
+    _instance = None
+
+    manager = None
+    queue = None
+    consumer_task = None
+    pool = None
+    report_enable = None
+    anonymizer = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(ActionRemoteStorage, cls).__new__(cls)
+            cls._instance.init()
+        return cls._instance
+
+    def init(self):
         self.manager = mp.Manager()
         self.queue = self.manager.Queue()
         self.consumer_task = None
@@ -103,7 +118,3 @@ class ActionRemoteStorage:
             return [candidate_actions]
 
         return candidate_actions
-
-
-# pylint: disable= invalid-name
-action_remote_storage = ActionRemoteStorage()
