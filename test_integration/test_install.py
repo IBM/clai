@@ -10,8 +10,8 @@ from time import sleep
 
 from pytest_docker_tools import container, build
 
+from clai.tools.docker_utils import execute_cmd
 from test_integration.conftest import get_base_path
-from test_integration.integration_test_base import execute_cmd
 
 
 my_clai_image = build(
