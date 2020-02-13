@@ -213,12 +213,12 @@ def ask_to_user(text):
         if command_input in ('y', 'yes'):
             return True
 
-        if command_input in ('n', 'not'):
+        if command_input in ('n', 'no'):
             return False
 
         print(Colorize()
               .info()
-              .append('choose yes[y] or not[n]')
+              .append('choose yes[y] or no[n]')
               .to_console())
 
 
