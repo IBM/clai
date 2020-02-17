@@ -139,6 +139,11 @@ using the `get_next_action(self, state: State) -> Action` method: it receives th
 from the terminal as the percept and returns an Action object to the terminal as the directive
 on how to respond.
 
+>> Note that the `get_next_action` method can be overloaded to return a **List[Action]** instead 
+of a single Action object. This is to handle cases where the user invocation can trigger a series
+of commands to be executed according to a skill, as done [here](ibmcloud/ibmcloud.py#L54) for the 
+**ibmcloud** skill.  
+
 ### Follow-up on execution of command
 
 The API intercepts the `stdout`/`stderr` so that a skill can respond to the execution of a 
