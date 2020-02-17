@@ -22,5 +22,5 @@ git commit -s -m 'Informative commit message'
 Once you are happy with the implementation of your skill, you can check in sample inputs and outputs in 
 [here](./test_integration/) to make sure your skill runs as intended. 
 See [here](./test_integration/test_skill_nlc2cmd.py) for an example test with the [`nlc2cmd`](clai/server/plugins/nlc2cmd) skill. 
-Once all the tests have passed, and you are satisfied with the skill, open a PR into the `develop` branch
+Once all the tests have passed, and you are satisfied with the skill, open a PR into the `master` branch
 to add your skill to the CLAI catalog.
