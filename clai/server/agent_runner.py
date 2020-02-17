@@ -7,7 +7,7 @@
 
 from typing import Optional, List, Union
 
-from clai.datasource.action_remote_storage import ActionRemoteStorage, action_remote_storage
+from clai.datasource.action_remote_storage import ActionRemoteStorage
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import State, Action, TerminalReplayMemory
 from clai.server.agent import Agent
@@ -18,14 +18,13 @@ from clai.server.orchestration.orchestrator_storage import OrchestratorStorage
 
 class AgentRunner:
     def __init__(self, agent_datasource: AgentDatasource,
-                 orchestrator: Orchestrator,
-                 remote_storage: ActionRemoteStorage = action_remote_storage
+                 orchestrator: Orchestrator
                  ):
 
         self.agent_datasource = agent_datasource
         self.orchestrator = orchestrator
-        self.orchestrator_storage = OrchestratorStorage(orchestrator, action_remote_storage)
-        self.remote_storage = remote_storage
+        self.remote_storage = ActionRemoteStorage()
+        self.orchestrator_storage = OrchestratorStorage(orchestrator, self.remote_storage)
 
         self._pre_exec_id = "pre"
         self._post_exec_id = "post"
