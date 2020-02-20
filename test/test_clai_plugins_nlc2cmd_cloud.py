@@ -18,6 +18,7 @@ class NLC2CMDCloudTest(unittest.TestCase):
 
         cls.agent = NLC2CMD()
 
+    # Checking login command
     @unittest.skip("Local dev testing only")
     def test_get_next_action_cloud_login(self):
         self.state.command = "how do i login"
@@ -29,6 +30,7 @@ class NLC2CMDCloudTest(unittest.TestCase):
         self.assertEqual("\x1b[95mTry >> ibmcloud login\x1b[0m", action.description)
         print("===========================")
 
+    # Checking help command
     @unittest.skip("Local dev testing only")
     def test_get_next_action_cloud_help(self):
         self.state.command = "help me"
@@ -40,7 +42,7 @@ class NLC2CMDCloudTest(unittest.TestCase):
         self.assertEqual("\x1b[95mTry >> ibmcloud help COMMAND\x1b[0m", action.description)
         print("===========================")
 
-
+    # Checking invite command
     @unittest.skip("Local dev testing only")
     def test_get_next_action_cloud_invite(self):
         self.state.command = "I want to invite someone to my cloud"
