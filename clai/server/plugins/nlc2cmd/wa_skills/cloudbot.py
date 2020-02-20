@@ -69,12 +69,4 @@ def wa_skill_processor_cloudbot(msg):
     return data, confidence
 
 
-while True:
-
-    ip = input('>> ')
-
-    if ip == 'exit': break
-    else: print(wa_skill_processor_cloudbot(str(ip).strip()))
-
-
 
