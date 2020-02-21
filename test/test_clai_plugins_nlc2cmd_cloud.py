@@ -53,3 +53,4 @@ class NLC2CMDCloudTest(unittest.TestCase):
         self.assertEqual(NOOP_COMMAND, action.suggested_command)
         self.assertEqual("\x1b[95mTry >> ibmcloud account user-invite USER_EMAIL\x1b[0m", action.description)
         print("===========================")
+        
