@@ -19,7 +19,7 @@ from clai.server.agent_datasource import AgentDatasource
 
 # pylint: disable=too-many-instance-attributes
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
-from clai.tools.docker_utils import execute_cmd
+from clai.tools.docker_utils import execute_cmd, stream_cmd
 
 
 class EmulatorPresenter:
@@ -44,7 +44,8 @@ class EmulatorPresenter:
         return '.'
 
     def stop_server(self):
-        if self.my_clai and self.my_clai.status == 'running':
+        print(f'is server running {self.server_running}')
+        if self.server_running:
             self.my_clai.kill()
             self.server_running = False
         self.on_server_stopped()
@@ -76,6 +77,10 @@ class EmulatorPresenter:
 
         return stdout, info
 
+    def attach_log(self, chunked_read):
+        stdout = self._send_to_emulator('tail -f /var/tmp/app.log')
+        chunked_read(stdout)
+
     def _send_select(self, skill_name: str):
         self._send_to_emulator(f'clai activate {skill_name}')
 
@@ -84,8 +89,10 @@ class EmulatorPresenter:
 
     def _send_to_emulator(self, command: str) -> str:
         response = execute_cmd(self.my_clai, command)
-
         return response
+
+    def _stream_message(self, command: str, chunked_readed):
+        stream_cmd(self.my_clai, command, chunked_readed)
 
     def run_server(self):
         # pylint: disable=attribute-defined-outside-init

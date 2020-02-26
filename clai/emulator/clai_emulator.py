@@ -12,11 +12,11 @@ from tkinter import ttk, messagebox
 from tkinter.font import Font
 from typing import List
 
+from clai.emulator.log_window import LogWindow
 from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
 
 # pylint: disable=too-many-instance-attributes,protected-access,attribute-defined-outside-init,too-many-public-methods
-from clai.server.command_message import Action, ProcessesValues, NetworkValues, Process
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
 
 
@@ -149,6 +149,7 @@ class ClaiEmulator:
         toolbar = tk.Frame(root, bd=1, relief=tk.RAISED)
         self.add_play_button(toolbar)
         self.add_refresh_button(toolbar)
+        self.add_log_button(toolbar)
         self.add_skills_selector(root, toolbar)
         self.add_loading_progress(toolbar)
 
@@ -178,10 +179,19 @@ class ClaiEmulator:
         refresh_button = ttk.Button(toolbar, image=self.refresh_image, command=self.on_refresh_click)
         refresh_button.pack(side=tk.LEFT, padx=2, pady=2)
 
+    def add_log_button(self, toolbar):
+        path = os.path.dirname(os.path.abspath(__file__))
+        self.log_image = tk.PhotoImage(file=f"{path}/refresh.png")
+        log_button = ttk.Button(toolbar, image=self.refresh_image, command=self.log_window)
+        log_button.pack(side=tk.LEFT, padx=2, pady=2)
+
     def add_loading_progress(self, toolbar):
         self.loading_text = tk.StringVar()
         loading_label = ttk.Label(toolbar, textvariable=self.loading_text)
         loading_label.pack(side=tk.LEFT, padx=2)
+
+    def log_window(self):
+        self.log_window = LogWindow(self.root, self.presenter)
 
     # pylint: disable=unused-argument
     def on_enter(self, event):
