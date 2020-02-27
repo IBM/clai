@@ -18,7 +18,6 @@ class NLC2CMD(Agent):
         self.service = Service()
 
     def get_next_action(self, state: State) -> Action:
-
         command = state.command
         data, confidence = self.service(command)
         response = data["text"]

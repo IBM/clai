@@ -9,23 +9,6 @@
 from time import sleep
 
 
-def execute_cmd(container, command):
-    socket = container.exec_run(cmd="bash -l", stdin=True, tty=True, privileged=True, socket=True)
-
-    wait_server_is_started()
-
-    command_to_exec = command + '\n'
-    socket.output._sock.send(command_to_exec.encode())
-
-    data = read(socket, command)
-
-    sleep(1)
-    socket.output._sock.send(b"exit\n")
-
-    print(f'the output is: {data}')
-    return str(data)
-
-
 def wait_server_is_started():
     sleep(2)
 
@@ -54,3 +37,20 @@ def read(socket, command):
     except Exception as exception:
         print(f'error: {exception}')
     return data
+
+
+def execute_cmd(container, command):
+    socket = container.exec_run(cmd="bash -l", stdin=True, tty=True, privileged=True, socket=True)
+
+    wait_server_is_started()
+
+    command_to_exec = command + '\n'
+    socket.output._sock.send(command_to_exec.encode())
+
+    data = read(socket, command)
+
+    sleep(1)
+    socket.output._sock.send(b"exit\n")
+
+    print(f'the output is: {data}')
+    return str(data)

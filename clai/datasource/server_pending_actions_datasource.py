@@ -9,7 +9,6 @@ from typing import Dict, List
 
 from clai.datasource.model.pending_actions import PendingActions
 from clai.server.command_message import Action
-from clai.server.logger import current_logger as logger
 
 
 class ServerPendingActionsDatasource:
@@ -22,11 +21,8 @@ class ServerPendingActionsDatasource:
         return self.get_next_action(command_id, user_name)
 
     def get_next_action(self, command_id: str, user_name: str) -> Action:
-        logger.info(f"next command for: {command_id}")
         actions_by_user = self.__find_pending_actions_by_user(user_name)
-        logger.info(f"find: {actions_by_user}")
         pending_actions = next(filter(lambda x: x.command_id == command_id, actions_by_user), None)
-        logger.info(f"next actions: {pending_actions}")
         return pending_actions.next()
 
     def __find_pending_actions_by_user(self, user_name: str) -> List[PendingActions]:

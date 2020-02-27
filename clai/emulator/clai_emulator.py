@@ -12,10 +12,11 @@ from typing import List
 
 from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
-from clai.server.command_message import Action
-
 
 # pylint: disable=too-many-instance-attributes,protected-access,attribute-defined-outside-init,too-many-public-methods
+from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
+
+
 class ClaiEmulator:
 
     def __init__(self):
@@ -54,42 +55,62 @@ class ClaiEmulator:
 
     def on_server_running(self):
         self.run_button.configure(image=self.stop_image)
+        self.loading_text.set("Starting CLAI. It will take a while")
 
     def on_server_stopped(self):
         self.run_button.configure(image=self.run_image)
 
     # pylint: disable=unused-argument
     def on_skill_selected(self, *args):
+        self.loading_text.set("")
         print(f"new skills {self.selected_skills.get()}")
-        skill_name, installed = self.extract_skill_name(self.selected_skills.get())
-        self.presenter.select_skill(skill_name, installed)
+        skill_name = self.extract_skill_name(self.selected_skills.get())[0]
+        self.presenter.select_skill(skill_name)
 
-    def add_row(self, response: Action, response_post: Action):
-        command_executed = response.suggested_command
-        if not command_executed:
-            command_executed = f"{response.origin_command} (executed origin)"
-        toggled_frame = ToggledFrame(self.frame, text=command_executed, relief=tk.RAISED, borderwidth=1)
+    def add_row(self, response: str, info: InfoDebug):
+
+        toggled_frame = ToggledFrame(self.frame, text=response, relief=tk.RAISED, borderwidth=1)
         toggled_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
         first_row = ttk.Frame(toggled_frame.sub_frame)
         first_row.pack(fill="x", expand=True)
-        ttk.Label(first_row, text=f"Original: {response.origin_command}").pack(side=tk.LEFT, padx=10)
-        ttk.Label(first_row, text=f"Id: {self.presenter.command_id - 1}").pack(side=tk.RIGHT, padx=10)
+        ttk.Label(first_row, text=f"Original: {info.command}").pack(side=tk.LEFT, padx=10)
+        ttk.Label(first_row, text=f"Id: {info.command_id}").pack(side=tk.RIGHT, padx=10)
 
         second_row = ttk.Frame(toggled_frame.sub_frame)
         second_row.pack(fill="x", expand=True)
-        ttk.Label(second_row, text=f'Description: {self.remove_emoji(response.description)}') \
+        ttk.Label(second_row, text=f'Description: {self.remove_emoji(info.action_suggested.description)}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(second_row, text=f"Confidence:{response.confidence} Force: {response.execute}") \
+        ttk.Label(second_row,
+                  text=f"Confidence:{info.action_suggested.confidence} Force: {info.action_suggested.execute}") \
             .pack(side=tk.RIGHT, padx=10)
+
+        third_row = ttk.Frame(toggled_frame.sub_frame)
+        third_row.pack(fill="x", expand=True)
+        ttk.Label(third_row, text=f'Agent: {info.action_suggested.agent_owner}') \
+            .pack(side=tk.LEFT, padx=10)
+        ttk.Label(third_row,
+                  text=f"Sugestion:{info.action_suggested.suggested_command}  Applied: {info.already_processed}") \
+            .pack(side=tk.RIGHT, padx=10)
+
+        fourth_row = ttk.Frame(toggled_frame.sub_frame)
+        fourth_row.pack(fill="x", expand=True)
+        process_text = ','.join(list(map(lambda process: process.name, info.processes.last_processes)))
+        ttk.Label(fourth_row, text=f'Processes: {process_text}') \
+            .pack(side=tk.LEFT, padx=10)
 
         ttk.Label(toggled_frame.sub_frame, text=f'Post execution:').pack(side=tk.LEFT, padx=10)
 
         third_row = ttk.Frame(toggled_frame.sub_frame)
         third_row.pack(fill="x", expand=True)
-        ttk.Label(third_row, text=f'Description: {self.remove_emoji(response_post.description)}') \
+        post_description = ""
+        post_confidence = 0
+        if info.action_post_suggested:
+            post_description = info.action_post_suggested.description
+            post_confidence = info.action_post_suggested.confidence
+        ttk.Label(third_row, text=f'Description: {self.remove_emoji(post_description)}') \
             .pack(side=tk.LEFT, padx=10)
-        ttk.Label(third_row, text=f"Confidence:{response_post.confidence}") \
+        ttk.Label(third_row, text=f"Confidence: {post_confidence}") \
             .pack(side=tk.RIGHT, padx=10)
 
     def add_send_command_box(self, root):
@@ -104,8 +125,11 @@ class ClaiEmulator:
 
     def add_toolbar(self, root):
         toolbar = tk.Frame(root, bd=1, relief=tk.RAISED)
-        self.add_button(toolbar)
+        self.add_play_button(toolbar)
+        self.add_refresh_button(toolbar)
         self.add_skills_selector(root, toolbar)
+        self.add_loading_progress(toolbar)
+
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
     def add_skills_selector(self, root, toolbar):
@@ -119,12 +143,23 @@ class ClaiEmulator:
         self.selected_skills_dropmenu.configure(state="disabled")
         self.selected_skills_dropmenu.pack(side=tk.LEFT, padx=2)
 
-    def add_button(self, toolbar):
+    def add_play_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
         self.run_image = tk.PhotoImage(file=f"{path}/run.gif")
         self.stop_image = tk.PhotoImage(file=f"{path}/stop.gif")
         self.run_button = ttk.Button(toolbar, image=self.run_image, command=self.on_run_click)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_refresh_button(self, toolbar):
+        path = os.path.dirname(os.path.abspath(__file__))
+        self.refresh_image = tk.PhotoImage(file=f"{path}/refresh.png")
+        refresh_button = ttk.Button(toolbar, image=self.refresh_image, command=self.on_refresh_click)
+        refresh_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_loading_progress(self, toolbar):
+        self.loading_text = tk.StringVar()
+        loading_label = ttk.Label(toolbar, textvariable=self.loading_text)
+        loading_label.pack(side=tk.LEFT, padx=2)
 
     # pylint: disable=unused-argument
     def on_enter(self, event):
@@ -134,8 +169,8 @@ class ClaiEmulator:
         self.send_command(self.text_input.get())
 
     def send_command(self, command):
-        response, response_post = self.presenter.send_message(command)
-        self.add_row(response, response_post)
+        stdout, info = self.presenter.send_message(command)
+        self.add_row(stdout, info)
         self.text_input.set("")
 
     def on_run_click(self):
@@ -143,6 +178,9 @@ class ClaiEmulator:
             self.presenter.run_server()
         else:
             self.presenter.stop_server()
+
+    def on_refresh_click(self):
+        self.presenter.refresh_files()
 
     @staticmethod
     def on_configure(canvas):
