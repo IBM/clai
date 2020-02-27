@@ -49,6 +49,10 @@ class AgentDatasource:
         try:
             plugin = importlib.import_module(
                 f'clai.server.plugins.{name}.{name}', package=name)
+
+            importlib.invalidate_caches()
+            plugin = importlib.reload(plugin)
+
             for _, class_member in inspect.getmembers(plugin, inspect.isclass):
                 if issubclass(class_member, Agent) and (class_member is not Agent):
                     member = class_member()
@@ -239,3 +243,7 @@ class AgentDatasource:
         if user_name in self.__selected_plugin:
             return self.__selected_plugin[user_name]
         return None
+
+    def reload(self):
+        self.__plugins.clear()
+        self.preload_plugins()
