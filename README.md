@@ -4,7 +4,19 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 ## Getting Started
 
-[`Home`](https://clai-home.mybluemix.net/) &nbsp; [`More`](docs/Overview.md) &nbsp; [`API`](clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](docs/FAQ.md) &nbsp; [`Whitepaper`](https://arxiv.org/abs/2002.00762) &nbsp; [`Blog`](https://www.ibm.com/blogs/research/2020/02/bringing-ai-to-the-command-line/) &nbsp; [`Feedback`](http://ibm.biz/clai-survey) 
+[`Home`](https://clai-home.mybluemix.net/) &nbsp;  See some example use cases without installing or building anything locally. A great way to try out CLAI as a first step!
+
+[`More`](docs/Overview.md) &nbsp; [`API`](clai/server/plugins/) &nbsp;   This link describes the functional plugins that enable the different kinds of interaction that we call skills.
+
+[`Community`](http://ibm.biz/clai-slack) &nbsp;  Join our online Slack community by clicking here!
+
+[`FAQs`](docs/FAQ.md) &nbsp;  Frequently Asked Questions including those about Security and other commonly asked about topics.
+
+[`Whitepaper`](https://arxiv.org/abs/2002.00762) &nbsp;  A research architecture paper describing how this all works.
+
+[`Blog`](https://www.ibm.com/blogs/research/2020/02/bringing-ai-to-the-command-line/) &nbsp;  The initial public release about this project.
+
+[`Feedback`](http://ibm.biz/clai-survey) This link is a survey to help us improve our project going forward!
 
 ### Prerequisites
 
