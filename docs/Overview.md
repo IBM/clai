@@ -182,4 +182,5 @@ post and suggest a fix when the user encounters and error).
 
 -----
 
-**Get started!** &nbsp; [`Home`](http://ibm.biz/clai-home) &nbsp; [`API`](../clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md) &nbsp; [`Whitepaper`](http://ibm.biz/clai-whitepaper) &nbsp; [`Feedback`](http://ibm.biz/clai-survey)
+**Get started!** &nbsp; [`Home`](https://clai-home.mybluemix.net/) &nbsp; [`API`](../clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md) &nbsp; [`Whitepaper`](https://arxiv.org/abs/2002.00762) &nbsp; [`Blog`](https://www.ibm.com/blogs/research/2020/02/bringing-ai-to-the-command-line/) &nbsp; [`Feedback`](http://ibm.biz/clai-survey)
+

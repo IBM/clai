@@ -73,7 +73,7 @@ def ask_user_prompt(command_to_execute: Action) -> Optional[str]:
 
         print(Colorize()
               .info()
-              .append('choose yes[y] or not[n] or explain[e]')
+              .append('choose yes[y] or no[n] or explain[e]')
               .to_console())
 
 

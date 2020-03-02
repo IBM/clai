@@ -6,7 +6,7 @@
 #
 
 from clai.datasource.config_storage import ConfigStorage
-from clai.datasource.stats_tracker import stats_tracker
+from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.clai_message_builder import create_message_list
 from clai.server.command_message import State, Action
@@ -21,6 +21,7 @@ class ClaiUnselectCommandRunner(CommandRunner):
     def __init__(self, config_storage: ConfigStorage, agent_datasource: AgentDatasource):
         self.config_storage = config_storage
         self.agent_datasource = agent_datasource
+        self.stats_tracker = StatsTracker()
 
     def execute(self, state: State) -> Action:
         plugin_to_select = state.command.replace(f'{self.UNSELECT_DIRECTIVE}', '').strip()
@@ -29,7 +30,7 @@ class ClaiUnselectCommandRunner(CommandRunner):
 
         selected = self.agent_datasource.unselect_plugin(plugin_to_select, state.user_name)
         if selected:
-            stats_tracker.log_deactivate_skills(state.user_name, plugin_to_select)
+            self.stats_tracker.log_deactivate_skills(state.user_name, plugin_to_select)
             plugins_config = self.config_storage.read_config(state.user_name)
             if plugins_config.selected is not None and selected.name in plugins_config.selected:
                 plugins_config.selected.remove(selected.name)

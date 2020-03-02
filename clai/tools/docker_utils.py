@@ -10,7 +10,6 @@ from time import sleep
 
 MAX_SIZE_STDOUT = 5000000
 
-
 def wait_server_is_started():
     sleep(2)
 

@@ -83,6 +83,7 @@ class ClaiEmulator:
         skill_name = self.extract_skill_name(self.selected_skills.get())[0]
         self.presenter.select_skill(skill_name)
 
+
     def add_detail_label(self, parent: ttk.Frame, title: str, text_value: str, side: str):
         row = ttk.Frame(parent)
         title_label = ttk.Label(parent, text=title, font=self.bold_font, anchor='n', padding=(10, 0, 0, 0))
@@ -131,6 +132,7 @@ class ClaiEmulator:
 
         fifth_row = ttk.Frame(toggled_frame.sub_frame)
         fifth_row.pack(fill="x", expand=True)
+
         post_description = ""
         post_confidence = 0
         if info.action_post_suggested:

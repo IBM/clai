@@ -29,7 +29,22 @@ def __send_event__(event: StatEvent):
 
 
 class StatsTracker:
-    def __init__(self, sync=False, anonymizer: Anonymizer = Anonymizer()):
+    _instance = None
+
+    manager = None
+    queue = None
+    pool = None
+    consumer_stats = None
+    anonymizer = None
+    report_enable = None
+
+    def __new__(cls, sync=False, anonymizer: Anonymizer = Anonymizer()):
+        if cls._instance is None:
+            cls._instance = super(StatsTracker, cls).__new__(cls)
+            cls._instance.init(sync, anonymizer)
+        return cls._instance
+
+    def init(self, sync, anonymizer):
         if not sync:
             self.manager = mp.Manager()
             self.queue = self.manager.Queue()
@@ -62,7 +77,6 @@ class StatsTracker:
         if self.report_enable:
             self.__store__(None)
             self.consumer_stats.wait(timeout=3)
-
 
     def log_activate_skills(self, user: str, skill_name: str):
         event = StatEvent(
@@ -114,7 +128,3 @@ class StatsTracker:
         # pylint: disable=broad-except
         except Exception as err:
             logger.info(f"error sending: {err}")
-
-
-# pylint: disable= invalid-name
-stats_tracker = StatsTracker()

@@ -10,11 +10,11 @@ import sys
 import tarfile
 import threading
 from typing import Optional
-
 from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge, get_base_path
 
 # pylint: disable=too-many-instance-attributes
 from clai.server.command_message import Action
+
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
 from clai.tools.docker_utils import execute_cmd
 
@@ -30,6 +30,14 @@ class EmulatorPresenter:
         self.on_skills_ready = on_skills_ready
         self.on_server_running = on_server_running
         self.on_server_stopped = on_server_stopped
+
+    @staticmethod
+    def __get_base_path():
+        root_path = os.getcwd()
+        if 'bin' in root_path:
+            return '../'
+
+        return '.'
 
     def stop_server(self):
         print(f'is server running {self.server_running}')
@@ -137,3 +145,4 @@ class EmulatorPresenter:
                 info = InfoDebug(**json.loads(info_as_string))
 
                 add_row(reply.message, info)
+
