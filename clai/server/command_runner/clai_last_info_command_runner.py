@@ -29,10 +29,10 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
     def execute_post(self, state: State) -> Action:
         offset_last = state.command.replace(f'{self.LAST_DIRECTIVE_DIRECTIVE}', '').strip()
         if not offset_last:
-            offset_last = 0
+            offset_last = '0'
 
         if not offset_last.isdigit():
-            offset_last = 0
+            offset_last = '0'
 
         offset_last_as_int = int(offset_last)
         last_message = self.server_status_datasource.get_last_message(state.user_name, offset=offset_last_as_int)
