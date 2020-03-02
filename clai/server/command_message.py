@@ -15,11 +15,11 @@ from pydantic import BaseModel
 
 
 class Process(BaseModel):
-    name: str
+    name: str = ''
 
 
 class ProcessesValues(BaseModel):
-    last_processes: List[Process]
+    last_processes: List[Process] = []
 
 
 class FileStatus(str, Enum):

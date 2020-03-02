@@ -65,7 +65,7 @@ class InfoDebug(BaseModel):
     file_changes: Optional[FilesChangesValues] = None
     command: str = None
     root: bool = False
-    processes: Optional[ProcessesValues] = None
+    processes: Optional[ProcessesValues] = ProcessesValues()
     network: Optional[NetworkValues] = None
     result_code: Optional[str] = None
     stderr: Optional[str] = None

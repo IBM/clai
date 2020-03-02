@@ -12,6 +12,7 @@ from tkinter import ttk, messagebox
 from tkinter.font import Font
 from typing import List
 
+from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 from clai.emulator.log_window import LogWindow
 from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
@@ -22,8 +23,11 @@ from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
 
 class ClaiEmulator:
 
-    def __init__(self):
-        self.presenter = EmulatorPresenter(self.on_skills_ready, self.on_server_running, self.on_server_stopped)
+    def __init__(self, emulator_docker_bridge: EmulatorDockerBridge):
+        self.presenter = EmulatorPresenter(emulator_docker_bridge,
+                                           self.on_skills_ready,
+                                           self.on_server_running,
+                                           self.on_server_stopped)
 
     def launch(self):
         self.root = tk.Tk()
@@ -67,6 +71,7 @@ class ClaiEmulator:
     def on_server_running(self):
         self.run_button.configure(image=self.stop_image)
         self.loading_text.set("Starting CLAI. It will take a while")
+        self.__listen_messages()
 
     def on_server_stopped(self):
         self.run_button.configure(image=self.run_image)
@@ -92,6 +97,7 @@ class ClaiEmulator:
         row.pack(side=side, fill=tk.BOTH, expand=True)
 
     def add_row(self, response: str, info: InfoDebug):
+        response = self.clean_message(response)
         toggled_frame = ToggledFrame(self.frame, text=response, relief=tk.RAISED, borderwidth=1)
         toggled_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
@@ -134,6 +140,11 @@ class ClaiEmulator:
         self.add_detail_label(fifth_row, 'Description:', text_value=f'{self.remove_emoji(post_description)}',
                               side=tk.LEFT)
         self.add_detail_label(fifth_row, 'Confidence:', text_value=f'{post_confidence}', side=tk.RIGHT)
+
+        self.root.after(100, self.__scroll_down_after_create)
+
+    def __scroll_down_after_create(self):
+        self.canvas.yview_moveto(1.0)
 
     def add_send_command_box(self, root):
         button_bar_frame = tk.Frame(root, bd=1, relief=tk.RAISED)
@@ -202,15 +213,12 @@ class ClaiEmulator:
 
     @staticmethod
     def clean_message(text: str):
-        text = text[text.find(']#'):]
+        text = text[text.find('\n'):]
         text = re.sub('[[0-9;]*m', '', text)
         return text[:text.find(']0;') - 3]
 
     def send_command(self, command):
-        stdout, info = self.presenter.send_message(command)
-        stdout = self.clean_message(stdout)
-
-        self.add_row(stdout, info)
+        self.presenter.send_message(command)
         self.text_input.set("")
 
     def on_run_click(self):
@@ -266,3 +274,7 @@ class ClaiEmulator:
         for char in char_list:
             description = description + char
         return description
+
+    def __listen_messages(self):
+        self.presenter.retrieve_messages(self.add_row)
+        self.root.after(3000, self.__listen_messages)

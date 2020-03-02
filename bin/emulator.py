@@ -6,8 +6,11 @@
 #
 
 #!/usr/bin/env python3
-from clai.emulator.clai_emulator import ClaiEmulator
+from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 
 if __name__ == '__main__':
-    emulator = ClaiEmulator()
+    emulator_docker_bridge = EmulatorDockerBridge()
+
+    from clai.emulator.clai_emulator import ClaiEmulator
+    emulator = ClaiEmulator(emulator_docker_bridge)
     emulator.launch()

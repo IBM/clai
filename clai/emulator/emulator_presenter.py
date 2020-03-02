@@ -11,37 +11,25 @@ import tarfile
 import threading
 from typing import Optional
 
-import docker
-from pytest_docker_tools.utils import wait_for_callable
-from pytest_docker_tools.wrappers import Container
-
-from clai.server.agent_datasource import AgentDatasource
+from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge, get_base_path
 
 # pylint: disable=too-many-instance-attributes
+from clai.server.command_message import Action
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
-from clai.tools.docker_utils import execute_cmd, stream_cmd
+from clai.tools.docker_utils import execute_cmd
 
 
 class EmulatorPresenter:
-    def __init__(self, on_skills_ready, on_server_running, on_server_stopped):
+    def __init__(self, emulator_docker_bridge: EmulatorDockerBridge, on_skills_ready, on_server_running,
+                 on_server_stopped):
         self.server_running = False
         self.server_process = None
         self.current_active_skill = ''
-        self.agent_datasource = AgentDatasource()
+        self.emulator_docker_bridge = emulator_docker_bridge
 
         self.on_skills_ready = on_skills_ready
         self.on_server_running = on_server_running
         self.on_server_stopped = on_server_stopped
-
-        self.my_clai: Optional[Container] = None
-
-    @staticmethod
-    def __get_base_path():
-        root_path = os.getcwd()
-        if 'bin' in root_path:
-            return '../'
-
-        return '.'
 
     def stop_server(self):
         print(f'is server running {self.server_running}')
@@ -60,20 +48,27 @@ class EmulatorPresenter:
         self.request_skills()
 
     def request_skills(self):
-        response = execute_cmd(self.my_clai, "clai skills")
+        self.emulator_docker_bridge.send_message("clai skills")
 
-        skills_as_string = response
-        skills_as_array = skills_as_string.splitlines()
-        self.on_skills_ready(skills_as_array[2:-1])
+        # skills_as_string = response
+        # skills_as_array = skills_as_string.splitlines()
+        # self.on_skills_ready(skills_as_array[2:-1])
 
     def send_message(self, message):
+        self.emulator_docker_bridge.send_message(message)
+        stdout = message
+        info = InfoDebug(
+            command_id='1',
+            user_name='me',
+            action_suggested=Action(description='my desc')
+        )
 
-        stdout = self._send_to_emulator(message)
-        info_as_string = self._send_to_emulator("clai last-info 1")
-        info_as_string = info_as_string[info_as_string.index('{'):]
-        info_as_string = info_as_string[:info_as_string.index('\n')]
-        print(f"----> {info_as_string}")
-        info = InfoDebug(**json.loads(info_as_string))
+        # stdout = self._send_to_emulator(message)
+        # info_as_string = self._send_to_emulator("clai last-info 1")
+        # info_as_string = info_as_string[info_as_string.index('{'):]
+        # info_as_string = info_as_string[:info_as_string.index('\n')]
+        # print(f"----> {info_as_string}")
+        # info = InfoDebug(**json.loads(info_as_string))
 
         return stdout, info
 
@@ -92,52 +87,14 @@ class EmulatorPresenter:
         return response
 
     def _stream_message(self, command: str, chunked_readed):
-        stream_cmd(self.my_clai, command, chunked_readed)
+        pass
+
+        # stream_cmd(self.my_clai, command, chunked_readed)
 
     def run_server(self):
-        # pylint: disable=attribute-defined-outside-init
-        self.server_thread = threading.Thread(target=self._run_server)
-        self.server_thread.start()
-
-    def __get_image(self, docker_client):
-        path = self.__get_base_path()
-
-        sys.stdout.write(f'Building {path}')
-
-        try:
-            image, logs = docker_client.images.build(
-                path=path,
-                dockerfile='./clai/emulator/docker/centos/Dockerfile',
-                rm=True
-            )
-
-            for _ in logs:
-                sys.stdout.write('.')
-                sys.stdout.flush()
-
-        finally:
-            sys.stdout.write('\n')
-
-        return image
-
-    def _run_server(self):
+        self.emulator_docker_bridge.start()
         self.server_running = True
         self.on_server_running()
-
-        docker_client = docker.from_env()
-
-        image = self.__get_image(docker_client)
-
-        docker_container = docker_client.containers.run(
-            image=image.id,
-            detach=True)
-
-        self.my_clai = Container(docker_container)
-
-        wait_for_callable('Waiting for container to be ready', self.my_clai.ready)
-
-        print(f"container run {self.my_clai.status}")
-
         self.request_skills()
 
     def refresh_files(self):
@@ -147,7 +104,7 @@ class EmulatorPresenter:
     def copy_files(self):
         old_path = os.getcwd()
         print(f'Building {old_path}')
-        srcpath = os.path.join(self.__get_base_path(),
+        srcpath = os.path.join(get_base_path(),
                                'clai', 'server', 'plugins')
         os.chdir(srcpath)
 
@@ -170,3 +127,14 @@ class EmulatorPresenter:
         os.chdir(old_path)
 
         print("Done the refresh")
+
+    def retrieve_messages(self, add_row):
+        reply = self.emulator_docker_bridge.retrieve_message()
+        if reply:
+            print(f"---------------{reply.message }")
+            print(f"---------------")
+            add_row(reply.message, InfoDebug(
+                command_id='1',
+                user_name='me',
+                action_suggested=Action(description='my desc')
+            ))
