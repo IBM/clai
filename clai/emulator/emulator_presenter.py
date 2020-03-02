@@ -48,11 +48,7 @@ class EmulatorPresenter:
         self.request_skills()
 
     def request_skills(self):
-        self.emulator_docker_bridge.send_message("clai skills")
-
-        # skills_as_string = response
-        # skills_as_array = skills_as_string.splitlines()
-        # self.on_skills_ready(skills_as_array[2:-1])
+        self.emulator_docker_bridge.request_skills()
 
     def send_message(self, message):
         self.emulator_docker_bridge.send_message(message)
@@ -131,10 +127,13 @@ class EmulatorPresenter:
     def retrieve_messages(self, add_row):
         reply = self.emulator_docker_bridge.retrieve_message()
         if reply:
-            print(f"---------------{reply.message }")
-            print(f"---------------")
-            add_row(reply.message, InfoDebug(
-                command_id='1',
-                user_name='me',
-                action_suggested=Action(description='my desc')
-            ))
+            if reply.docker_reply == 'skills':
+                skills_as_array = reply.message.splitlines()
+                self.on_skills_ready(skills_as_array[2:-1])
+            else:
+                info_as_string = reply.info[reply.info.index('{'):]
+                info_as_string = info_as_string[:info_as_string.index('\n')]
+                print(f"----> {info_as_string}")
+                info = InfoDebug(**json.loads(info_as_string))
+
+                add_row(reply.message, info)

@@ -33,6 +33,9 @@ class EmulatorDockerBridge:
         self.__internal_send__(None)
         self.consumer_messages.wait(timeout=3)
 
+    def request_skills(self):
+        self.__internal_send__(DockerMessage(docker_command='request_skills', message="clai skills"))
+
     def send_message(self, message: str):
         self.__internal_send__(DockerMessage(docker_command='send_message', message=message))
 
@@ -113,7 +116,8 @@ def __consumer__(args):
         print(f"message_received: {docker_message.docker_command}:{docker_message.message}")
         if docker_message.docker_command == 'start':
             my_clai = __start_docker()
-        elif docker_message.docker_command == 'send_message':
+        elif docker_message.docker_command == 'send_message' \
+                or docker_message.docker_command == 'request_skills':
             if my_clai:
                 print(f'socket {socket}')
                 if not socket:
@@ -125,7 +129,13 @@ def __consumer__(args):
                 socket.output._sock.send(command_to_exec.encode())
                 stdout = read(socket, command_to_exec)
 
-                reply = DockerReply(docker_reply='reply_message', message=stdout)
+                if docker_message.docker_command == 'request_skills':
+                    reply = DockerReply(docker_reply='skills', message=stdout)
+                else:
+                    info_to_exec = socket.output._sock.send("clai last-info\n".encode())
+                    info = read(socket, info_to_exec)
+                    reply = DockerReply(docker_reply='reply_message', message=stdout, info=info)
+
                 queue_out.put(reply)
 
         queue.task_done()
