@@ -60,31 +60,16 @@ class EmulatorPresenter:
 
     def send_message(self, message):
         self.emulator_docker_bridge.send_message(message)
-        stdout = message
-        info = InfoDebug(
-            command_id='1',
-            user_name='me',
-            action_suggested=Action(description='my desc')
-        )
-
-        # stdout = self._send_to_emulator(message)
-        # info_as_string = self._send_to_emulator("clai last-info 1")
-        # info_as_string = info_as_string[info_as_string.index('{'):]
-        # info_as_string = info_as_string[:info_as_string.index('\n')]
-        # print(f"----> {info_as_string}")
-        # info = InfoDebug(**json.loads(info_as_string))
-
-        return stdout, info
 
     def attach_log(self, chunked_read):
         stdout = self._send_to_emulator('tail -f /var/tmp/app.log')
         chunked_read(stdout)
 
     def _send_select(self, skill_name: str):
-        self._send_to_emulator(f'clai activate {skill_name}')
+        self.emulator_docker_bridge.select_skill(skill_name)
 
     def _send_unselect(self, skill_name: str):
-        self._send_to_emulator(f'clai deactivate {skill_name}')
+        self.emulator_docker_bridge.unselect_skill(skill_name)
 
     def _send_to_emulator(self, command: str) -> str:
         response = execute_cmd(self.my_clai, command)

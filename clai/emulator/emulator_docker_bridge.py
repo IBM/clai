@@ -36,6 +36,12 @@ class EmulatorDockerBridge:
     def request_skills(self):
         self.__internal_send__(DockerMessage(docker_command='request_skills', message="clai skills"))
 
+    def select_skill(self, skill_name):
+        self.__internal_send__(DockerMessage(docker_command='select_skill', message=f'clai activate {skill_name}'))
+
+    def unselect_skill(self, skill_name):
+        self.__internal_send__(DockerMessage(docker_command='unselect_skill', message=f'clai deactivate {skill_name}'))
+
     def send_message(self, message: str):
         self.__internal_send__(DockerMessage(docker_command='send_message', message=message))
 
@@ -117,7 +123,9 @@ def __consumer__(args):
         if docker_message.docker_command == 'start':
             my_clai = __start_docker()
         elif docker_message.docker_command == 'send_message' \
-                or docker_message.docker_command == 'request_skills':
+                or docker_message.docker_command == 'request_skills'\
+                or docker_message.docker_command == 'unselect_skill'\
+                or docker_message.docker_command == 'select_skill':
             if my_clai:
                 print(f'socket {socket}')
                 if not socket:
@@ -129,14 +137,17 @@ def __consumer__(args):
                 socket.output._sock.send(command_to_exec.encode())
                 stdout = read(socket, command_to_exec)
 
-                if docker_message.docker_command == 'request_skills':
+                reply = None
+                if docker_message.docker_command == 'request_skills' \
+                        or docker_message.docker_command == 'unselect_skill':
                     reply = DockerReply(docker_reply='skills', message=stdout)
-                else:
+                elif docker_message.docker_command == 'send_message':
                     info_to_exec = socket.output._sock.send("clai last-info\n".encode())
                     info = read(socket, info_to_exec)
                     reply = DockerReply(docker_reply='reply_message', message=stdout, info=info)
 
-                queue_out.put(reply)
+                if reply:
+                    queue_out.put(reply)
 
         queue.task_done()
     print("----STOP CONSUMING-----")
