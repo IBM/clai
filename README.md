@@ -14,7 +14,7 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 [`Community`](http://ibm.biz/clai-slack) Join our online Slack community by clicking here!
 
-[`FAQs`](docs/FAQ.md) Frequently Asked Questions (including those about security, contributing, and other commonly asked about topics).
+[`FAQs`](docs/FAQ.md) Frequently Asked Questions (including those about security, contributing, and other common topics).
 
 [`Feedback`](http://ibm.biz/clai-survey) Link to a survey to help us improve our project going forward.
 
