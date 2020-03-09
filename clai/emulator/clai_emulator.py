@@ -28,6 +28,7 @@ class ClaiEmulator:
                                            self.on_skills_ready,
                                            self.on_server_running,
                                            self.on_server_stopped)
+        self.log_window = None
 
     def launch(self):
         self.root = tk.Tk()
@@ -195,7 +196,7 @@ class ClaiEmulator:
     def add_log_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
         self.log_image = tk.PhotoImage(file=f"{path}/refresh.png")
-        log_button = ttk.Button(toolbar, image=self.refresh_image, command=self.log_window)
+        log_button = ttk.Button(toolbar, image=self.refresh_image, command=self.open_log_window)
         log_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def add_loading_progress(self, toolbar):
@@ -203,8 +204,9 @@ class ClaiEmulator:
         loading_label = ttk.Label(toolbar, textvariable=self.loading_text)
         loading_label.pack(side=tk.LEFT, padx=2)
 
-    def log_window(self):
-        self.log_window = LogWindow(self.root, self.presenter)
+    def open_log_window(self):
+        if not self.log_window:
+            self.log_window = LogWindow(self.root, self.presenter)
 
     # pylint: disable=unused-argument
     def on_enter(self, event):
@@ -279,4 +281,4 @@ class ClaiEmulator:
 
     def __listen_messages(self):
         self.presenter.retrieve_messages(self.add_row)
-        self.root.after(3000, self.__listen_messages)
+        self.root.after(100, self.__listen_messages)

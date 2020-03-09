@@ -10,6 +10,7 @@ from pytest_docker_tools.utils import wait_for_callable
 from pytest_docker_tools.wrappers import Container
 
 from clai.emulator.docker_message import DockerMessage, DockerReply
+from clai.emulator.emulator_docker_log_connector import EmulatorDockerLogConnector
 from clai.tools.docker_utils import wait_server_is_started, read
 
 
@@ -22,11 +23,19 @@ class EmulatorDockerBridge:
         self.pool = mp.Pool(1)
         self.consumer_messages = None
 
+        self.emulator_docker_log_conector = EmulatorDockerLogConnector(
+            mp.Pool(1),
+            self.manager.Queue(),
+            self.queue_out)
+
         self.my_clai: Optional[Container] = None
 
     def start(self):
         print(f"-Start docker bridge-")
-        self.consumer_messages = self.pool.map_async(__consumer__, ((self.queue, self.queue_out),))
+        self.emulator_docker_log_conector.start()
+        self.consumer_messages = self.pool.map_async(
+            __consumer__,
+            ((self.queue, self.emulator_docker_log_conector.log_queue, self.queue_out),))
         self.__internal_send__(DockerMessage(docker_command='start'))
 
     def stop(self):
@@ -102,14 +111,13 @@ def __start_docker():
 
     wait_for_callable('Waiting for container to be ready', my_clai.ready)
 
-    print(f"container run {my_clai.status}")
+    print(f"container run {my_clai.status} {my_clai.name}")
 
     return my_clai
 
 
 def __consumer__(args):
-    print('¬¬')
-    queue, queue_out = args
+    queue, log_queue, queue_out = args
     my_clai = None
     socket = None
     print('starting reading from the queue')
@@ -122,9 +130,11 @@ def __consumer__(args):
         print(f"message_received: {docker_message.docker_command}:{docker_message.message}")
         if docker_message.docker_command == 'start':
             my_clai = __start_docker()
+            log_queue.put(DockerMessage(docker_command='start_logger', message=my_clai.name))
+
         elif docker_message.docker_command == 'send_message' \
-                or docker_message.docker_command == 'request_skills'\
-                or docker_message.docker_command == 'unselect_skill'\
+                or docker_message.docker_command == 'request_skills' \
+                or docker_message.docker_command == 'unselect_skill' \
                 or docker_message.docker_command == 'select_skill':
             if my_clai:
                 print(f'socket {socket}')
@@ -135,15 +145,15 @@ def __consumer__(args):
 
                 command_to_exec = docker_message.message + '\n'
                 socket.output._sock.send(command_to_exec.encode())
-                stdout = read(socket, command_to_exec)
+                stdout = read(socket)
 
                 reply = None
                 if docker_message.docker_command == 'request_skills' \
                         or docker_message.docker_command == 'unselect_skill':
                     reply = DockerReply(docker_reply='skills', message=stdout)
                 elif docker_message.docker_command == 'send_message':
-                    info_to_exec = socket.output._sock.send("clai last-info\n".encode())
-                    info = read(socket, info_to_exec)
+                    socket.output._sock.send("clai last-info\n".encode())
+                    info = read(socket)
                     reply = DockerReply(docker_reply='reply_message', message=stdout, info=info)
 
                 if reply:

@@ -14,7 +14,7 @@ def wait_server_is_started():
     sleep(2)
 
 
-def read(socket, command, chunk_readed=None):
+def read(socket, chunk_readed=None):
     data = ''
     try:
         socket.output._sock.recv(1)
@@ -55,7 +55,7 @@ def execute_cmd(container, command):
     command_to_exec = command + '\n'
     socket.output._sock.send(command_to_exec.encode())
 
-    data = read(socket, command)
+    data = read(socket)
 
     sleep(1)
     socket.output._sock.send(b"exit\n")

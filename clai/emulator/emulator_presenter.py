@@ -30,6 +30,8 @@ class EmulatorPresenter:
         self.on_skills_ready = on_skills_ready
         self.on_server_running = on_server_running
         self.on_server_stopped = on_server_stopped
+        self.log_value = ""
+        self.log_read = None
 
     @staticmethod
     def __get_base_path():
@@ -62,8 +64,7 @@ class EmulatorPresenter:
         self.emulator_docker_bridge.send_message(message)
 
     def attach_log(self, chunked_read):
-        stdout = self._send_to_emulator('tail -f /var/tmp/app.log')
-        chunked_read(stdout)
+        self.log_read = chunked_read
 
     def _send_select(self, skill_name: str):
         self.emulator_docker_bridge.select_skill(skill_name)
@@ -74,11 +75,6 @@ class EmulatorPresenter:
     def _send_to_emulator(self, command: str) -> str:
         response = execute_cmd(self.my_clai, command)
         return response
-
-    def _stream_message(self, command: str, chunked_readed):
-        pass
-
-        # stream_cmd(self.my_clai, command, chunked_readed)
 
     def run_server(self):
         self.emulator_docker_bridge.start()
@@ -123,11 +119,31 @@ class EmulatorPresenter:
             if reply.docker_reply == 'skills':
                 skills_as_array = reply.message.splitlines()
                 self.on_skills_ready(skills_as_array[2:-1])
-            else:
+            elif reply.docker_reply == 'reply_message':
                 info_as_string = reply.info[reply.info.index('{'):]
                 info_as_string = info_as_string[:info_as_string.index('\n')]
                 print(f"----> {info_as_string}")
                 info = InfoDebug(**json.loads(info_as_string))
-
                 add_row(reply.message, info)
+            elif reply.docker_reply == 'log':
+                self.log_value = self.extract_chunk_log(self.log_value, reply.message)
+                if self.log_read:
+                    self.log_read(self.log_value)
+            else:
+                print(f"-----> {reply.docker_reply} : {reply.message}")
 
+    def extract_chunk_log(self, log_value, message):
+        if not message:
+            return ''
+
+        log_as_list = log_value.split('\n')
+        message_as_list = message.split('\n')
+
+        new_log = []
+        if log_as_list.__contains__(message_as_list[0]):
+            index = log_as_list.index(message_as_list[0])
+            new_log = message_as_list[(len(log_as_list) - index - 1):]
+        else:
+            new_log = message_as_list
+
+        return '\n'.join(new_log)
