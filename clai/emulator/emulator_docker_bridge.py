@@ -1,6 +1,8 @@
+# pylint: disable=protected-access
+
 import multiprocessing as mp
 import os
-import sys
+import tarfile
 import traceback
 from typing import Optional
 
@@ -28,8 +30,6 @@ class EmulatorDockerBridge:
             self.manager.Queue(),
             self.queue_out)
 
-        self.my_clai: Optional[Container] = None
-
     def start(self):
         print(f"-Start docker bridge-")
         self.emulator_docker_log_conector.start()
@@ -38,8 +38,8 @@ class EmulatorDockerBridge:
             ((self.queue, self.emulator_docker_log_conector.log_queue, self.queue_out),))
         self.__internal_send__(DockerMessage(docker_command='start'))
 
-    def stop(self):
-        self.__internal_send__(None)
+    def stop_server(self):
+        self.__internal_send__(DockerMessage(docker_command='request_stop'))
         self.consumer_messages.wait(timeout=3)
 
     def request_skills(self):
@@ -54,6 +54,9 @@ class EmulatorDockerBridge:
     def send_message(self, message: str):
         self.__internal_send__(DockerMessage(docker_command='send_message', message=message))
 
+    def refresh_files(self):
+        self.__internal_send__(DockerMessage(docker_command='refresh', message="clai reload"))
+
     def __internal_send__(self, event: DockerMessage):
         try:
             print(f"sending to queue -> {event}")
@@ -66,6 +69,7 @@ class EmulatorDockerBridge:
         try:
             message = self.queue_out.get(block=False)
             return message
+        # pylint: disable=bare-except
         except:
             return None
 
@@ -92,6 +96,7 @@ def __get_image(docker_client):
 
         for log in logs:
             print(log)
+    # pylint: disable=bare-except
     except:
         traceback.print_exc()
 
@@ -116,6 +121,34 @@ def __start_docker():
     return my_clai
 
 
+def copy_files(my_clai):
+    old_path = os.getcwd()
+    print(f'Building {old_path}')
+    srcpath = os.path.join(get_base_path(),
+                           'clai', 'server', 'plugins')
+    os.chdir(srcpath)
+
+    tar = tarfile.open('temp.tar', mode='w')
+    try:
+        tar.add('.', recursive=True)
+    finally:
+        tar.close()
+
+    data = open('temp.tar', 'rb').read()
+
+    destdir = os.path.join(
+        os.path.expanduser('/opt/local/share'),
+        'clai', 'bin', 'clai', 'server', 'plugins'
+    )
+
+    # pylint: disable=protected-access
+    my_clai._container.put_archive(destdir, data)
+
+    os.chdir(old_path)
+
+    print("Done the refresh")
+
+
 def __consumer__(args):
     queue, log_queue, queue_out = args
     my_clai = None
@@ -135,6 +168,7 @@ def __consumer__(args):
         elif docker_message.docker_command == 'send_message' \
                 or docker_message.docker_command == 'request_skills' \
                 or docker_message.docker_command == 'unselect_skill' \
+                or docker_message.docker_command == 'refresh' \
                 or docker_message.docker_command == 'select_skill':
             if my_clai:
                 print(f'socket {socket}')
@@ -142,6 +176,10 @@ def __consumer__(args):
                     socket = my_clai.exec_run(cmd="bash -l", stdin=True, tty=True,
                                               privileged=True, socket=True)
                     wait_server_is_started()
+
+                if docker_message.docker_command == 'refresh':
+                    copy_files(my_clai)
+
 
                 command_to_exec = docker_message.message + '\n'
                 socket.output._sock.send(command_to_exec.encode())
@@ -158,6 +196,10 @@ def __consumer__(args):
 
                 if reply:
                     queue_out.put(reply)
+        elif docker_message == 'request_stop':
+            if my_clai:
+                my_clai.kill()
+                break
 
         queue.task_done()
     print("----STOP CONSUMING-----")

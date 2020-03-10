@@ -18,7 +18,6 @@ def read(socket, chunk_readed=None):
     data = ''
     try:
         socket.output._sock.recv(1)
-        command_readed = False
         while True:
             # note that os.read does not work
             # because it does not TLS-decrypt

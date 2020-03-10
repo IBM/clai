@@ -6,17 +6,10 @@
 #
 import json
 import os
-import sys
-import tarfile
-import threading
-from typing import Optional
-from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge, get_base_path
+from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 
 # pylint: disable=too-many-instance-attributes
-from clai.server.command_message import Action
-
 from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
-from clai.tools.docker_utils import execute_cmd
 
 
 class EmulatorPresenter:
@@ -40,13 +33,6 @@ class EmulatorPresenter:
             return '../'
 
         return '.'
-
-    def stop_server(self):
-        print(f'is server running {self.server_running}')
-        if self.server_running:
-            self.my_clai.kill()
-            self.server_running = False
-        self.on_server_stopped()
 
     def select_skill(self, skill_name: str):
         if skill_name == self.current_active_skill:
@@ -72,46 +58,22 @@ class EmulatorPresenter:
     def _send_unselect(self, skill_name: str):
         self.emulator_docker_bridge.unselect_skill(skill_name)
 
-    def _send_to_emulator(self, command: str) -> str:
-        response = execute_cmd(self.my_clai, command)
-        return response
-
     def run_server(self):
         self.emulator_docker_bridge.start()
         self.server_running = True
         self.on_server_running()
         self.request_skills()
 
+    def stop_server(self):
+        print(f'is server running {self.server_running}')
+        if self.server_running:
+            self.emulator_docker_bridge.stop_server()
+            self.server_running = False
+        self.on_server_stopped()
+
     def refresh_files(self):
-        self.copy_files()
-        self._send_to_emulator("clai reload")
+        self.emulator_docker_bridge.refresh_files()
 
-    def copy_files(self):
-        old_path = os.getcwd()
-        print(f'Building {old_path}')
-        srcpath = os.path.join(get_base_path(),
-                               'clai', 'server', 'plugins')
-        os.chdir(srcpath)
-
-        tar = tarfile.open('temp.tar', mode='w')
-        try:
-            tar.add('.', recursive=True)
-        finally:
-            tar.close()
-
-        data = open('temp.tar', 'rb').read()
-
-        destdir = os.path.join(
-            os.path.expanduser('/opt/local/share'),
-            'clai', 'bin', 'clai', 'server', 'plugins'
-        )
-
-        # pylint: disable=protected-access
-        self.my_clai._container.put_archive(destdir, data)
-
-        os.chdir(old_path)
-
-        print("Done the refresh")
 
     def retrieve_messages(self, add_row):
         reply = self.emulator_docker_bridge.retrieve_message()
@@ -132,7 +94,8 @@ class EmulatorPresenter:
             else:
                 print(f"-----> {reply.docker_reply} : {reply.message}")
 
-    def extract_chunk_log(self, log_value, message):
+    @staticmethod
+    def extract_chunk_log(log_value, message):
         if not message:
             return ''
 

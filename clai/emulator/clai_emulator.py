@@ -195,8 +195,8 @@ class ClaiEmulator:
 
     def add_log_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
-        self.log_image = tk.PhotoImage(file=f"{path}/refresh.png")
-        log_button = ttk.Button(toolbar, image=self.refresh_image, command=self.open_log_window)
+        self.log_image = tk.PhotoImage(file=f"{path}/log.png")
+        log_button = ttk.Button(toolbar, image=self.log_image, command=self.open_log_window)
         log_button.pack(side=tk.LEFT, padx=2, pady=2)
 
     def add_loading_progress(self, toolbar):

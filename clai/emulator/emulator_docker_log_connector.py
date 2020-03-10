@@ -5,6 +5,7 @@ from clai.emulator.docker_message import DockerMessage, DockerReply
 from clai.tools.docker_utils import wait_server_is_started, read
 
 
+# pylint: disable=too-few-public-methods,protected-access
 class EmulatorDockerLogConnector:
     def __init__(self, pool, log_queue, queue_out):
         self.pool_log = pool
