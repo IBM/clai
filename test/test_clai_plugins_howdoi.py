@@ -18,6 +18,32 @@ class SearchAgentTest(unittest.TestCase):
         cls.agent = _agent
 
     @unittest.skip("Only for local testing")
+    def test_get_next_action_pwd_without_question(self):
+        self.agent.init_agent()
+
+        state = State(user_name='tester', command_id='0', command="pwd")
+        action = self.agent.get_next_action(state=state)
+        print("Input: {}".format(state.command))
+        print("===========================")
+        print("Response: {}".format(action.suggested_command))
+        print("===========================")
+        print("Explanation: {}".format(action.description))
+        self.assertEqual('pwd', action.suggested_command)
+
+    @unittest.skip("Only for local testing")
+    def test_get_next_action_pwd_with_question(self):
+        self.agent.init_agent()
+
+        state = State(user_name='tester', command_id='0', command="What is pwd?")
+        action = self.agent.get_next_action(state=state)
+        print("Input: {}".format(state.command))
+        print("===========================")
+        print("Response: {}".format(action.suggested_command))
+        print("===========================")
+        print("Explanation: {}".format(action.description))
+        self.assertEqual('man pwd', action.suggested_command)
+
+    @unittest.skip("Only for local testing")
     def test_get_next_action_sudo(self):
         self.agent.init_agent()
 
