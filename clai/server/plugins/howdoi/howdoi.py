@@ -10,6 +10,7 @@ from clai.tools.colorize_console import Colorize
 from clai.server.plugins.howdoi.data import Datastore
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
+from clai.server.plugins.howdoi.question_detection import QuestionDetection
 
 from clai.server.logger import current_logger as logger
 
@@ -18,6 +19,7 @@ class HowDoIAgent(Agent):
     def __init__(self):
         super(HowDoIAgent, self).__init__()
         self.store = Datastore()
+        self.questionIdentifier = QuestionDetection()
 
     def compute_simple_token_similarity(self, src_sequence, tgt_sequence):
         src_tokens = set([x.lower().strip() for x in src_sequence.split()])
@@ -29,6 +31,15 @@ class HowDoIAgent(Agent):
 
         logger.info("================== In HowDoI Bot:get_next_action ========================")
         logger.info("User Command: {}".format(state.command))
+
+        # Invoke "howdoi" plugin only when a question is asked
+        is_question = self.questionIdentifier.is_question(state.command)
+
+        if not is_question:
+            return Action(
+                suggested_command=state.command,
+                confidence=0.0
+            )
 
         # Query data store to find closest matching forum
         forum = self.store.search(state.command, service='stack_exchange', size=1)
