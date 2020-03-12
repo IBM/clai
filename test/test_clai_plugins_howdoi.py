@@ -11,6 +11,7 @@ from clai.server.command_message import State
 from clai.server.plugins.howdoi.howdoi import HowDoIAgent
 
 
+@unittest.skip("Only for local testing")
 class SearchAgentTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
