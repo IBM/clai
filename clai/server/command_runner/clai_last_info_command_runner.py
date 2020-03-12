@@ -29,10 +29,10 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
     def execute_post(self, state: State) -> Action:
         offset_last = state.command.replace(f'{self.LAST_DIRECTIVE_DIRECTIVE}', '').strip()
         if not offset_last:
-            return Action()
+            offset_last = '0'
 
         if not offset_last.isdigit():
-            return Action()
+            offset_last = '0'
 
         offset_last_as_int = int(offset_last)
         last_message = self.server_status_datasource.get_last_message(state.user_name, offset=offset_last_as_int)
@@ -65,7 +65,7 @@ class InfoDebug(BaseModel):
     file_changes: Optional[FilesChangesValues] = None
     command: str = None
     root: bool = False
-    processes: Optional[ProcessesValues] = None
+    processes: Optional[ProcessesValues] = ProcessesValues()
     network: Optional[NetworkValues] = None
     result_code: Optional[str] = None
     stderr: Optional[str] = None
