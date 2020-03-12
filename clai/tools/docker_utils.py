@@ -28,9 +28,7 @@ def read(socket, chunk_readed=None):
                 break
 
             chunk = data_bytes.decode('utf8', errors='ignore')
-            print(f'------ chunk >{chunk}')
             if chunk.endswith(']# '):
-                print('----- end found')
                 if data:
                     break
             else:
