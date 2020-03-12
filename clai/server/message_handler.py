@@ -9,6 +9,7 @@ import traceback
 from typing import List, Optional
 
 from clai.datasource.server_status_datasource import ServerStatusDatasource
+from clai.server.agent_datasource import AgentDatasource
 from clai.server.logger import current_logger as logger
 from clai.datasource.config_storage import config_storage
 from clai.datasource.server_pending_actions_datasource import ServerPendingActionsDatasource
@@ -26,10 +27,10 @@ class MessageHandler:
 
     def __init__(self,
                  server_status_datasource: ServerStatusDatasource,
-                 agent_datasource,
-                 orchestrator: Orchestrator = OrchestratorProvider.get_orchestrator_instance('max_orchestrator')
-                 ):
+                 agent_datasource: AgentDatasource):
         self.agent_datasource = agent_datasource
+        orchestrator: Orchestrator = OrchestratorProvider.get_orchestrator_instance(
+            agent_datasource.get_current_orchestrator())
         self.agent_runner = AgentRunner(self.agent_datasource, orchestrator)
         self.server_status_datasource = server_status_datasource
         self.server_pending_actions_datasource = ServerPendingActionsDatasource()
