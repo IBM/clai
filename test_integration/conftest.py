@@ -22,7 +22,9 @@ def get_base_path():
 
 my_clai_installed_image = build(
     path=get_base_path(),
-    dockerfile='./test_integration/docker/centos/Dockerfile')
+    dockerfile='./test_integration/docker/centos/Dockerfile',
+    rm=True
+)
 
 my_clai_module = container(
     image='{my_clai_installed_image.id}',
