@@ -8,7 +8,7 @@
 import os
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, LEFT
 
 
 # pylint: disable=too-many-ancestors,keyword-arg-before-vararg
@@ -20,16 +20,35 @@ class ToggledFrame(tk.Frame):
         self.show.set(0)
 
         self.title_frame = ttk.Frame(self)
-        self.title_frame.pack(fill="x", expand=True)
+        self.title_frame.pack(
+            fill="x",
+            expand=True)
 
-        tk.Label(self.title_frame, text=text).pack(side="left", fill="x", expand=True)
+        title_label = \
+            tk.Label(self.title_frame,
+                     text=text,
+                     anchor="nw",
+                     justify=LEFT,
+                     fg='white',
+                     padx=15,
+                     pady=15,
+                     bg="black")
+
+        title_label.pack(side="left",
+                         fill="x",
+                         expand=True)
 
         path = os.path.dirname(os.path.abspath(__file__))
         self.expand_more_image = tk.PhotoImage(file=f"{path}/expand_less.gif")
         self.expand_less_image = tk.PhotoImage(file=f"{path}/expand_more.gif")
 
-        self.toggle_button = ttk.Checkbutton(self.title_frame, width=2, image=self.expand_more_image,
-                                             command=self.toggle, variable=self.show, style='TLabel')
+        self.toggle_button = \
+            ttk.Checkbutton(self.title_frame,
+                            width=2,
+                            image=self.expand_more_image,
+                            command=self.toggle,
+                            variable=self.show,
+                            style='TLabel')
         self.toggle_button.pack(side="left")
 
         self.sub_frame = tk.Frame(self, relief="sunken", borderwidth=1)
