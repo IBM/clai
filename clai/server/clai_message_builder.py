@@ -131,10 +131,11 @@ def create_message_server_runing() -> str:
 def create_message_help() -> Action:
     text = Colorize().info() \
         .append("CLAI usage:\n"
-                "clai [help] [skills [-v]] [activate [skill_name]] [deactivate [skill_name]] "
+                "clai [help] [skills [-v]] [orchestrate [name]] [activate [skill_name]] [deactivate [skill_name]] "
                 "[manual | automatic] [install [name | url]] \n\n"
                 "help           Print help and usage of clai.\n"
                 "skills         List available skills. Use -v For a verbose description of each skill.\n"
+                "orchestrate    Activate the orchestrator by name. If name is empty, list available orchestrators.\n"
                 "activate       Activate the named skill.\n"
                 "deactivate     Deactivate the named skill.\n"
                 "manual         Disables automatic execution of commands without operator confirmation.\n"
