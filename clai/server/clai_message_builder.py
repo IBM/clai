@@ -53,6 +53,31 @@ def create_error_select(selected_plugin: str) -> Action:
     )
 
 
+def create_orchestrator_list(selected_orchestrator: str, all_orchestrator: List[str]) -> Action:
+    text = 'Available Orchestrators:\n'
+
+    for orchestrator in all_orchestrator:
+        if selected_orchestrator == orchestrator:
+            text += Colorize() \
+                .emoji(Colorize.EMOJI_CHECK) \
+                .complete() \
+                .append(f" {orchestrator}\n") \
+                .to_console()
+
+        else:
+            text += \
+                Colorize() \
+                    .emoji(Colorize.EMOJI_BOX) \
+                    .append(f' {orchestrator}\n') \
+                    .to_console()
+
+    return Action(
+        suggested_command=':',
+        description=text,
+        execute=True
+    )
+
+
 def create_message_list(selected_plugin: List[str], all_plugins: List[AgentDescriptor], verbose_mode=False) -> Action:
     text = 'Available Skills:\n'
 

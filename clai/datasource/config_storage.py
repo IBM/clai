@@ -51,13 +51,14 @@ class ConfigStorage:
             report_enable=config_for_all_users.report_enable
         )
 
-    def store_config(self, config: PluginConfig, user_name: str):
+    def store_config(self, config: PluginConfig, user_name: str = None):
         current_config = self.read_all_user_config()
         with open(self.get_config_path(), 'w') as json_file:
             if user_name:
                 current_config.selected[user_name] = config.selected
             current_config.installed = config.installed
             current_config.report_enable = config.report_enable
+            current_config.orchestrator = config.orchestrator
             json_as_string = str(current_config.json())
             json_file.write(json_as_string)
 
