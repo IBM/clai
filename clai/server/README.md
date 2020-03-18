@@ -26,6 +26,8 @@ CLAI comes with a set of orchestrators to help you get the best out of the Orche
 
 > [`max_orchestrator`](orchestration/patterns/max_orchestrator) This picks the skills that responds with the highest confidence, above a certain threshold. This is the default choice as specified [here](../../configPlugins.json).
 
+> [`preference_orchestrator`](orchestration/patterns/preference_orchestrator) picks the skill with highest confidence above a threshold that do not violate any of the partial (ordering) preferences specified by the user.
+
 > [`threshold_orchestrator`](orchestration/patterns/threshold_orchestrator) This is similar to the `max_orchestrator` but it maintains thresholds specific to each skill, and updates them according to how the end user reacts to them.
 
 > [`bandit_orchestrator`](orchestration/patterns/bandit_orchestrator) This learns user preferences using contextual bandits. 
