@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-# pylint: disable=no-name-in-module,import-error
+# pylint: disable=no-name-in-module,import-error,too-many-statements
 import json
 import os
 import ssl
@@ -319,8 +319,8 @@ def install_orchestration(bin_path):
         config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
     orchestrator_provider = OrchestratorProvider(agent_datasource)
     all_orchestrators = orchestrator_provider.all_orchestrator()
-    for orchestrator_name in all_orchestrators:
-        install_orchestration_dependencies(bin_path, orchestrator_name)
+    for orchestrator in all_orchestrators:
+        install_orchestration_dependencies(bin_path, orchestrator.name)
 
 
 def register_file(system):

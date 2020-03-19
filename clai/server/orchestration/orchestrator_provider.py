@@ -71,7 +71,7 @@ class OrchestratorProvider(ABC):
 
         return None
 
-    def all_orchestrator(self) -> List[str]:
+    def all_orchestrator(self) -> List[OrchestratorDescriptor]:
         orchestrator_names = list(map(lambda value: value.name, pkg.iter_modules(self.get_path())))
 
         orchestrators = []
@@ -79,7 +79,7 @@ class OrchestratorProvider(ABC):
             orchestrator_plugin = os.path.join(self.get_path()[0], orchestrator)
             orchestrator_descriptor = self.load_descriptors(orchestrator_plugin, orchestrator)
             if not orchestrator_descriptor.exclude:
-                orchestrators.append(orchestrator)
+                orchestrators.append(orchestrator_descriptor)
 
         return orchestrators
 
@@ -94,14 +94,21 @@ class OrchestratorProvider(ABC):
             if config_parser.has_option('DEFAULT', 'exclude'):
                 exclude = config_parser.getboolean('DEFAULT', 'exclude')
 
+            description = ""
+            if config_parser.has_option('DEFAULT', 'description'):
+                description = config_parser.get('DEFAULT', 'description')
+
             return OrchestratorDescriptor(
                 name=name,
-                exclude=exclude
+                exclude=exclude,
+                description=description
             )
 
         return OrchestratorDescriptor(
             name=name,
-            exclude=False)
+            exclude=False,
+            description=""
+        )
 
     @staticmethod
     def get_path():

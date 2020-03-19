@@ -9,14 +9,12 @@ from typing import Optional, List, Union
 from pathlib import Path
 import os
 import json
-import numpy as np
 
 from clai.server.orchestration.orchestrator import Orchestrator
 from clai.server.command_message import State, Action
 
-from clai.server.logger import current_logger as logger
 
-# pylint: disable=too-many-arguments,unused-argument
+# pylint: disable=too-many-arguments,unused-argument,duplicate-code
 class PreferenceOrchestrator(Orchestrator):
 
     def __init__(self):
@@ -26,9 +24,9 @@ class PreferenceOrchestrator(Orchestrator):
             Path(__file__).parent.absolute(),
             'config.json'
         )
-        self.__read_config__()
+        self.__read_config()
 
-    def __read_config__(self):
+    def __read_config(self):
 
         with open(self._config_path, 'r') as fileobj:
             config = json.load(fileobj)
@@ -45,17 +43,16 @@ class PreferenceOrchestrator(Orchestrator):
         if not candidate_actions:
             return None
 
-        selected_candidate = None
         cache_candidates = []
         for action in candidate_actions:
             confidence = self.__calculate_confidence__(action)
 
             # create list of candidate skills that came out above the threshold
-            if confidence >= self.threshold: 
+            if confidence >= self.threshold:
                 cache_candidates.append([action, confidence])
 
-        # sort candidate list by confidence 
-        cache_candidates = sorted(cache_candidates, key = lambda x: x[1], reverse=True)
+        # sort candidate list by confidence
+        cache_candidates = sorted(cache_candidates, key=lambda x: x[1], reverse=True)
 
         for candidate in cache_candidates:
             # pass through all preferences and pick the candidate with
@@ -72,9 +69,9 @@ class PreferenceOrchestrator(Orchestrator):
                 return candidate[0]
 
         if force_response:
-            if cache_candidates: return cache_candidates[0][0]
-            else: return None
+            if cache_candidates:
+                return cache_candidates[0][0]
+
+            return None
 
         return None
-
-

@@ -9,6 +9,7 @@ from typing import List
 
 from clai.server.command_message import Action
 from clai.server.command_runner.agent_descriptor import AgentDescriptor
+from clai.server.orchestration.orchestrator_descriptor import OrchestratorDescriptor
 from clai.tools.colorize_console import Colorize
 from clai.tools.process_utils import check_if_process_running
 
@@ -53,22 +54,35 @@ def create_error_select(selected_plugin: str) -> Action:
     )
 
 
-def create_orchestrator_list(selected_orchestrator: str, all_orchestrator: List[str]) -> Action:
+def create_orchestrator_list(selected_orchestrator: str,
+                             all_orchestrator: List[OrchestratorDescriptor],
+                             verbose_mode=False) -> Action:
     text = 'Available Orchestrators:\n'
 
     for orchestrator in all_orchestrator:
-        if selected_orchestrator == orchestrator:
+        if selected_orchestrator == orchestrator.name:
             text += Colorize() \
                 .emoji(Colorize.EMOJI_CHECK) \
                 .complete() \
-                .append(f" {orchestrator}\n") \
+                .append(f" {orchestrator.name}\n") \
                 .to_console()
+
+            if verbose_mode:
+                text += Colorize() \
+                    .complete() \
+                    .append(f" {orchestrator.description}\n") \
+                    .to_console()
 
         else:
             text += \
                 Colorize() \
                     .emoji(Colorize.EMOJI_BOX) \
-                    .append(f' {orchestrator}\n') \
+                    .append(f' {orchestrator.name}\n') \
+                    .to_console()
+
+            if verbose_mode:
+                text += Colorize() \
+                    .append(f" {orchestrator.description}\n") \
                     .to_console()
 
     return Action(
