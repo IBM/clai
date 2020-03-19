@@ -4,16 +4,20 @@
 # See LICENSE.txt file in the root directory
 # of this source tree for licensing information.
 #
+import configparser
+import os
 from abc import ABC
 import importlib
 import inspect
 import pkgutil as pkg
+from typing import List
 
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.orchestration.orchestrator import Orchestrator
 
 # pylint: disable=too-few-public-methods
 import clai.server.orchestration.patterns as pattern
+from clai.server.orchestration.orchestrator_descriptor import OrchestratorDescriptor
 
 
 class OrchestratorProvider(ABC):
@@ -67,9 +71,37 @@ class OrchestratorProvider(ABC):
 
         return None
 
-    def all_orchestrator(self):
-        list_values = list(map(lambda value: value.name, pkg.iter_modules(self.get_path())))
-        return list_values
+    def all_orchestrator(self) -> List[str]:
+        orchestrator_names = list(map(lambda value: value.name, pkg.iter_modules(self.get_path())))
+
+        orchestrators = []
+        for orchestrator in orchestrator_names:
+            orchestrator_plugin = os.path.join(self.get_path()[0], orchestrator)
+            orchestrator_descriptor = self.load_descriptors(orchestrator_plugin, orchestrator)
+            if not orchestrator_descriptor.exclude:
+                orchestrators.append(orchestrator)
+
+        return orchestrators
+
+    @staticmethod
+    def load_descriptors(path, name) -> OrchestratorDescriptor:
+        file_path = os.path.join(path, "manifest.properties")
+        if os.path.exists(file_path):
+            config_parser = configparser.ConfigParser()
+            config_parser.read(file_path)
+
+            exclude = False
+            if config_parser.has_option('DEFAULT', 'exclude'):
+                exclude = config_parser.getboolean('DEFAULT', 'exclude')
+
+            return OrchestratorDescriptor(
+                name=name,
+                exclude=exclude
+            )
+
+        return OrchestratorDescriptor(
+            name=name,
+            exclude=False)
 
     @staticmethod
     def get_path():
