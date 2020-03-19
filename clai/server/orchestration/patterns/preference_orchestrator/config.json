@@ -1,0 +1,5 @@
+{
+    "threshold"   : 0.1,
+    "preferences" : [["HowDoIAgent", "NLC2CMD"],
+                     ["ManPageAgent", "HowDoIAgent"]]
+}

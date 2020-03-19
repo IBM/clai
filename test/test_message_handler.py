@@ -12,7 +12,6 @@ from test.mock_executor import MockExecutor
 from test.state_mother import clai_plugins_state, clai_select_state, command_state, COMMAND_AGENT_STATE, \
     COMMAND_NAME_AGENT_STATE
 import pytest
-from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 from clai.server.message_handler import MessageHandler
 from clai.datasource.server_status_datasource import ServerStatusDatasource
 from clai.server.clai_message_builder import create_error_select
@@ -24,7 +23,7 @@ from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import Action, NOOP_COMMAND
 from clai.tools.colorize_console import Colorize
 
-NO_SELECTED = PluginConfig()
+NO_SELECTED = PluginConfig(default_orchestrator="max_orchestrator")
 ALL_PLUGINS = [AgentDescriptor(pkg_name="demo_agent", name="demo_agent"),
                AgentDescriptor(pkg_name="nlc2cmd", name="nlc2cmd")]
 
@@ -94,7 +93,8 @@ def test_should_return_the_list_of_plugins_with_selected_when_the_server_receive
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS, autospec=True)
     mocker.patch.object(ConfigStorage, 'read_all_user_config', return_value=None, autospec=True)
     mocker.patch.object(
-        ConfigStorage, 'read_config', return_value=PluginConfig(selected=[agent_selected]), autospec=True)
+        ConfigStorage, 'read_config', return_value=PluginConfig(
+            selected=[agent_selected], default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(clai_plugins_state())
@@ -109,7 +109,8 @@ def test_should_return_the_list_without_any_selected_plugin_when_default_doesnt_
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS, autospec=True)
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(default=""), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        default="", default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(clai_plugins_state())
@@ -123,7 +124,8 @@ def test_should_return_the_list_without_any_selected_plugin_when_default_doesnt_
 def test_should_return_the_install_command_when_the_new_plugin_is_not_installed_yet(mocker):
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["nlc2cmd"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["nlc2cmd"], default_orchestrator="max_orchestrator"), autospec=True)
     mocker.patch.object(ConfigStorage, 'store_config', return_value=None, autospec=True)
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS, autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
@@ -139,7 +141,8 @@ def test_should_return_the_install_command_when_the_new_plugin_is_not_installed_
 def test_should_return_the_list_with_the_new_selected_values_if_exists_and_is_installed(mocker):
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
     mocker.patch.object(ConfigStorage, 'store_config', return_value=None, autospec=True)
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS_WITH_TAR_INSTALLED, autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
@@ -157,7 +160,8 @@ def test_should_return_an_error_when_agent_doesnt_exist(mocker):
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS, autospec=True)
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["nlc2cmd"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["nlc2cmd"], default_orchestrator="max_orchestrator"), autospec=True)
     mocker.patch.object(ConfigStorage, 'store_config', return_value=None, autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
@@ -175,7 +179,8 @@ def test_should_return_an_error_when_selected_is_empty(mocker):
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     mocker.patch.object(AgentDatasource, 'all_plugins', return_value=ALL_PLUGINS, autospec=True)
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["nlc2cmd"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["nlc2cmd"], default_orchestrator="max_orchestrator"), autospec=True)
     mocker.patch.object(ConfigStorage, 'store_config', return_value=None, autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
@@ -195,9 +200,9 @@ def test_should_return_the_action_from_selected_agent_when_the_command_goes_to_t
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     action_to_execute = Action(suggested_command="command", confidence=1.0)
     mock_agent.execute.return_value = action_to_execute
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
-    message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource(),
-                                     OrchestratorProvider.get_orchestrator_instance('threshold_orchestrator'))
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
+    message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(command_state())
 
@@ -213,7 +218,8 @@ def test_should_return_empty_action_from_selected_agent_when_the_command_goes_to
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     action_to_execute = Action(suggested_command="command", confidence=0.1)
     mock_agent.execute.return_value = action_to_execute
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(command_state())
@@ -230,7 +236,8 @@ def test_should_return_the_suggestion_from_agent_ignoring_confidence_if_is_clai_
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     action_to_execute = Action(suggested_command="command", confidence=0.0)
     mock_agent.execute.return_value = action_to_execute
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(COMMAND_AGENT_STATE)
@@ -247,7 +254,8 @@ def test_should_return_the_suggestion_from_agent_ignoring_confidence_if_is_name_
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     action_to_execute = Action(suggested_command="command", confidence=0.0)
     mock_agent.execute.return_value = action_to_execute
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(COMMAND_NAME_AGENT_STATE)
@@ -262,7 +270,8 @@ def test_should_return_valid_action_if_the_select_agent_return_none(mocker):
     mock_agent = create_mock_agent()
     mocker.patch.object(AgentDatasource, 'get_instances', return_value=[mock_agent], autospec=True)
     mock_agent.execute.return_value = None
-    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(selected=["demo_agent"]), autospec=True)
+    mocker.patch.object(ConfigStorage, 'read_config', return_value=PluginConfig(
+        selected=["demo_agent"], default_orchestrator="max_orchestrator"), autospec=True)
     message_handler = MessageHandler(ServerStatusDatasource(), AgentDatasource())
 
     action = message_handler.process_message(command_state())

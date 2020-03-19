@@ -12,19 +12,19 @@ from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import State, Action, TerminalReplayMemory
 from clai.server.agent import Agent
 from clai.server.agent_executor import thread_executor as agent_executor
-from clai.server.orchestration.orchestrator import Orchestrator
+from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 from clai.server.orchestration.orchestrator_storage import OrchestratorStorage
 
 
 class AgentRunner:
     def __init__(self, agent_datasource: AgentDatasource,
-                 orchestrator: Orchestrator
+                 orchestrator_provider: OrchestratorProvider
                  ):
 
         self.agent_datasource = agent_datasource
-        self.orchestrator = orchestrator
+        self.orchestrator_provider = orchestrator_provider
         self.remote_storage = ActionRemoteStorage()
-        self.orchestrator_storage = OrchestratorStorage(orchestrator, self.remote_storage)
+        self.orchestrator_storage = OrchestratorStorage(orchestrator_provider, self.remote_storage)
 
         self._pre_exec_id = "pre"
         self._post_exec_id = "post"
@@ -60,7 +60,9 @@ class AgentRunner:
                               candidate_actions: Optional[List[Union[Action, List[Action]]]],
                               force_response: bool, pre_post_state: str) -> Optional[Union[Action, List[Action]]]:
         agent_names = [agent.agent_name for agent in agent_list]
-        suggested_command = self.orchestrator.choose_action(
+
+        orchestrator = self.orchestrator_provider.get_current_orchestrator()
+        suggested_command = orchestrator.choose_action(
             command=command, agent_names=agent_names, candidate_actions=candidate_actions,
             force_response=force_response, pre_post_state=pre_post_state)
 
@@ -89,7 +91,6 @@ class AgentRunner:
 
         self.store_pre_orchestrator_memory(command, plugin_instances, candidate_actions, ignore_threshold,
                                            suggested_command)
-
 
         if isinstance(suggested_command, Action):
             if not suggested_command.suggested_command:

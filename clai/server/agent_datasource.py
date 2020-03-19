@@ -29,6 +29,7 @@ class AgentDatasource:
         self.__plugins: Dict[str, Agent] = {}
         self.num_workers = 4
         self.config_storage = config_storage
+        self.current_orchestrator = None
 
     @staticmethod
     def get_path():
@@ -175,6 +176,21 @@ class AgentDatasource:
                 agent_descriptor.ready = False
 
         return agent_descriptors
+
+    def get_current_orchestrator(self) -> str:
+        if not self.current_orchestrator:
+            plugin_config = self.config_storage.read_config()
+            self.current_orchestrator = plugin_config.default_orchestrator
+            plugin_config.orchestrator = self.current_orchestrator
+            self.config_storage.store_config(plugin_config)
+
+        return self.current_orchestrator
+
+    def select_orchestrator(self, orchestrator_name: str):
+        plugin_config = self.config_storage.read_config()
+        self.current_orchestrator = orchestrator_name
+        plugin_config.orchestrator = self.current_orchestrator
+        self.config_storage.store_config(config)
 
     def get_current_plugin_name(self, user_name: str) -> List[str]:
         selected_plugin = self.__get_selected_by_user(user_name)

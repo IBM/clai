@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 from pydantic import BaseModel
 
@@ -14,17 +14,23 @@ from pydantic import BaseModel
 class PluginConfig:
     def __init__(self,
                  selected: List[str] = [],
+                 orchestrator: Optional[str] = None,
                  default: List[str] = [],
                  installed: List[str] = [],
-                 report_enable: bool = False):
+                 report_enable: bool = False,
+                 default_orchestrator: str = ""):
         self.selected = selected
         self.default = default
         self.installed = installed
         self.report_enable = report_enable
+        self.default_orchestrator = default_orchestrator
+        self.orchestrator = orchestrator
 
 
 class PluginConfigJson(BaseModel):
     selected: Dict[str, list] = {}
     default: Union[List[str], str] = ["demo_agent"]
+    default_orchestrator: str = "max_orchestrator"
     installed: List[str] = []
     report_enable: bool = False
+    orchestrator: Optional[str] = None

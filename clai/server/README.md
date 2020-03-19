@@ -26,6 +26,8 @@ CLAI comes with a set of orchestrators to help you get the best out of the Orche
 
 > [`max_orchestrator`](orchestration/patterns/max_orchestrator) This picks the skills that responds with the highest confidence, above a certain threshold. This is the default choice as specified [here](../../configPlugins.json).
 
+> [`preference_orchestrator`](orchestration/patterns/preference_orchestrator) picks the skill with highest confidence above a threshold that do not violate any of the partial (ordering) preferences specified by the user.
+
 > [`threshold_orchestrator`](orchestration/patterns/threshold_orchestrator) This is similar to the `max_orchestrator` but it maintains thresholds specific to each skill, and updates them according to how the end user reacts to them.
 
 > [`bandit_orchestrator`](orchestration/patterns/bandit_orchestrator) This learns user preferences using contextual bandits. 
@@ -33,6 +35,79 @@ CLAI comes with a set of orchestrators to help you get the best out of the Orche
 These are housed in the [orchestration/patterns/](orchestration/patterns) folder under packages with the same name. Follow them as examples to build your own favorite orchestration pattern. 
 
 ## The Orchestrator API 
+
+### Anatomy of an Orchestrator
+
+Every orchestrator you want to make available to CLAI is housed in this directory.
+
+```
+<root>
+- clai
+  + tools
+  + emulator
+  ...
+  - server
+    + command_runner
+    ...
+    - orchestration
+      - patterns
+        - pattern_1
+          - manifest.properties
+          - install.sh
+          - pattern_1.py
+        + pattern_2
+        + pattern_3
+        ...
++ docs
++ bin
++ scripts
+...
+```
+
+### The Manifest 
+
+A `manifest.propertie`s file which documents the name, a brief description, and the default installation status of the orchestration pattern. Here is an [example](./orchestration/patterns/max_orchestrator/manifest.properties).
+
+```
+[DEFAULT]
+name=dummy pattern
+description=This is a dummy pattern
+exclude=true
+```
+
++ **name:** This is the name your orchestration pattern.
++ **description:** This is a text description of your pattern (supports ASCII) that appears when you list all the patterns on the command line in verbose form. 
++ **exclude:** This is a boolean flag (see above) that you can use to tell CLAI not to list a pattern among those available to the user on the command line. For example, the `bandit_orchestrator` uses an IBM internal package and is hence not listed. 
+
+At runtime, you can list available orchestrators like so:
+
+```
+>> clai orchestrate 
+Available Orchestrators:
+☑ max_orchestrator
+◻ preference_orchestrator
+◻ threshold_orchestrator
+```
+
+You can use the `-v` flag to print out the desriptions in the manifest. You can also switch between orchestration patterns using the orchestrate command. 
+
+```
+>> clai orchestrate preference_orchestrator
+Available Orchestrators:
+◻ max_orchestrator
+☑ preference_orchestrator
+◻ threshold_orchestrator
+```
+
+### The Installer
+
+An `install.sh` file that installs all dependencies required by the orchestrator. 
+All the orchestrators are installed at the time of installation of CLAI.
+Here is an [example](./orchestration/patterns/max_orchestrator/install.sh).
+
+## The Code
+
+Finally the main python file that houses your skill should match the folder name (here is an [example](./orchestration/patterns/max_orchestrator/max_orchestrator.py)). The class name for your skill can be any name as long as it inherits the `Orchestrator` class. 
 
 The Orchestrator API implements a posterior orchestration layer for CLAI: 
 
