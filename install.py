@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-# pylint: disable=no-name-in-module,import-error
+# pylint: disable=no-name-in-module,import-error,too-many-statements
 import json
 import os
 import ssl
@@ -20,6 +20,7 @@ from distutils.file_util import copy_file
 from clai.datasource.config_storage import ConfigStorage
 from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
+from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.colorize_console import Colorize
 from clai.tools.console_helper import print_complete, print_error
@@ -169,6 +170,13 @@ def install_plugins_dependencies(path, plugin):
     return result == 0
 
 
+def install_orchestration_dependencies(path, orchestrator_name):
+    print(f'install dependencies of orchestrator {orchestrator_name}')
+    result = os.system(f'{path}/installOrchestrator.sh {orchestrator_name}')
+
+    return result == 0
+
+
 def cli_executable(cli_path):
     os.system(f'chmod 777 {cli_path}/clai-run')
     os.system(f'chmod 777 {cli_path}/fswatchlog')
@@ -267,9 +275,11 @@ def execute(args):
         copy('./usersInstalled.json', bin_path)
         copy('./anonymize.json', bin_path)
         copy('./scripts/fileExist.sh', bin_path)
+        copy('./scripts/installOrchestrator.sh', bin_path)
 
         os.system(f'chmod 775 {bin_path}/saveFilesChanges.sh')
         os.system(f'chmod 775 {bin_path}/fileExist.sh')
+        os.system(f'chmod 775 {bin_path}/installOrchestrator.sh')
         os.system(f'chmod -R 777 {code_path}/server/plugins')
         os.system(f'chmod 777 {bin_path}/clai.sh')
         os.system(f'chmod 666 {bin_path}/configPlugins.json')
@@ -284,6 +294,7 @@ def execute(args):
     append_setup_to_file(get_setup_file(), bin_path)
     register_file(args.system)
 
+    install_orchestration(bin_path)
     if not no_skills:
         agent_datasource = AgentDatasource(
             config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
@@ -301,6 +312,15 @@ def execute(args):
     os.system(f'chmod -R 777 /var/tmp')
 
     print_complete("CLAI has been installed correctly, you need restart your shell.")
+
+
+def install_orchestration(bin_path):
+    agent_datasource = AgentDatasource(
+        config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
+    orchestrator_provider = OrchestratorProvider(agent_datasource)
+    all_orchestrators = orchestrator_provider.all_orchestrator()
+    for orchestrator in all_orchestrators:
+        install_orchestration_dependencies(bin_path, orchestrator.name)
 
 
 def register_file(system):
