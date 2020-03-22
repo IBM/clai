@@ -74,7 +74,7 @@ $ ./BuildDockerImage.sh
 **Fedora and Ubuntu**
 ### Control flags:
 ```
- flags (BuildDockerImage.sh) 
+ flags (BuildDockerImage.sh) While using default docker version.
   - ${DOCKER_BUILD_FLAGS-"--no-cache"}, for kernel version above 4.4.0-173-generic (xenial xerus/ Ubuntu 16.04 LTS).
   - ${DOCKER_BUILD_FLAGS-""}, for kernel version below 4.4.0-173-generic, per say 4.4.0-75-generic (Trusty Tahr/ Ubuntu 14.04 LTS).
 ```
