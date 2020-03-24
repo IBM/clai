@@ -32,7 +32,7 @@ class ConfigStorage:
             config_for_all_users = PluginConfigJson(**loaded)
             return config_for_all_users
 
-    def read_config(self, user_name: Optional[str]) -> PluginConfig:
+    def read_config(self, user_name: Optional[str] = None) -> PluginConfig:
         selected = None
         config_for_all_users = self.read_all_user_config()
         if user_name in config_for_all_users.selected:
@@ -46,17 +46,19 @@ class ConfigStorage:
         return PluginConfig(
             selected=selected,
             default=config_for_all_users.default,
+            default_orchestrator=config_for_all_users.default_orchestrator,
             installed=config_for_all_users.installed,
             report_enable=config_for_all_users.report_enable
         )
 
-    def store_config(self, config: PluginConfig, user_name: str):
+    def store_config(self, config: PluginConfig, user_name: str = None):
         current_config = self.read_all_user_config()
         with open(self.get_config_path(), 'w') as json_file:
             if user_name:
                 current_config.selected[user_name] = config.selected
             current_config.installed = config.installed
             current_config.report_enable = config.report_enable
+            current_config.orchestrator = config.orchestrator
             json_as_string = str(current_config.json())
             json_file.write(json_as_string)
 

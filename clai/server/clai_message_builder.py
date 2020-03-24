@@ -9,6 +9,7 @@ from typing import List
 
 from clai.server.command_message import Action
 from clai.server.command_runner.agent_descriptor import AgentDescriptor
+from clai.server.orchestration.orchestrator_descriptor import OrchestratorDescriptor
 from clai.tools.colorize_console import Colorize
 from clai.tools.process_utils import check_if_process_running
 
@@ -45,6 +46,44 @@ def create_error_select(selected_plugin: str) -> Action:
         .append(f"{selected_plugin} is not a valid skill name. Write >> clai skills to check available skills.") \
         .append("Example: >> clai activate nlc2cmd") \
         .to_console()
+
+    return Action(
+        suggested_command=':',
+        description=text,
+        execute=True
+    )
+
+
+def create_orchestrator_list(selected_orchestrator: str,
+                             all_orchestrator: List[OrchestratorDescriptor],
+                             verbose_mode=False) -> Action:
+    text = 'Available Orchestrators:\n'
+
+    for orchestrator in all_orchestrator:
+        if selected_orchestrator == orchestrator.name:
+            text += Colorize() \
+                .emoji(Colorize.EMOJI_CHECK) \
+                .complete() \
+                .append(f" {orchestrator.name}\n") \
+                .to_console()
+
+            if verbose_mode:
+                text += Colorize() \
+                    .complete() \
+                    .append(f" {orchestrator.description}\n") \
+                    .to_console()
+
+        else:
+            text += \
+                Colorize() \
+                    .emoji(Colorize.EMOJI_BOX) \
+                    .append(f' {orchestrator.name}\n') \
+                    .to_console()
+
+            if verbose_mode:
+                text += Colorize() \
+                    .append(f" {orchestrator.description}\n") \
+                    .to_console()
 
     return Action(
         suggested_command=':',
@@ -106,10 +145,11 @@ def create_message_server_runing() -> str:
 def create_message_help() -> Action:
     text = Colorize().info() \
         .append("CLAI usage:\n"
-                "clai [help] [skills [-v]] [activate [skill_name]] [deactivate [skill_name]] "
+                "clai [help] [skills [-v]] [orchestrate [name]] [activate [skill_name]] [deactivate [skill_name]] "
                 "[manual | automatic] [install [name | url]] \n\n"
                 "help           Print help and usage of clai.\n"
                 "skills         List available skills. Use -v For a verbose description of each skill.\n"
+                "orchestrate    Activate the orchestrator by name. If name is empty, list available orchestrators.\n"
                 "activate       Activate the named skill.\n"
                 "deactivate     Deactivate the named skill.\n"
                 "manual         Disables automatic execution of commands without operator confirmation.\n"

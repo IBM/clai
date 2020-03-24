@@ -16,6 +16,7 @@ from clai.server.command_runner.clai_delegate_to_agent_command_runner import Cla
 from clai.server.command_runner.clai_help_command_runner import ClaiHelpCommandRunner
 from clai.server.command_runner.clai_install_command_runner import ClaiInstallCommandRunner
 from clai.server.command_runner.clai_last_info_command_runner import ClaiLastInfoCommandRunner
+from clai.server.command_runner.clai_orchestrate_command_runner import ClaiOrchestrateCommandRunner
 from clai.server.command_runner.clai_plugins_command_runner import ClaiPluginsCommandRunner
 from clai.server.command_runner.clai_power_command_runner import ClaiPowerCommandRunner
 from clai.server.command_runner.clai_power_disable_command_runner import ClaiPowerDisableCommandRunner
@@ -23,6 +24,7 @@ from clai.server.command_runner.clai_reload_command_runner import ClaiReloadComm
 from clai.server.command_runner.clai_select_command_runner import ClaiSelectCommandRunner
 from clai.server.command_runner.clai_unselect_command_runner import ClaiUnselectCommandRunner
 from clai.server.command_runner.command_runner import CommandRunner, PostCommandRunner
+from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 
 CLAI_COMMAND_NAME = "clai"
 
@@ -32,11 +34,13 @@ class CommandRunnerFactory:
     def __init__(self,
                  agent_datasource: AgentDatasource,
                  config_storage: ConfigStorage,
-                 server_status_datasource: ServerStatusDatasource
+                 server_status_datasource: ServerStatusDatasource,
+                 orchestrator_provider: OrchestratorProvider
                  ):
         self.server_status_datasource = server_status_datasource
         self.clai_commands: Dict[str, CommandRunner] = {
             "skills": ClaiPluginsCommandRunner(agent_datasource),
+            "orchestrate": ClaiOrchestrateCommandRunner(orchestrator_provider),
             "activate": ClaiSelectCommandRunner(config_storage, agent_datasource),
             "deactivate": ClaiUnselectCommandRunner(config_storage, agent_datasource),
             "manual": ClaiPowerDisableCommandRunner(server_status_datasource),
