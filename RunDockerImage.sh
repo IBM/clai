@@ -33,5 +33,5 @@ docker run --privileged							  	 \
            -v ${HostBaseDir}:${ContainerBaseDir}      \
            --name CLAIBotPlayground					  \
 	   claiplayground
-FGGREEN= echo "\033[32m"
-echo "${FGGREEN}User for ssh is root and the default pass Bashpass"
+
+echo -e "\e[32mUser for ssh is root and the default pass Bashpass\e[0m"
