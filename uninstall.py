@@ -26,17 +26,17 @@ def remove(path):
     try:
         remove_tree(path)
     except OSError:
-        print('folder not found')
+        print("folder not found")
 
 
 def remove_system_folder(path:str=None):
     if path is not None:
         # path to the clai dir in a local user installation
-        default_system_destdir = '/'.join(path.split('/')[0:-1])
+        default_system_destdir = "/".join(path.split("/")[0:-1])
     else:
         default_system_destdir = os.path.join(
-            os.path.expanduser('/opt/local/share'),
-            'clai',
+            os.path.expanduser("/opt/local/share"),
+            "clai",
         )
 
     remove(default_system_destdir)
@@ -47,13 +47,13 @@ def clai_installed(rc_file_path):
     if os.path.isfile(path):
         line_to_search = "export CLAI_PATH="
         print("searching %s" % line_to_search)
-        lines = io.open(path, 'r',
-                        encoding='utf-8',
-                        errors='ignore').readlines()
+        lines = io.open(path, "r",
+                        encoding="utf-8",
+                        errors="ignore").readlines()
         lines_found = list(filter(lambda line: line_to_search in line, lines))
 
         if lines_found:
-            my_path = lines_found[0].replace(line_to_search, '').replace('\n', '').strip()
+            my_path = lines_found[0].replace(line_to_search, "").replace("\n", "").strip()
             return my_path
 
     return None
@@ -66,7 +66,7 @@ def is_root_user():
 # pylint: disable=bare-except
 def read_users(bin_path):
     try:
-        with open(bin_path + '/usersInstalled.json') as file:
+        with open(bin_path + "/usersInstalled.json") as file:
             users = json.load(file)
             return users
     except:
@@ -79,16 +79,16 @@ def unregister_the_user(bin_path):
     if user_path in users:
         users.remove(user_path)
 
-    with open(bin_path + '/usersInstalled.json', 'w') as json_file:
+    with open(bin_path + "/usersInstalled.json", "w") as json_file:
         json.dump(users, json_file)
 
     return users
 
 
 def stat_uninstall(bin_path):
-    agent_datasource = AgentDatasource(config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
+    agent_datasource = AgentDatasource(config_storage=ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json"))
     report_enable = agent_datasource.get_report_enable()
-    stats_tracker = StatsTracker(sync=True, anonymizer=Anonymizer(alternate_path=f'{bin_path}/anonymize.json'))
+    stats_tracker = StatsTracker(sync=True, anonymizer=Anonymizer(alternate_path=f"{bin_path}/anonymize.json"))
     stats_tracker.report_enable = report_enable
     login = getpass.getuser()
     stats_tracker.log_uninstall(login)
@@ -104,9 +104,9 @@ def remove_setup_file(rc_file_path):
 def remove_between(rc_file_path, start, end):
     path = os.path.expanduser(rc_file_path)
     if os.path.isfile(path):
-        lines = io.open(path, 'r',
-                        encoding='utf-8',
-                        errors='ignore').readlines()
+        lines = io.open(path, "r",
+                        encoding="utf-8",
+                        errors="ignore").readlines()
 
         remove_line = False
         lines_after_remove = []
@@ -119,7 +119,7 @@ def remove_between(rc_file_path, start, end):
             if line.strip() == end.strip():
                 remove_line = False
 
-        io.open(path, 'w').writelines(lines_after_remove)
+        io.open(path, "w").writelines(lines_after_remove)
 
 
 def remove_lines_setup(rc_file_path):
@@ -133,18 +133,28 @@ def remove_setup_register():
         remove_lines_setup(file)
 
 
-def execute():
+def execute(args):
+    if "-h" in args:
+        print(
+            "usage: uninstall.py [-h] [--help] [--user]\n \
+            \nUninstall CLAI.\n \
+            \noptional arguments: \
+            \n-h, --help            show this help message and exit \
+            \n--user                Uninstalls a local installation of clai for the current user"
+        )
+        sys.exit(0)
+
     path = clai_installed(get_setup_file())
     if not path:
-        print_error('CLAI is not installed.')
+        print_error("CLAI is not installed.")
         sys.exit(1)
 
     stat_uninstall(path)
     users = unregister_the_user(path)
 
-    # TODO: this is not a good check...
-    if '/.bin/clai' in path:
+    if "--user" in args:
         remove_system_folder(path)
+
     if not users:
         remove_system_folder()
 
@@ -156,5 +166,5 @@ def execute():
     sys.exit(0)
 
 
-if __name__ == '__main__':
-    sys.exit(execute())
+if __name__ == "__main__":
+    sys.exit(execute(sys.argv))

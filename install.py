@@ -126,10 +126,12 @@ def parse_args():
             sys.exit(1)
 
     if args.user_install:
-        args.destdir = os.path.join(
-            os.path.expanduser('~/.bin'),
-            'clai',
-        )
+        # overwrite the global default path with the local default path
+        if args.destdir == default_user_destdir:
+            args.destdir = os.path.join(
+                os.path.expanduser('~/.bin'),
+                'clai',
+            )
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
