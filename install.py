@@ -106,6 +106,14 @@ def parse_args():
         help='set destination to DIR',
     )
 
+    parser.add_argument(
+        '--user',
+        help="Installs clai in the users own bin directory",
+        dest='user_install',
+        action='store_true',
+        default=False
+    )
+
     args = parser.parse_args()
 
     if not valid_python_version():
@@ -113,8 +121,15 @@ def parse_args():
         sys.exit(1)
 
     if not is_root_user(args):
-        print_error('You need root privileges for complete the installation process.')
-        sys.exit(1)
+        if not args.user_install:
+            print_error('You need root privileges for the system wide installation process.')
+            sys.exit(1)
+
+    if args.user_install:
+        args.destdir = os.path.join(
+            os.path.expanduser('~/.bin'),
+            'clai',
+        )
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
@@ -251,67 +266,71 @@ def execute(args):
     unassisted = args.unassisted
     no_skills = args.no_skills
     demo_mode = args.demo_mode
+    user_install = args.user_install
     bin_path = os.path.join(args.destdir, 'bin')
-    code_path = os.path.join(bin_path, 'clai')
-    cli_path = os.path.join(bin_path, 'bin')
-    temp_path = '~/tmp'
-    mkdir(f"{temp_path}/")
+    
+    print(user_install)
+    # code_path = os.path.join(bin_path, 'clai')
+    # cli_path = os.path.join(bin_path, 'bin')
+    # temp_path = '~/tmp'
+    # mkdir(f"{temp_path}/")
 
-    create_rc_file_if_not_exist(args.system)
+    # create_rc_file_if_not_exist(args.system)
 
-    if clai_installed(get_setup_file()):
-        print_error('CLAI is already in you system. You should execute uninstall first')
-        sys.exit(1)
+    # if clai_installed(get_setup_file()):
+    #     print_error('CLAI is already in you system. You should execute uninstall first')
+    #     sys.exit(1)
 
-    if not binary_installed(bin_path):
-        mkdir(bin_path)
-        mkdir(code_path)
+    # if not binary_installed(bin_path):
+    #     mkdir(bin_path)
+    #     mkdir(code_path)
 
-        cp_tree('./clai', code_path)
-        cp_tree('./bin', cli_path)
-        copy('./scripts/clai.sh', bin_path)
-        copy('./scripts/saveFilesChanges.sh', bin_path)
-        copy('./configPlugins.json', bin_path)
-        copy('./usersInstalled.json', bin_path)
-        copy('./anonymize.json', bin_path)
-        copy('./scripts/fileExist.sh', bin_path)
-        copy('./scripts/installOrchestrator.sh', bin_path)
+    #     cp_tree('./clai', code_path)
+    #     cp_tree('./bin', cli_path)
+    #     copy('./scripts/clai.sh', bin_path)
+    #     copy('./scripts/saveFilesChanges.sh', bin_path)
+    #     copy('./configPlugins.json', bin_path)
+    #     copy('./usersInstalled.json', bin_path)
+    #     copy('./anonymize.json', bin_path)
+    #     copy('./scripts/fileExist.sh', bin_path)
+    #     copy('./scripts/installOrchestrator.sh', bin_path)
 
-        os.system(f'chmod 775 {bin_path}/saveFilesChanges.sh')
-        os.system(f'chmod 775 {bin_path}/fileExist.sh')
-        os.system(f'chmod 775 {bin_path}/installOrchestrator.sh')
-        os.system(f'chmod -R 777 {code_path}/server/plugins')
-        os.system(f'chmod 777 {bin_path}/clai.sh')
-        os.system(f'chmod 666 {bin_path}/configPlugins.json')
-        os.system(f'chmod 666 {bin_path}/anonymize.json')
-        os.system(f'chmod -R 777 {bin_path}')
-        cli_executable(cli_path)
+    #     os.system(f'chmod 775 {bin_path}/saveFilesChanges.sh')
+    #     os.system(f'chmod 775 {bin_path}/fileExist.sh')
+    #     os.system(f'chmod 775 {bin_path}/installOrchestrator.sh')
+    #     os.system(f'chmod -R 777 {code_path}/server/plugins')
+    #     os.system(f'chmod 777 {bin_path}/clai.sh')
+    #     os.system(f'chmod 666 {bin_path}/configPlugins.json')
+    #     os.system(f'chmod 666 {bin_path}/anonymize.json')
+    #     os.system(f'chmod -R 777 {bin_path}')
+    #     cli_executable(cli_path)
 
-        download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
-        copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
+    #     download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
+    #     copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
 
-    register_the_user(bin_path, args.system)
-    append_setup_to_file(get_setup_file(), bin_path)
-    register_file(args.system)
+    # register_the_user(bin_path, args.system)
+    # append_setup_to_file(get_setup_file(), bin_path)
+    # register_file(args.system)
 
-    install_orchestration(bin_path)
-    if not no_skills:
-        agent_datasource = AgentDatasource(
-            config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
-        plugins = agent_datasource.all_plugins()
-        for plugin in plugins:
-            if plugin.default:
-                installed = install_plugins_dependencies(bin_path, plugin.pkg_name)
-                if installed:
-                    agent_datasource.mark_plugins_as_installed(plugin.name, None)
+    # install_orchestration(bin_path)
+    # if not no_skills:
+    #     agent_datasource = AgentDatasource(
+    #         config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
+    #     plugins = agent_datasource.all_plugins()
+    #     for plugin in plugins:
+    #         if plugin.default:
+    #             installed = install_plugins_dependencies(bin_path, plugin.pkg_name)
+    #             if installed:
+    #                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
-        save_report_info(unassisted, agent_datasource, bin_path, demo_mode)
+    #     save_report_info(unassisted, agent_datasource, bin_path, demo_mode)
 
-    remove(f"{temp_path}/")
+    # remove(f"{temp_path}/")
 
-    os.system(f'chmod -R 777 /var/tmp')
+    # if not user_install:
+    #     os.system(f'chmod -R 777 /var/tmp')
 
-    print_complete("CLAI has been installed correctly, you need restart your shell.")
+    # print_complete("CLAI has been installed correctly, you need restart your shell.")
 
 
 def install_orchestration(bin_path):
