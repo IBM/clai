@@ -3,12 +3,12 @@ CLAI_PATH=$2
 
 install_darwin () {
     code=1
-    pushd $CLAI_PATH/server/orchestration/patterns/$1
-    if [ -f $CLAI_PATH/server/orchestration/patterns/$1/install_darwin.sh ]; then
+    pushd $CLAI_PATH/clai/server/orchestration/patterns/$1
+    if [ -f $CLAI_PATH/clai/server/orchestration/patterns/$1/install_darwin.sh ]; then
         eval "sh install_darwin.sh"
         code=$?
     else
-        if [ -f $CLAI_PATH/server/orchestration/patterns/$1/install.sh ]; then
+        if [ -f $CLAI_PATH/clai/server/orchestration/patterns/$1/install.sh ]; then
             eval "sh install.sh"
             code=$?
         fi
@@ -20,13 +20,13 @@ install_darwin () {
 
 install_linux () {
     code=1
-    cd $CLAI_PATH/server/orchestration/patterns/$1
+    cd $CLAI_PATH/clai/server/orchestration/patterns/$1
     eval "pwd"
-    if [ -f $CLAI_PATH/server/orchestration/patterns/$1/install_linux.sh ]; then
+    if [ -f $CLAI_PATH/clai/server/orchestration/patterns/$1/install_linux.sh ]; then
         eval "sh install_linux.sh"
         code=$?
     else
-        if [ -f $CLAI_PATH/server/orchestration/patterns/$1/install.sh ]; then
+        if [ -f $CLAI_PATH/clai/server/orchestration/patterns/$1/install.sh ]; then
             eval "sh install.sh"
             code=$?
         fi
@@ -52,7 +52,7 @@ fi
 
 install_plugin $1
 if [ $? == 0 ]; then
-    echo "Installed orchestrator dependencies $CLAI_PATH/server/plugins/$1/install.sh"
+    echo "Installed orchestrator dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"
 else
-    echo "The orchestrator don't have dependencies $CLAI_PATH/server/plugins/$1/install.sh"
+    echo "The orchestrator don't have dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"
 fi
