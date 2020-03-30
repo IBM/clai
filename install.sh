@@ -1,17 +1,20 @@
 #!/bin/bash -e
+flags=""
 
 # Check for user passed args
 while test $# != 0
 do
     case "$1" in
       --user) 
-        USER_INSTALL=true 
+        USER_INSTALL=true
+        flags="$flags --user"
       ;;
       # add more flags here
-      *)
+      *) flags="$flags $1"
     esac
     shift
 done
+
 
 die () {
     echo -e $1;
@@ -54,6 +57,11 @@ if lsof -i -P -n | grep 8010 > /dev/null 2>&1; then
   die "\n Another process is running on port 8010."
 fi
 
-python3 -m pip install -r requirements.txt --ignore-installed
+if [ "$USER_INSTALL" == true ]; then
+  python3 -m pip install --user -r requirements.txt
+else
+  python3 -m pip install -r requirements.txt --ignore-installed
+fi
+
 python3 -m pip install --upgrade keyrings.alt
-python3 install.py $1 --shell bash
+python3 install.py $flags --shell bash

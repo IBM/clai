@@ -1,14 +1,16 @@
 #!/bin/bash -e
+flags=""
 
 # Check for user passed args
 while test $# != 0
 do
     case "$1" in
       --user) 
-        USER_INSTALL=true 
+        USER_INSTALL=true
+        flags="$flags --user"
       ;;
       # add more flags here
-      *)
+      *) flags="$flags $1"
     esac
     shift
 done
@@ -48,4 +50,4 @@ if ps -Ao args | grep "[c]lai-run" &> /dev/null ; then
   pkill -f "${running_process}"
 fi
 
-eval "python3 uninstall.py"
+eval "python3 uninstall.py $flags"

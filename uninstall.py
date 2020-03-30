@@ -134,7 +134,7 @@ def remove_setup_register():
 
 
 def execute(args):
-    if "-h" in args:
+    if "-h" in args or "--help" in args:
         print(
             "usage: uninstall.py [-h] [--help] [--user]\n \
             \nUninstall CLAI.\n \
