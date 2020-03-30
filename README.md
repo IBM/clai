@@ -33,7 +33,9 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 1. Open a Bash emulator or console.
 2. In the console navigate to the location of the CLAI project source code.
-3. Execute the following:
+3. Execute the necessary commands found in the preferred option below
+
+#### System Wide
 
 ```
 $ sudo ./install.sh
@@ -45,9 +47,23 @@ $ sudo ./install.sh
 $ sudo env "HOME=$HOME" ./install.sh
 ```
 
+#### User Install
+
+```
+$ ./install.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to install with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./install.sh --user
+```
+
 After the installation is complete, you will be prompted to restart the shell before CLAI becomes active.
 
-#### Uninstalling CLAI
+### Uninstalling CLAI Natively
+
+#### System Wide
 
 To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
 
@@ -58,6 +74,20 @@ $ sudo ./uninstall.sh
 
 ```
 $ sudo env "HOME=$HOME" ./uninstall.sh
+```
+
+#### User Install
+
+To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
+
+```
+$ ./uninstall.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to uninstall with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./uninstall.sh --user
 ```
 
 As before, during installation, you will have to restart the shell for the changes to take effect.
