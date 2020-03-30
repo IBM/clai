@@ -29,11 +29,16 @@ def remove(path):
         print('folder not found')
 
 
-def remove_system_folder():
-    default_system_destdir = os.path.join(
-        os.path.expanduser('/opt/local/share'),
-        'clai',
-    )
+def remove_system_folder(path:str=None):
+    if path is not None:
+        # path to the clai dir in a local user installation
+        default_system_destdir = '/'.join(path.split('/')[0:-1])
+    else:
+        default_system_destdir = os.path.join(
+            os.path.expanduser('/opt/local/share'),
+            'clai',
+        )
+
     remove(default_system_destdir)
 
 
@@ -136,6 +141,10 @@ def execute():
 
     stat_uninstall(path)
     users = unregister_the_user(path)
+
+    # TODO: this is not a good check...
+    if '/.bin/clai' in path:
+        remove_system_folder(path)
     if not users:
         remove_system_folder()
 

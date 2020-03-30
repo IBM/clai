@@ -1,5 +1,18 @@
 #!/bin/bash -e
 
+# Check for user passed args
+while test $# != 0
+do
+    case "$1" in
+      --user) 
+        USER_INSTALL=true 
+      ;;
+      # add more flags here
+      *)
+    esac
+    shift
+done
+
 die () {
     echo -e $1;
     exit $2;
@@ -19,8 +32,10 @@ if is_sh ; then
   die "\n Please don't invoke with sh, to uninstall use ./uninstall.sh"
 fi
 
-if [ "$EUID" -ne 0 ]; then
-  die "\n Please run as sudo."  1
+if [ "$USER_INSTALL" != true ]; then
+  if [ "$EUID" -ne 0 ]; then
+    die "\n Please run as sudo."  1
+  fi
 fi
 
 if ! command_exists python3 ; then

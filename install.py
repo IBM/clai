@@ -180,14 +180,14 @@ def remove(path):
 
 def install_plugins_dependencies(path, plugin):
     print(f'installing dependencies of plugin {plugin}')
-    result = os.system(f'{path}/fileExist.sh {plugin}')
+    result = os.system(f'{path}/fileExist.sh {plugin} {path}')
 
     return result == 0
 
 
 def install_orchestration_dependencies(path, orchestrator_name):
     print(f'install dependencies of orchestrator {orchestrator_name}')
-    result = os.system(f'{path}/installOrchestrator.sh {orchestrator_name}')
+    result = os.system(f'{path}/installOrchestrator.sh {orchestrator_name} {path}')
 
     return result == 0
 
