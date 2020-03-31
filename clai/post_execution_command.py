@@ -7,7 +7,7 @@
 
 from typing import List
 
-import psutil
+#import psutil
 
 from clai.server.clai_client import send_command_post_execute
 from clai.server.command_message import Process, ProcessesValues
@@ -22,8 +22,8 @@ def map_processes(processes) -> List[Process]:
 
 def obtain_last_processes(user_name):
     process_changes = []
-    for process in psutil.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
-        process_changes.append(process.info)
+    #for process in psutil.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
+        #process_changes.append(process.info)
 
     porcess_changes = list(filter(lambda _: _['username'] == user_name, process_changes))
     porcess_changes.sort(key=lambda _: _['create_time'], reverse=True)
