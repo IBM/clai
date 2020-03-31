@@ -12,12 +12,16 @@
 #      To then disable docker caching again, unset DOCKER_BUILD_FLAGS
 flags=${DOCKER_BUILD_FLAGS-"--no-cache"}
 
+# Looks for an environment var named CLAI_DOCKER_IMAGE_NAME. If not
+# defined, uses the default flag value 'claiplayground' for the docker image.
+image_name=${CLAI_DOCKER_IMAGE_NAME-"claiplayground"}
+
 echo "==============================================================="
 echo ""
 echo " Phase 1: Building CLAI Container $flags"
 echo ""
 echo "==============================================================="
-time docker build -f Dockerfile.CLAI -t claiplayground . $flags
+time docker build -f Dockerfile.CLAI -t $image_name . $flags
 if [ $? -ne 0 ]
 then
         echo "Failed to build CLAI Playground Container. Aborting Build."

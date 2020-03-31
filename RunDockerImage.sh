@@ -8,9 +8,13 @@
 
 ###############################################################
 #
-# Author: Eli M. Dow <emdow@us.ibm.com
+# Author: Eli M. Dow <emdow@us.ibm.com>
 #
 ###############################################################
+
+# Looks for an environment var named CLAI_DOCKER_IMAGE_NAME. If not
+# defined, uses the default flag value 'claiplayground' for the docker image.
+image_name=${CLAI_DOCKER_IMAGE_NAME-"claiplayground"}
 
 # Controls where CLAI would store internal states for persistence
 DefaultBaseDir="${HOME}/.clai"
@@ -32,6 +36,6 @@ docker run --privileged							  	 \
            -m 2g                                      \
            -v ${HostBaseDir}:${ContainerBaseDir}      \
            --name CLAIBotPlayground					  \
-	   claiplayground
+	   $CLAI_DOCKER_IMAGE_NAME
 
 echo 'User for ssh is root and the default pass Bashpass'
