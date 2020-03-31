@@ -36,20 +36,20 @@ pipeline {
             }
         }
         
-        stage ('test') {
-            steps {
+        //stage ('test') {
+        //    steps {
                 // Get the image ID
-                IMAGE_ID = sh (
-                    script: "sudo docker image ls -q ${env.IMAGE_NAME}",
-                    returnStdout: true
-                ).trim()
-                echo "Image ID: ${IMAGE_ID}"
+        //        IMAGE_ID = sh (
+        //            script: "sudo docker image ls -q ${env.IMAGE_NAME}",
+        //            returnStdout: true
+        //        ).trim()
+        //        echo "Image ID: ${IMAGE_ID}"
                 
                 // Determine which port the container is running on
                 
                 // SSH into the image and run pytest
-            }
-        }
+        //    }
+        //}
     }
     post {
         success {
