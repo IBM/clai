@@ -115,3 +115,5 @@ nohup.out
 # hide kube bot config
 */kube_agent/config/*
 */kube_agent/bb-survey-server/*
+/.project
+/.pydevproject
