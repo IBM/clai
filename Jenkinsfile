@@ -26,15 +26,13 @@ pipeline {
     stages {
         stage('begin') {
             steps {
-                script{
-                    sh """
-                        sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
-                             ${env.WORKSPACE}/BuildDockerImage.sh
-                        sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
-                             CLAI_BASEDIR=${env.WORKSPACE} \
-                             ${env.WORKSPACE}/RunDockerImage.sh
-                    """
-                }
+                sh """
+                    sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
+                         ${env.WORKSPACE}/BuildDockerImage.sh
+                    sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
+                         CLAI_BASEDIR=${env.WORKSPACE} \
+                         ${env.WORKSPACE}/RunDockerImage.sh
+                """
             }
         }
         
