@@ -17,7 +17,7 @@ pipeline {
         RANDOM_NAME=sh(
             script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1",
             returnStdout: true
-        ).trim
+        ).trim()
         IMAGE_NAME="clai_test_${env.RANDOM_NAME}_${env.BUILD_ID}"
         CONTAINER_BASE_DIR="/root/.clai"
         CONTAINER_NAME="CLAI_test_${env.BRANCH_NAME}_${env.BUILD_ID}"
