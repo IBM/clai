@@ -15,7 +15,7 @@ pipeline {
     
     environment {
         RANDOM_NAME=sh(
-            script: "cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1",
+            script: "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1",
             returnStdout: true
         ).trim()
         IMAGE_NAME="clai_test_${env.RANDOM_NAME}_${env.BUILD_ID}"
