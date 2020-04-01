@@ -151,9 +151,7 @@ def getContainerIP(String ctrID){
                  | tail -n1 \
                  | tr -s ' ' \
                  | rev \
-                 | cut -d' ' -f2 \
-                 | rev \
-                 | cut -d'-' -f1",
+                 | cut -d' ' -f2",
         returnStdout: true
     ).trim()
     
