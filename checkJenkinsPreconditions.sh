@@ -47,13 +47,6 @@ else
             exit 1
         fi
     fi
-    
-    # Install all of our test requirements
-    python3 -m pip install -r test-requirements.txt
-    if [ $? -ne 0 ]; then
-        echo "Cannot install test dependencies; unable to continue"
-        exit 1
-    fi
 fi
 
 # All's well

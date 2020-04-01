@@ -79,6 +79,8 @@ pipeline {
                     if(CMD_RC != 0){
                         exit 8
                     }
+                    
+                    echo "'begin' step complete"
                 }
             }
         }
@@ -105,25 +107,20 @@ pipeline {
                     if(CMD_RC != 0){
                         exit 8
                     }
+                    
+                    echo "'test' step complete"
                 }
             }
         }
     }
     post {
         success {
-            echo 'Do something when it is successful'
+            echo 'Build successful'
+            cleanupBuild()
         }
         failure {
-            echo 'Do something when it is failed'
-            //script{
-            //    if (env.IMAGE_ID != '') {
-            //        if (env.CONTAINER_ID != '') {
-            //            sh"sudo docker container stop ${env.CONTAINER_ID}"
-            //            sh"sudo docker container rm ${env.CONTAINER_ID}"
-            //        }
-            //        sh"sudo docker image rm ${env.IMAGE_ID}"
-            //    }
-            //}
+           echo 'Build failed!'
+           cleanupBuild()
         }
     }
 }
@@ -179,4 +176,19 @@ def runCommandInContainer(String container_ip, String command){
     )
     
     return EXIT_STATUS
+}
+
+def cleanupBuild(){
+    CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
+    if(CONTAINER_ID){
+        sh"""
+            sudo docker container stop ${CONTAINER_ID}
+            sudo docker container rm ${CONTAINER_ID}
+        """
+    }
+    
+    IMAGE_ID = getImageID(env.IMAGE_NAME)
+    if(IMAGE_ID){
+        sh"sudo docker image rm ${IMAGE_ID}"
+    }
 }
