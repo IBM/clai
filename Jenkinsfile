@@ -41,7 +41,8 @@ pipeline {
                     }
                     else{
                         sh """
-                            sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
+                            sudo DOCKER_BUILD_FLAGS=""\
+                            CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
                             ${env.WORKSPACE}/BuildDockerImage.sh
                         """
                     }
