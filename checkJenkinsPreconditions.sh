@@ -19,16 +19,17 @@
 #         * Initial creation
 #
 
-# Make sure that we have sshpass installed
-isSshpassThere=$(command -v sshpass)
-if [ -z $isSshpassThere ]; then
-    echo "no bin or alias named 'sshpass'; unable to continue"
-    exit 1
-fi
+if [ -z "$__JENKINSCHECK_IS_CONTAINER" ]; then
+    # Make sure that we have sshpass installed
+    isSshpassThere=$(command -v sshpass)
+    if [ -z $isSshpassThere ]; then
+        echo "no bin or alias named 'sshpass'; unable to continue"
+        exit 1
+    fi
 
 # The following checks will ONLY occur if the __JENKINSCHECK_IS_CONTAINER
 # environment variable was set at script invocation
-if [ -n "$__JENKINSCHECK_IS_CONTAINER" ]; then
+else
     
     # Make sure that "python3" is an alias for python
     isPython3There=$(command -v python3)
