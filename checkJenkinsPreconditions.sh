@@ -45,7 +45,7 @@ if [ -n "$__JENKINSCHECK_IS_CONTAINER" ]; then
     #fi
     
     # Make sure that we have pytest installed
-    isPytestThere=$(pip freeze | grep pytest | wc -l)
+    isPytestThere=$(python3 -m pip freeze | grep pytest | wc -l)
     if [ $isPytestThere -eq 0 ]; then
         python3 -m pip install pytest
         if [ $? -ne 0 ]; then
@@ -55,7 +55,7 @@ if [ -n "$__JENKINSCHECK_IS_CONTAINER" ]; then
     fi
     
     # Make sure that we have pytest_docker_tools installed
-    isPytestDockerToolsThere=$(pip freeze | grep pytest_docker_tools | wc -l)
+    isPytestDockerToolsThere=$(python3 -m pip freeze | grep pytest_docker_tools | wc -l)
     if [ $isPytestDockerToolsThere -eq 0 ]; then
         python3 -m pip install pytest_docker_tools
         if [ $? -ne 0 ]; then
