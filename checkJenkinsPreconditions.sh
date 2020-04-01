@@ -38,31 +38,14 @@ else
         exit 1
     fi
     
-    # Make sure that we have pip3 installed
-    isPip3There=$(python3 -m pip freeze | grep pip3 | wc -l)
-    if [ $isPip3There -eq 0 ]; then
-        python3 -m pip install pip3
-        if [ $? -ne 0 ]; then
-            echo "pip3 can not be installed; unable to continue"
-            exit 1
-        fi
-    fi
-    
     # Make sure that we have pytest installed
-    isPytestThere=$(pip3 freeze | grep pytest | wc -l)
+    isPytestThere=$(python3 -m pip freeze | grep pytest | wc -l)
     if [ $isPytestThere -eq 0 ]; then
-        pip3 install pytest
+        python3 -m pip install pytest
         if [ $? -ne 0 ]; then
             echo "pytest can not be installed; unable to continue"
             exit 1
         fi
-    fi
-    
-    # Install all of our test requirements
-    pip3 install -r test-requirements.txt
-    if [ $? -ne 0 ]; then
-        echo "Cannot install test dependencies; unable to continue"
-        exit 1
     fi
 fi
 

@@ -60,6 +60,7 @@ pipeline {
                                 CLAI_BASEDIR=${env.WORKSPACE} \
                                 ${env.WORKSPACE}/RunDockerImage.sh
                         """
+                        CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
                     }
                     
                     // Get the port that the container is listening on
@@ -156,7 +157,7 @@ def getContainerIP(String ctrID){
         returnStdout: true
     ).trim()
     
-    return (CONTAINER_IP == "") ? null : CONTAINER_IP
+    return (CONTAINER_IP == "" || CONTAINER_IP == "PORTS") ? null : CONTAINER_IP
 }
 
 def runCommandInContainer(String container_ip, String command){
