@@ -98,8 +98,14 @@ pipeline {
                     }
                     
                     // Launch pytest in the container
-                    CMD_RC = runCommandInContainer(CONTAINER_IP, 'pytest')
-                    if(CMD_RC != 0){
+                    EXIT_STATUS = sh(
+                        returnStatus: true,
+                        script: "sshpass -p Bashpass \
+                                 ssh -o 'StrictHostKeyChecking=no' \
+                                     root@${CONTAINER_IP_ADDR} \
+                                     -p ${CONTAINER_PORT} 'cd ./.clai ; ${command}'"
+                    )
+                    if(EXIT_STATUS != 0){
                         exit 8
                     }
                     
@@ -151,26 +157,6 @@ def getContainerIP(String ctrID){
     ).trim()
     
     return (CONTAINER_IP == "" || CONTAINER_IP == "PORTS") ? null : CONTAINER_IP
-}
-
-def runCommandInContainer(String container_ip, String command){
-    CONTAINER_IP_ADDR=sh(
-        script: "echo ${container_ip} | cut -d':' -f1",
-        returnStdout: true
-    ).trim()
-    CONTAINER_PORT=sh(
-        script: "echo ${container_ip} | cut -d':' -f2",
-        returnStdout: true
-    ).trim()
-    EXIT_STATUS = sh(
-        returnStatus: true,
-        script: "sshpass -p Bashpass \
-                 ssh -o 'StrictHostKeyChecking=no' \
-                     root@${CONTAINER_IP_ADDR} \
-                     -p ${CONTAINER_PORT} 'cd ./.clai ; ${command}'"
-    )
-    
-    return EXIT_STATUS
 }
 
 def cleanupBuild(){
