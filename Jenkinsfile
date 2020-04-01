@@ -75,12 +75,6 @@ pipeline {
                         exit 4
                     }
                     
-                    // Make sure our container has all the goodies we need to test
-                    CMD_RC = runCommandInContainer(CONTAINER_IP, 'python3 -m pip install -r test-requirements.txt')
-                    if(CMD_RC != 0){
-                        exit 8
-                    }
-                    
                     echo "'begin' step complete"
                 }
             }
