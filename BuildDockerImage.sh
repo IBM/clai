@@ -20,7 +20,7 @@ image_name=${CLAI_DOCKER_IMAGE_NAME-"claiplayground"}
 # defined, adds it to the docker build command params.
 buildargs=""
 if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
-    $buildargs="--build-arg jenkinsbuild=true"
+    buildargs="--build-arg jenkinsbuild=true"
 fi
 
 echo "==============================================================="
