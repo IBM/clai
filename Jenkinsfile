@@ -30,9 +30,6 @@ pipeline {
             steps {
                 script{
                 
-                    // Check the preconditions needed for this Jenkinsfile to run
-                    sh"${env.WORKSPACE}/checkJenkinsPreconditions.sh"
-                
                     // Does an image with the given name already exist?
                     // If not, create it.
                     IMAGE_ID = getImageID(env.IMAGE_NAME)
