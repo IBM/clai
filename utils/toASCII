@@ -48,8 +48,8 @@ getPerms ()
 until [ "$#" -eq 0 ]; do
   if [ -d "$1" ]; then
     for file in "$1"/*; do
-      /bin/test "$file" -CS ISO8859-1
-        if [ $? -ne 0 ]; then
+      if /bin/test "$file" -CS ISO8859-1
+        then
         iconv -f IBM-1047 -t ISO8859-1 "$file" > "$file".toASCIItmp
         getPerms "$file"
         rm "$file"
@@ -62,8 +62,8 @@ until [ "$#" -eq 0 ]; do
     done
   else
     if [ -f "$1" ]; then
-      /bin/test "$1" -CS ISO8859-1
-        if [ $? -ne 0 ]; then
+      if ! /bin/test "$1" -CS ISO8859-1
+        then
         iconv -f IBM-1047 -t ISO8859-1 "$1" > "$1".toASCIItmp
         getPerms "$1"
         rm "$1"
