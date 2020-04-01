@@ -19,10 +19,10 @@ pipeline {
             returnStdout: true
         ).trim()
         COMMON_NAME="${env.RANDOM_NAME}_${env.BUILD_ID}"
-        //IMAGE_NAME="clai_tstimg_${env.COMMON_NAME}"
-        IMAGE_NAME="claiplayground"
-        //CONTAINER_NAME="clai_tstctr_${env.COMMON_NAME}"
-        CONTAINER_NAME="CLAIBotPlayground"
+        IMAGE_NAME="clai_tstimg_${env.COMMON_NAME}"
+        //IMAGE_NAME="claiplayground"
+        CONTAINER_NAME="clai_tstctr_${env.COMMON_NAME}"
+        //CONTAINER_NAME="CLAIBotPlayground"
     }
     
     stages {
