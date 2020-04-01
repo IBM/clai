@@ -1,5 +1,5 @@
 FROM  centos/systemd
-ARG jenkinsbuild=false   #default argument when not provided in the --build-arg
+ARG jenkinsbuild=false
 
 
 
