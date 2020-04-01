@@ -38,11 +38,11 @@ if [ -n "$__JENKINSCHECK_IS_CONTAINER" ]; then
     fi
 
     # Make sure we have pip installed
-    isPipThere=$(command -v pip)
-    if [ -z $isPipThere ]; then
-        echo "pip is not installed; unable to continue"
-        exit 1
-    fi
+    #isPipThere=$(command -v pip)
+    #if [ -z $isPipThere ]; then
+    #    echo "pip is not installed; unable to continue"
+    #    exit 1
+    #fi
     
     # Make sure that we have pytest installed
     isPytestThere=$(pip freeze | grep pytest | wc -l)
