@@ -43,7 +43,7 @@ pipeline {
                         sh """
                             sudo DOCKER_BUILD_FLAGS='' \
                             CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
-                            CLAI_DOCKER_BUILD_ARGS='--build-arg jenkinsbuild=true' \
+                            CLAI_DOCKER_BUILD_ARG='jenkinsbuild=true' \
                             ${env.WORKSPACE}/BuildDockerImage.sh
                         """
                     }
