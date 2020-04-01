@@ -19,6 +19,8 @@
 #         * Initial creation
 #
 
+echo "This is a test"
+
 # Make sure that "python3" is an alias for python
 isPython3There=$(command -v python3)
 if [ -z $isPython3There ]; then
