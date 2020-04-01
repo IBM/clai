@@ -70,6 +70,12 @@ pipeline {
                         echo "No container ip"
                         exit 4
                     }
+                    
+                    // Check that our container has all the goodies we need to test
+                    CMD_RC = runCommandInContainer(CONTAINER_IP, '__JENKINSCHECK_IS_CONTAINER=true ./checkJenkinsPreconditions.sh')
+                    if(CMD_RC != 0){
+                        exit 8
+                    }
                 }
             }
         }
