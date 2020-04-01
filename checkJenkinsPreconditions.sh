@@ -26,29 +26,12 @@ if [ -z $isPython3There ]; then
     exit 1
 fi
 
-# Make sure we have pip installed
-isPipThere=$(command -v pip)
-if [ -z $isPipThere ]; then
-    echo "pip is not installed; unable to continue"
-    exit 1
-fi
-
-# Make sure that we have pytest installed
-isPytestThere=$(command -v pytest)
-if [ -z $isPytestThere ]; then
-    python3 -m pip install pytest
+# Make sure that we have sshpass installed
+isSshpassThere=$(command -v sshpass)
+if [ -z $isSshpassThere ]; then
+    sudo apt install sshpass
     if [ $? -ne 0 ]; then
-        echo "pytest can not be installed; unable to continue"
-        exit 1
-    fi
-fi
-
-# Make sure that we have virtualenv installed
-isVirtualenvThere=$(pip freeze | grep virtualenv | wc -l)
-if [ $isVirtualenvThere -eq 0 ]; then
-    python3 -m pip install virtualenv
-    if [ $? -ne 0 ]; then
-        echo "virtualenv can not be installed; unable to continue"
+        echo "sshpass can not be installed; unable to continue"
         exit 1
     fi
 fi
