@@ -1,4 +1,6 @@
 FROM  centos/systemd
+ARG jenkinsbuild=false   #default argument when not provided in the --build-arg
+
 
 
 ################################################################
@@ -95,6 +97,7 @@ RUN mkdir -p /opt/IBM/clai/
 WORKDIR /opt/IBM/clai/
 add . .
 RUN sudo pip3 install -r requirements.txt
+RUN if [ "$jenkinsbuild" = "true" ] ; then sudo pip3 install -r test-requirements.txt; fi
 RUN sudo python3 install.py --unassisted --shell bash
 
 #############################################################################
