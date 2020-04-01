@@ -16,19 +16,19 @@ flags=${DOCKER_BUILD_FLAGS-"--no-cache"}
 # defined, uses the default flag value 'claiplayground' for the docker image.
 image_name=${CLAI_DOCKER_IMAGE_NAME-"claiplayground"}
 
-# Looks for an environment var named CLAI_DOCKER_BUILD_ARG. If not
-# defined, defaults to the empty string.
-buildarg=${CLAI_DOCKER_BUILD_ARG-""}
+# Looks for an environment var named CLAI_DOCKER_JENKINSBUILD. If it is
+# defined, adds it to the docker build command params.
+buildargs=""
+if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
+    $buildargs="--build-arg jenkinsbuild=true"
+fi
 
 echo "==============================================================="
 echo ""
 echo " Phase 1: Building CLAI Container $flags"
 echo ""
 echo "==============================================================="
-if [ "$buildarg" != "" ]; then
-    buildarg="--build-arg $buildarg"
-fi
-time docker build -f Dockerfile.CLAI -t $image_name $buildarg . $flags
+time docker build -f Dockerfile.CLAI -t $image_name $buildargs . $flags
 if [ $? -ne 0 ]
 then
         echo "Failed to build CLAI Playground Container. Aborting Build."
