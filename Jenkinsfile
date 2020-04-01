@@ -61,6 +61,7 @@ pipeline {
                                 ${env.WORKSPACE}/RunDockerImage.sh
                         """
                         CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
+                        echo "Container ID: ${CONTAINER_ID}"
                     }
                     
                     // Get the port that the container is listening on
@@ -73,8 +74,8 @@ pipeline {
                         exit 4
                     }
                     
-                    // Check that our container has all the goodies we need to test
-                    CMD_RC = runCommandInContainer(CONTAINER_IP, '__JENKINSCHECK_IS_CONTAINER=true ./checkJenkinsPreconditions.sh')
+                    // Make sure our container has all the goodies we need to test
+                    CMD_RC = runCommandInContainer(CONTAINER_IP, 'python3 -m pip install -r test-requirements.txt')
                     if(CMD_RC != 0){
                         exit 8
                     }
