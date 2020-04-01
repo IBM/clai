@@ -29,11 +29,8 @@ fi
 # Make sure that we have sshpass installed
 isSshpassThere=$(command -v sshpass)
 if [ -z $isSshpassThere ]; then
-    sudo apt install sshpass
-    if [ $? -ne 0 ]; then
-        echo "sshpass can not be installed; unable to continue"
-        exit 1
-    fi
+    echo "no bin or alias named 'sshpass'; unable to continue"
+    exit 1
 fi
 
 # All's well
