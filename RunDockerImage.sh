@@ -62,7 +62,8 @@ if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
     docker_run_command="${docker_run_command} > $CLAI_DOCKER_OUTPUT"
 fi
     
-exec ${docker_run_command}
+echo ${docker_run_command}
+eval ${docker_run_command}
 
 if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
     echo 'User for ssh is root and the default pass Bashpass'
