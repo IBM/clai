@@ -54,16 +54,14 @@ pipeline {
                         encoding: 'UTF-8'
                     ).trim()
                     
-                    TEST_OUTPUT = sh(
-                        script: "sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
-                                      CLAI_DOCKER_CONTAINER_NAME=${CONTAINER_NAME} \
-                                      CLAI_BASEDIR=${env.WORKSPACE} \
-                                      CLAI_DOCKER_JENKINSBUILD='true' \
-                                      CLAI_DOCKER_OUTPUT='pytest.out' \
-                                      ${env.WORKSPACE}/RunDockerImage.sh",
-                        returnStdout: true,
-                        encoding: 'UTF-8'
-                    ).trim()
+                    sh """
+                        sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
+                             CLAI_DOCKER_CONTAINER_NAME=${CONTAINER_NAME} \
+                             CLAI_BASEDIR=${env.WORKSPACE} \
+                             CLAI_DOCKER_JENKINSBUILD='true' \
+                             CLAI_DOCKER_OUTPUT='pytest.out' \
+                             ${env.WORKSPACE}/RunDockerImage.sh
+                    """
                     
                     CONTAINER_ID = getContainerID(CONTAINER_NAME)
                     

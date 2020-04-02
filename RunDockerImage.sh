@@ -1,5 +1,5 @@
 #!/bin/bash
-
+bash -x
 ###############################################################
 # Licensed Materials - Property of IBM
 # “Restricted Materials of IBM”
@@ -61,12 +61,13 @@ else
              -v ${HostBaseDir}:${ContainerBaseDir}"
 fi
 
-output_redirection = ""
+docker_run_command="docker run ${runargs} $CLAI_DOCKER_IMAGE_NAME"
+
 if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
-    output_redirection = "> $CLAI_DOCKER_OUTPUT"
+    docker_run_command="${docker_run_command} > $CLAI_DOCKER_OUTPUT"
 fi
     
-docker run ${runargs} $CLAI_DOCKER_IMAGE_NAME ${output_redirection}
+exec ${docker_run_command}
 
 if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
     echo 'User for ssh is root and the default pass Bashpass'
