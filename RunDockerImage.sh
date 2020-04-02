@@ -20,11 +20,6 @@ image_name=${CLAI_DOCKER_IMAGE_NAME-"claiplayground"}
 # defined, uses the default flag value 'CLAIBotPlayground' for the container.
 image_name=${CLAI_DOCKER_CONTAINER_NAME-"CLAIBotPlayground"}
 
-# Looks for an environment var named CLAI_DOCKER_OUTPUT. If not
-# defined, uses the default flag value 'STDOUT' and Docker output will be
-# sent to STDOUT
-output_file=${CLAI_DOCKER_OUTPUT-"STDOUT"}
-
 # Controls where CLAI would store internal states for persistence
 DefaultBaseDir="${HOME}/.clai"
 HostBaseDir="${CLAI_BASEDIR:-${DefaultBaseDir}}"
