@@ -1,4 +1,19 @@
 #!/bin/bash -e
+flags=""
+
+# Check for user passed args
+while test $# != 0
+do
+    case "$1" in
+      --user) 
+        USER_INSTALL=true
+        flags="$flags --user"
+      ;;
+      # add more flags here
+      *) flags="$flags $1"
+    esac
+    shift
+done
 
 die () {
     echo -e $1;
@@ -19,8 +34,10 @@ if is_sh ; then
   die "\n Please don't invoke with sh, to uninstall use ./uninstall.sh"
 fi
 
-if [ "$EUID" -ne 0 ]; then
-  die "\n Please run as sudo."  1
+if [ "$USER_INSTALL" != true ]; then
+  if [ "$EUID" -ne 0 ]; then
+    die "\n Please run as sudo."  1
+  fi
 fi
 
 if ! command_exists python3 ; then
@@ -33,4 +50,4 @@ if ps -Ao args | grep "[c]lai-run" &> /dev/null ; then
   pkill -f "${running_process}"
 fi
 
-eval "python3 uninstall.py"
+eval "python3 uninstall.py $flags"
