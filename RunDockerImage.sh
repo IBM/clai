@@ -57,11 +57,12 @@ else
 fi
 docker_run_command="${docker_run_command} $CLAI_DOCKER_IMAGE_NAME"
 
+# If we are redirecting output to a file, add that to the command here
 if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
     docker_run_command="${docker_run_command} > $CLAI_DOCKER_OUTPUT"
 fi
-    
-echo ${docker_run_command}
+
+# Execute the docker-run command
 eval ${docker_run_command}
 
 if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
