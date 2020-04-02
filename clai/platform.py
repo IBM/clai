@@ -6,7 +6,5 @@
 #
 
 import sys
-platform = ''
-
-if platform == '':
-    platform = sys.platform
+platform = None
+platform = platform if platform is not None else sys.platform
