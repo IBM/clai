@@ -45,6 +45,15 @@ pipeline {
                         """
                     }
                     
+                    echo "'begin' step complete"
+                }
+            }
+        }
+        
+        stage ('test') {
+            steps {
+                script{
+                
                     // Does a container with the given name already exist?
                     // If not, create it.
                     CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
@@ -56,76 +65,12 @@ pipeline {
                             sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
                                 CLAI_DOCKER_CONTAINER_NAME=${env.CONTAINER_NAME} \
                                 CLAI_BASEDIR=${env.WORKSPACE} \
+                                CLAI_DOCKER_JENKINSBUILD='true' \
                                 ${env.WORKSPACE}/RunDockerImage.sh
                         """
                         CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
                         echo "Container ID: ${CONTAINER_ID}"
                     }
-                    
-                    // Get the port that the container is listening on
-                    CONTAINER_IP = getContainerIP(CONTAINER_ID)
-                    if(CONTAINER_IP){
-                        echo "Container IP: ${CONTAINER_IP}"
-                    }
-                    else{
-                        echo "No container ip"
-                        exit 4
-                    }
-                    
-                    echo "'begin' step complete"
-                }
-            }
-        }
-        
-        stage ('test') {
-            steps {
-                script{
-
-                    // Does a container with the given name already exist?
-                    // If not, create it.
-                    CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
-                    if(!CONTAINER_ID){
-                        exit 2
-                    }
-                    echo "Container ID: ${CONTAINER_ID}"
-                    
-                    // Get the port that the container is listening on
-                    CONTAINER_IP = getContainerIP(CONTAINER_ID)
-                    if(!CONTAINER_IP){
-                        exit 4
-                    }
-                    
-                    CONTAINER_IP_ADDR=sh(
-                        script: "echo ${container_ip} | cut -d':' -f1",
-                        returnStdout: true
-                    ).trim()
-                    echo "Container IP: ${CONTAINER_IP_ADDR}"
-                    
-                    CONTAINER_PORT=sh(
-                        script: "echo ${container_ip} | cut -d':' -f2",
-                        returnStdout: true
-                    ).trim()
-                    echo "Container Port: ${CONTAINER_PORT}"
-                    
-                    // Launch pytest in the container
-                    echo "About to launch pytest in the container"
-                    sh"""
-                        sshpass -p Bashpass \
-                            ssh -o 'StrictHostKeyChecking=no' \
-                                root@${CONTAINER_IP_ADDR} \
-                                 -p ${CONTAINER_PORT} \
-                                 'cd ./.clai ; pytest'
-                    """
-                    //EXIT_STATUS = sh(
-                    //    returnStatus: true,
-                    //    script: "sshpass -p Bashpass \
-                    //             ssh -o 'StrictHostKeyChecking=no' \
-                    //                 root@${CONTAINER_IP_ADDR} \
-                    //                 -p ${CONTAINER_PORT} 'cd ./.clai ; pytest'"
-                    //)
-                    //if(EXIT_STATUS != 0){
-                    //    exit 8
-                    //}
                     
                     echo "'test' step complete"
                 }
@@ -190,4 +135,25 @@ def cleanupBuild(){
     if(IMAGE_ID){
         sh"sudo docker image rm ${IMAGE_ID}"
     }
+}
+
+def runCommandInContainer(String container_ip, String command){
+    CONTAINER_IP_ADDR=sh(
+        script: "echo ${container_ip} | cut -d':' -f1",
+        returnStdout: true
+    ).trim()
+    CONTAINER_PORT=sh(
+        script: "echo ${container_ip} | cut -d':' -f2",
+        returnStdout: true
+    ).trim()
+    EXIT_STATUS = sh(
+        returnStatus: true,
+        script: "sshpass -p Bashpass \
+                 ssh -o 'StrictHostKeyChecking=no' \
+                     root@${CONTAINER_IP_ADDR} \
+                     -p ${CONTAINER_PORT} ${command}"
+    )
+    
+    echo "Command '${command}' on ${container_ip} complete"
+    return EXIT_STATUS
 }

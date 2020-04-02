@@ -25,6 +25,12 @@ DefaultBaseDir="${HOME}/.clai"
 HostBaseDir="${CLAI_BASEDIR:-${DefaultBaseDir}}"
 ContainerBaseDir="/root/.clai"
 
+runargs=""
+if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
+    HostBaseDir="/root"
+    runargs="--entrypoint pytest"
+fi
+
 
 # Run docker in privileged / unrestricted mode                (--privileged)
 # Allocate a psuedo-terminal in the docker container          (-t)
@@ -34,12 +40,13 @@ ContainerBaseDir="/root/.clai"
 # Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
 # Provide a handy human readable name for the container       (--name ${CLAI_DOCKER_CONTAINER_NAME})
 
-docker run --privileged							  	 \
+docker run --privileged							  	  \
            -t -d                                      \
            -P                                         \
            -m 2g                                      \
            -v ${HostBaseDir}:${ContainerBaseDir}      \
            --name ${CLAI_DOCKER_CONTAINER_NAME}       \
+           ${runargs}                                 \
 	   $CLAI_DOCKER_IMAGE_NAME
 
 echo 'User for ssh is root and the default pass Bashpass'
