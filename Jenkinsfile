@@ -20,9 +20,6 @@ pipeline {
         ).trim()
         COMMON_NAME="${env.RANDOM_NAME}_${env.BUILD_ID}"
         IMAGE_NAME="clai_tstimg_${env.COMMON_NAME}"
-        //IMAGE_NAME="claiplayground"
-        CONTAINER_NAME="clai_tstctr_${env.COMMON_NAME}"
-        //CONTAINER_NAME="CLAIBotPlayground"
     }
     
     stages {
@@ -33,16 +30,14 @@ pipeline {
                     // Does an image with the given name already exist?
                     // If not, create it.
                     IMAGE_ID = getImageID(env.IMAGE_NAME)
-                    if(IMAGE_ID){
-                        echo "Image ID: ${IMAGE_ID}"
-                    }
-                    else{
+                    if(!IMAGE_ID){
                         sh """
                             sudo DOCKER_BUILD_FLAGS='' \
                             CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
                             CLAI_DOCKER_JENKINSBUILD='true' \
                             ${env.WORKSPACE}/BuildDockerImage.sh
                         """
+                        echo "Image ID: ${IMAGE_ID}"
                     }
                     
                     echo "'begin' step complete"
@@ -53,25 +48,26 @@ pipeline {
         stage ('test') {
             steps {
                 script{
-                
-                    // Does a container with the given name already exist?
-                    // If not, create it.
-                    CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
-                    if(CONTAINER_ID){
-                        echo "Container ID: ${CONTAINER_ID}"
-                    }
-                    else{
-                        sh """
-                            sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
-                                CLAI_DOCKER_CONTAINER_NAME=${env.CONTAINER_NAME} \
-                                CLAI_BASEDIR=${env.WORKSPACE} \
-                                CLAI_DOCKER_JENKINSBUILD='true' \
-                                ${env.WORKSPACE}/RunDockerImage.sh
-                        """
-                        CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
-                        echo "Container ID: ${CONTAINER_ID}"
-                    }
+                    CONTAINER_NAME = sh(
+                        script: "echo ${env.IMAGE_NAME} | sed -e 's/tstimg/ctrimg/g'",
+                        returnStdout: true,
+                        encoding: 'UTF-8'
+                    ).trim()
                     
+                    TEST_OUTPUT = sh(
+                        script: "sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
+                                      CLAI_DOCKER_CONTAINER_NAME=${CONTAINER_NAME} \
+                                      CLAI_BASEDIR=${env.WORKSPACE} \
+                                      CLAI_DOCKER_JENKINSBUILD='true' \
+                                      CLAI_DOCKER_OUTPUT='pytest.out' \
+                                      ${env.WORKSPACE}/RunDockerImage.sh",
+                        returnStdout: true,
+                        encoding: 'UTF-8'
+                    ).trim()
+                    
+                    CONTAINER_ID = getContainerID(CONTAINER_NAME)
+                    
+                    //sh "echo ${TEST_OUTPUT}"
                     echo "'test' step complete"
                 }
             }
@@ -83,8 +79,8 @@ pipeline {
             cleanupBuild()
         }
         failure {
-           echo 'Build failed!'
-           cleanupBuild()
+            echo 'Build failed!'
+            cleanupBuild()
         }
     }
 }
@@ -95,7 +91,9 @@ def getImageID(String imgName){
         returnStdout: true
     ).trim()
     
-    return (IMAGE_ID == "") ? null : IMAGE_ID
+    RTN_VLU = (IMAGE_ID == "") ? null : IMAGE_ID
+    echo "getImageID(${imgName}) returns: ${RTN_VLU}"
+    return RTN_VLU
 }
 
 def getContainerID(String ctrName){
@@ -104,7 +102,9 @@ def getContainerID(String ctrName){
         returnStdout: true
     ).trim()
     
-    return (CONTAINER_ID == "") ? null : CONTAINER_ID
+    RTN_VLU = (CONTAINER_ID == "") ? null : CONTAINER_ID
+    echo "getContainerID(${ctrName}) returns: ${RTN_VLU}"
+    return RTN_VLU
 }
 
 def getContainerIP(String ctrID){
@@ -135,25 +135,4 @@ def cleanupBuild(){
     if(IMAGE_ID){
         sh"sudo docker image rm ${IMAGE_ID}"
     }
-}
-
-def runCommandInContainer(String container_ip, String command){
-    CONTAINER_IP_ADDR=sh(
-        script: "echo ${container_ip} | cut -d':' -f1",
-        returnStdout: true
-    ).trim()
-    CONTAINER_PORT=sh(
-        script: "echo ${container_ip} | cut -d':' -f2",
-        returnStdout: true
-    ).trim()
-    EXIT_STATUS = sh(
-        returnStatus: true,
-        script: "sshpass -p Bashpass \
-                 ssh -o 'StrictHostKeyChecking=no' \
-                     root@${CONTAINER_IP_ADDR} \
-                     -p ${CONTAINER_PORT} ${command}"
-    )
-    
-    echo "Command '${command}' on ${container_ip} complete"
-    return EXIT_STATUS
 }
