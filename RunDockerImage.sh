@@ -30,10 +30,10 @@ ContainerBaseDir="/root/.clai"
 #   Allocate a psuedo-terminal in the docker container          (-t)
 #   Run docker with 2GB of memory                               (-m 2GB)
 #   Provide a handy human readable name for the container       (--name ${CLAI_DOCKER_CONTAINER_NAME})
-runargs="--privileged                               \
-         -t                                         \
-         -m 2g                                      \
-         --name ${CLAI_DOCKER_CONTAINER_NAME}"
+docker_run_command="docker run --privileged                               \
+                               -t                                         \
+                               -m 2g                                      \
+                               --name ${CLAI_DOCKER_CONTAINER_NAME}"
 
 if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
     # Additional docker-run settings we will want when running from
@@ -41,22 +41,21 @@ if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
     #   Mount a host directory to the container directory           (-v ${HostBaseDir}:/root)
     #   Use pytest as the entrypoint                                (--entrypoint pytest)
     
-    runargs="${runargs}                                 \
-             -v ${HostBaseDir}:/root                    \
-             --entrypoint pytest"
+    docker_run_command="${docker_run_command}                              \
+                        -v ${HostBaseDir}:/root                            \
+                        --entrypoint pytest"
 else
     # Additional docker-run settings we will normally want:
     #   Run docker in a detached daemon mode                        (-d)
     #   Forward the ports to the localhost so we can SSH            (-P)
     #   Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
     
-    runargs="${runargs}                                 \
-             -d                                         \
-             -P                                         \
-             -v ${HostBaseDir}:${ContainerBaseDir}"
+    docker_run_command="${docker_run_command}                              \
+                       -d                                                  \
+                       -P                                                  \
+                       -v ${HostBaseDir}:${ContainerBaseDir}"
 fi
-
-docker_run_command="docker run ${runargs} $CLAI_DOCKER_IMAGE_NAME"
+docker_run_command="${docker_run_command} $CLAI_DOCKER_IMAGE_NAME"
 
 if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
     docker_run_command="${docker_run_command} > $CLAI_DOCKER_OUTPUT"
