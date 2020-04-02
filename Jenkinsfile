@@ -62,8 +62,15 @@ pipeline {
                     
                     CONTAINER_ID = getContainerID(CONTAINER_NAME)
                     
-                    echo "Test results are in ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
                     echo "'test' step complete"
+                    echo "Test results are in ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
+                    
+                    def numErrors = getNumberOfErrors(TEST_OUTPUT_FILENAME)
+                    if(numErrors > 0){
+                        echo "Got ${numErrors} errors"
+                        sh "cat ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
+                    }
+                    sh "exit ${numErrors}"
                 }
             }
         }
@@ -114,22 +121,6 @@ def getContainerName(String imgName){
     return RTN_VLU
 }
 
-
-def getContainerIP(String ctrID){
-    CONTAINER_IP = sh (
-        script: "sudo docker container ls --filter id=${ctrID} \
-                 | tail -n1 \
-                 | tr -s ' ' \
-                 | rev \
-                 | cut -d' ' -f2 \
-                 | rev \
-                 | cut -d'-' -f1",
-        returnStdout: true
-    ).trim()
-    
-    return (CONTAINER_IP == "" || CONTAINER_IP == "PORTS") ? null : CONTAINER_IP
-}
-
 def cleanupBuild(){
     CONTAINER_NAME = getContainerName(env.IMAGE_NAME)
     CONTAINER_ID = getContainerID(CONTAINER_NAME)
@@ -144,4 +135,15 @@ def cleanupBuild(){
     if(IMAGE_ID){
         sh"sudo docker image rm ${IMAGE_ID}"
     }
+}
+
+def getNumberOfErrors(String resultsFile){
+    NUM_ERRORS = sh (
+        script: "cat ${resultsFile} \
+                 | grep -o '[0-9]** error in [0-9]*\\.[0-9]* seconds =========' \
+                 | cut -d' ' -f1",
+        returnStdout: true
+    ).trim()
+    
+    return NUM_ERRORS.toInteger()
 }
