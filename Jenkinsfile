@@ -87,12 +87,14 @@ pipeline {
                     if(!CONTAINER_ID){
                         exit 2
                     }
+                    echo "Container ID: ${CONTAINER_ID}"
                     
                     // Get the port that the container is listening on
                     CONTAINER_IP = getContainerIP(CONTAINER_ID)
                     if(!CONTAINER_IP){
                         exit 4
                     }
+                    echo "Container IP: ${CONTAINER_IP}"
                     
                     // Launch pytest in the container
                     EXIT_STATUS = sh(
@@ -100,7 +102,7 @@ pipeline {
                         script: "sshpass -p Bashpass \
                                  ssh -o 'StrictHostKeyChecking=no' \
                                      root@${CONTAINER_IP_ADDR} \
-                                     -p ${CONTAINER_PORT} 'cd ./.clai ; ${command}'"
+                                     -p ${CONTAINER_PORT} 'cd ./.clai ; pytest'"
                     )
                     if(EXIT_STATUS != 0){
                         exit 8
