@@ -25,33 +25,39 @@ DefaultBaseDir="${HOME}/.clai"
 HostBaseDir="${CLAI_BASEDIR:-${DefaultBaseDir}}"
 ContainerBaseDir="/root/.clai"
 
-# If the CLAI_DOCKER_JENKINSBUILD environment variable is set, we are
-# executing this from the 'test' stage of a Jenkins pipeline.  In that
-# case, we want to change two things: (1) the root home directory should
-# contain the files checked out from git, and (2) our entrypoint should be
-# a call to pytest to run our automated unit test suite.
-runargs=""
+# docker-run settings that we will always want:
+#   Run docker in privileged / unrestricted mode                (--privileged)
+#   Allocate a psuedo-terminal in the docker container          (-t)
+#   Run docker with 2GB of memory                               (-m 2GB)
+#   Provide a handy human readable name for the container       (--name ${CLAI_DOCKER_CONTAINER_NAME})
+runargs="--privileged                               \
+         -t                                         \
+         -m 2g                                      \
+         --name ${CLAI_DOCKER_CONTAINER_NAME}"
+
 if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
-    HostBaseDir="/root"
-    runargs="-it --entrypoint pytest"
+    # Additional docker-run settings we will want when running from
+    # a Jenkins pipeline stage:
+    #   Mount a host directory to the container directory           (-v ${HostBaseDir}:/root)
+    #   Use pytest as the entrypoint                                (--entrypoint pytest)
+    
+    runargs="${runargs}                                 \
+             -v ${HostBaseDir}:/root                    \
+             --entrypoint pytest"
+else
+    # Additional docker-run settings we will normally want:
+    #   Run docker in a detached daemon mode                        (-d)
+    #   Forward the ports to the localhost so we can SSH            (-P)
+    #   Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
+    
+    runargs="${runargs}                                 \
+             -d                                         \
+             -P                                         \
+             -v ${HostBaseDir}:${ContainerBaseDir}"
 fi
 
-# Run docker in privileged / unrestricted mode                (--privileged)
-# Allocate a psuedo-terminal in the docker container          (-t)
-# Run docker in a detached daemon mode                        (-d)
-# Forward the ports to the localhost so we can SSH            (-P)
-# Run docker with 2GB of memory                               (-m 2GB)
-# Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
-# Provide a handy human readable name for the container       (--name ${CLAI_DOCKER_CONTAINER_NAME})
-# Follow with any additional docker run arguments             (${runargs})
+docker run ${runargs} $CLAI_DOCKER_IMAGE_NAME
 
-docker run --privileged							  	  \
-           -t -d                                      \
-           -P                                         \
-           -m 2g                                      \
-           -v ${HostBaseDir}:${ContainerBaseDir}      \
-           --name ${CLAI_DOCKER_CONTAINER_NAME}       \
-           ${runargs}                                 \
-	   $CLAI_DOCKER_IMAGE_NAME
-
-echo 'User for ssh is root and the default pass Bashpass'
+if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
+    echo 'User for ssh is root and the default pass Bashpass'
+fi
