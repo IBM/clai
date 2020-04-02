@@ -20,6 +20,7 @@ pipeline {
         ).trim()
         COMMON_NAME="${env.RANDOM_NAME}_${env.BUILD_ID}"
         IMAGE_NAME="clai_tstimg_${env.COMMON_NAME}"
+        TEST_OUTPUT_FILENAME="pytest.out"
     }
     
     stages {
@@ -55,13 +56,13 @@ pipeline {
                              CLAI_DOCKER_CONTAINER_NAME=${CONTAINER_NAME} \
                              CLAI_BASEDIR=${env.WORKSPACE} \
                              CLAI_DOCKER_JENKINSBUILD='true' \
-                             CLAI_DOCKER_OUTPUT='pytest.out' \
+                             CLAI_DOCKER_OUTPUT='${TEST_OUTPUT_FILENAME}' \
                              ${env.WORKSPACE}/RunDockerImage.sh
                     """
                     
                     CONTAINER_ID = getContainerID(CONTAINER_NAME)
                     
-                    //sh "echo ${TEST_OUTPUT}"
+                    echo "Test results are in ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
                     echo "'test' step complete"
                 }
             }
@@ -92,7 +93,7 @@ def getImageID(String imgName){
 
 def getContainerID(String ctrName){
     CONTAINER_ID = sh (
-        script: "sudo docker container ls -q --filter name=${ctrName}",
+        script: "sudo docker container ls -aq --filter name=${ctrName}",
         returnStdout: true
     ).trim()
     
