@@ -25,12 +25,16 @@ DefaultBaseDir="${HOME}/.clai"
 HostBaseDir="${CLAI_BASEDIR:-${DefaultBaseDir}}"
 ContainerBaseDir="/root/.clai"
 
+# If the CLAI_DOCKER_JENKINSBUILD environment variable is set, we are
+# executing this from the 'test' stage of a Jenkins pipeline.  In that
+# case, we want to change two things: (1) the root home directory should
+# contain the files checked out from git, and (2) our entrypoint should be
+# a call to pytest to run our automated unit test suite.
 runargs=""
 if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
     HostBaseDir="/root"
-    runargs="--entrypoint pytest"
+    runargs="-it --entrypoint pytest"
 fi
-
 
 # Run docker in privileged / unrestricted mode                (--privileged)
 # Allocate a psuedo-terminal in the docker container          (-t)
@@ -39,6 +43,7 @@ fi
 # Run docker with 2GB of memory                               (-m 2GB)
 # Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
 # Provide a handy human readable name for the container       (--name ${CLAI_DOCKER_CONTAINER_NAME})
+# Follow with any additional docker run arguments             (${runargs})
 
 docker run --privileged							  	  \
            -t -d                                      \
