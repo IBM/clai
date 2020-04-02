@@ -1,5 +1,5 @@
 #!/bin/bash
-bash -x
+
 ###############################################################
 # Licensed Materials - Property of IBM
 # “Restricted Materials of IBM”
