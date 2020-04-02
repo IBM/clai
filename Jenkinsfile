@@ -48,11 +48,7 @@ pipeline {
         stage ('test') {
             steps {
                 script{
-                    CONTAINER_NAME = sh(
-                        script: "echo ${env.IMAGE_NAME} | sed -e 's/tstimg/ctrimg/g'",
-                        returnStdout: true,
-                        encoding: 'UTF-8'
-                    ).trim()
+                    CONTAINER_NAME = getContainerName(env.IMAGE_NAME)
                     
                     sh """
                         sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
@@ -105,6 +101,19 @@ def getContainerID(String ctrName){
     return RTN_VLU
 }
 
+def getContainerName(String imgName){
+    CONTAINER_NAME = sh (
+        script: "echo ${env.IMAGE_NAME} | sed -e 's/tstimg/ctrimg/g'",
+        returnStdout: true,
+        encoding: 'UTF-8'
+    ).trim()
+    
+    RTN_VLU = (CONTAINER_NAME == "") ? null : CONTAINER_NAME
+    echo "getContainerName(${imgName}) returns: ${RTN_VLU}"
+    return RTN_VLU
+}
+
+
 def getContainerIP(String ctrID){
     CONTAINER_IP = sh (
         script: "sudo docker container ls --filter id=${ctrID} \
@@ -121,7 +130,8 @@ def getContainerIP(String ctrID){
 }
 
 def cleanupBuild(){
-    CONTAINER_ID = getContainerID(env.CONTAINER_NAME)
+    CONTAINER_NAME = getContainerName(env.IMAGE_NAME)
+    CONTAINER_ID = getContainerID(CONTAINER_NAME)
     if(CONTAINER_ID){
         sh"""
             sudo docker container stop ${CONTAINER_ID}
