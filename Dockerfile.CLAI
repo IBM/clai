@@ -2,7 +2,6 @@ FROM  centos/systemd
 ARG jenkinsbuild=false
 
 
-
 ################################################################
 # Licensed Materials - Property of IBM
 # “Restricted Materials of IBM”
