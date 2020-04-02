@@ -94,7 +94,18 @@ pipeline {
                     if(!CONTAINER_IP){
                         exit 4
                     }
-                    echo "Container IP: ${CONTAINER_IP}"
+                    
+                    CONTAINER_IP_ADDR=sh(
+                        script: "echo ${container_ip} | cut -d':' -f1",
+                        returnStdout: true
+                    ).trim()
+                    echo "Container IP: ${CONTAINER_IP_ADDR}"
+                    
+                    CONTAINER_PORT=sh(
+                        script: "echo ${container_ip} | cut -d':' -f2",
+                        returnStdout: true
+                    ).trim()
+                    echo "Container Port: ${CONTAINER_PORT}"
                     
                     // Launch pytest in the container
                     echo "About to launch pytest in the container"
