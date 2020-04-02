@@ -97,16 +97,24 @@ pipeline {
                     echo "Container IP: ${CONTAINER_IP}"
                     
                     // Launch pytest in the container
-                    EXIT_STATUS = sh(
-                        returnStatus: true,
-                        script: "sshpass -p Bashpass \
-                                 ssh -o 'StrictHostKeyChecking=no' \
-                                     root@${CONTAINER_IP_ADDR} \
-                                     -p ${CONTAINER_PORT} 'cd ./.clai ; pytest'"
-                    )
-                    if(EXIT_STATUS != 0){
-                        exit 8
-                    }
+                    echo "About to launch pytest in the container"
+                    sh"""
+                        sshpass -p Bashpass \
+                            ssh -o 'StrictHostKeyChecking=no' \
+                                root@${CONTAINER_IP_ADDR} \
+                                 -p ${CONTAINER_PORT} \
+                                 'cd ./.clai ; pytest'
+                    """
+                    //EXIT_STATUS = sh(
+                    //    returnStatus: true,
+                    //    script: "sshpass -p Bashpass \
+                    //             ssh -o 'StrictHostKeyChecking=no' \
+                    //                 root@${CONTAINER_IP_ADDR} \
+                    //                 -p ${CONTAINER_PORT} 'cd ./.clai ; pytest'"
+                    //)
+                    //if(EXIT_STATUS != 0){
+                    //    exit 8
+                    //}
                     
                     echo "'test' step complete"
                 }
