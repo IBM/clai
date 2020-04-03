@@ -25,6 +25,7 @@ pipeline {
         COMMON_NAME="${env.RANDOM_NAME}_${env.BUILD_ID}"
         IMAGE_NAME="clai_tstimg_${env.COMMON_NAME}"
         TEST_OUTPUT_FILENAME="pytest.out"
+        OUTFILE_PATH="${env.WORKSPACE}/${env.TEST_OUTPUT_FILENAME}"
     }
     
     stages {
@@ -54,26 +55,15 @@ pipeline {
             steps {
                 script{
                     CONTAINER_NAME = getContainerName(env.IMAGE_NAME)
-                    
                     sh """
                         sudo CLAI_DOCKER_IMAGE_NAME=${env.IMAGE_NAME} \
                              CLAI_DOCKER_CONTAINER_NAME=${CONTAINER_NAME} \
                              CLAI_BASEDIR=${env.WORKSPACE} \
                              CLAI_DOCKER_JENKINSBUILD='true' \
-                             CLAI_DOCKER_OUTPUT='${TEST_OUTPUT_FILENAME}' \
+                             CLAI_DOCKER_OUTPUT='${env.TEST_OUTPUT_FILENAME}' \
                              ${env.WORKSPACE}/RunDockerImage.sh
                     """
-                    
-                    CONTAINER_ID = getContainerID(CONTAINER_NAME)
-                    
-                    echo "'test' step complete"
-                    echo "Test results are in ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
-                    
-                    def numErrors = getNumberOfErrors(TEST_OUTPUT_FILENAME)
-                    if(numErrors > 0){
-                        echo "Got ${numErrors} errors"
-                        sh "cat ${env.WORKSPACE}/${TEST_OUTPUT_FILENAME}"
-                    }
+                    def numErrors = getNumberOfErrors(env.TEST_OUTPUT_FILENAME)
                     sh "exit ${numErrors}"
                 }
             }
@@ -82,11 +72,11 @@ pipeline {
     post {
         success {
             echo 'Build successful'
-            cleanupBuild()
+            commonCleanupProcedures()
         }
         failure {
             echo 'Build failed!'
-            cleanupBuild()
+            commonCleanupProcedures()
         }
     }
 }
@@ -141,13 +131,39 @@ def cleanupBuild(){
     }
 }
 
-def getNumberOfErrors(String resultsFile){
-    NUM_ERRORS = sh (
-        script: "cat ${resultsFile} \
-                 | grep -o '[0-9]** error in [0-9]*\\.[0-9]* seconds =========' \
-                 | cut -d' ' -f1",
+def doesOutputFileExist(){
+    OUTFILE_EXISTS = sh (
+        script: "if [ -f ${env.OUTFILE_PATH} ]; then  echo 'True'; else echo 'False'; fi",
         returnStdout: true
     ).trim()
     
-    return NUM_ERRORS.toInteger()
+    return (OUTFILE_EXISTS == "True") ? true : false
+}
+
+def getNumberOfErrors(String resultsFile){
+    if(doesOutputFileExist()){
+        NUM_ERRORS = sh (
+            script: "cat ${resultsFile} \
+                     | grep -o '[0-9]** error in [0-9]*\\.[0-9]* seconds =========' \
+                     | cut -d' ' -f1",
+            returnStdout: true
+        ).trim()
+        
+        return NUM_ERRORS.toInteger()
+    }
+    else{
+        return -1
+    }
+}
+
+def commonCleanupProcedures(){
+    if(doesOutputFileExist()){
+        echo "Test results are in ${env.OUTFILE_PATH}"
+        def numErrors = getNumberOfErrors(env.OUTFILE_PATH)
+        echo "Automated testing completed with ${numErrors} errors"
+        if(numErrors > 0){
+            sh "cat ${env.OUTFILE_PATH}"
+        }
+    }
+    cleanupBuild()
 }
