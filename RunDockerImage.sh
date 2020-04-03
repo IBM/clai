@@ -35,17 +35,8 @@ docker_run_command="docker run --privileged                               \
                                -m 2g                                      \
                                --name ${container_name}"
 
-if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
-    # Additional docker-run settings we will want when running from
-    # a Jenkins pipeline stage:
-    #   Mount a host directory to the container directory           (-v ${HostBaseDir}:/root)
-    #   Use pytest as the entrypoint                                (--entrypoint pytest)
-    
-    docker_run_command="${docker_run_command}                      \
-                        -v ${HostBaseDir}:/root                    \
-                        --entrypoint pytest"
-else
-    # Additional docker-run settings we will normally want:
+if [ -z "$CLAI_DOCKER_JENKINSBUILD" ]; then
+    # Settings we will want only when running from a command shell:
     #   Run docker in a detached daemon mode                        (-d)
     #   Forward the ports to the localhost so we can SSH            (-P)
     #   Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
@@ -54,18 +45,28 @@ else
                        -d                                         \
                        -P                                         \
                        -v ${HostBaseDir}:${ContainerBaseDir}"
+
+else
+    # Settings we will want only when running from Jenkins:
+    #   Mount a host directory to the container directory           (-v ${HostBaseDir}:/root)
+    #   Use pytest as the entrypoint                                (--entrypoint pytest)
+    
+    docker_run_command="${docker_run_command}                      \
+                        -v ${HostBaseDir}:/root                    \
+                        --entrypoint pytest"
 fi
-docker_run_command="${docker_run_command} $image_name"
+docker_run_command="${docker_run_command} ${image_name}"
 
 # If we are redirecting output to a file, add that to the command here
 if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
-    docker_run_command="${docker_run_command} > $CLAI_DOCKER_OUTPUT"
+    docker_run_command="${docker_run_command} > ${CLAI_DOCKER_OUTPUT}"
 fi
 
 # Execute the docker-run command
-${docker_run_command}
-eval ${docker_run_command}
-
-if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
+if [ -z "$CLAI_DOCKER_JENKINSBUILD" ]; then
+    eval ${docker_run_command}
     echo 'User for ssh is root and the default pass Bashpass'
+else
+    echo ${docker_run_command}
+    eval ${docker_run_command}
 fi
