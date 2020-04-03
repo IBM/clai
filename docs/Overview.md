@@ -75,7 +75,7 @@ clai: command p
 >> command q
 ```
 
-+ **Proactive Troubleshootin:** Support can also be proactive if the skills are given more power. In such cases, the end user does not even feel the error that would have occured in the absense of the skills in the background.
++ **Proactive Troubleshooting:** Support can also be proactive if the skills are given more power. In such cases, the end user does not even feel the error that would have occured in the absence of the skills in the background.
 
 > previously 
 
@@ -99,7 +99,7 @@ The [`man page explorer`](../clai/server/plugins/manpage_agent) [`fixit`](../cla
 
 ### Natural Language Support
 
-With natural language support (for now, English only), it may be possible to significantly bring down the expertize needed to work on the command line, while keeping developers in context who no longer have to go looking for [frequently used commands
+With natural language support (for now, English only), it may be possible to significantly bring down the expertise needed to work on the command line, while keeping developers in context who no longer have to go looking for [frequently used commands
 that no one can remember the parameters of!](https://imgs.xkcd.com/comics/tar.png)
 
 > previously 

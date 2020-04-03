@@ -38,15 +38,20 @@ RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/issue && cat /etc/motd' \
 # START of block that enables SSH access                                    #
 #############################################################################
 # Install the SSH Daemon ....
-RUN yum install -y install deltarpm && yum update -y && yum install -y openssh-server openssh-clients
-RUN mkdir /var/run/sshd
-RUN echo 'root:Bashpass' | chpasswd
+RUN yum install -y install deltarpm \
+    && yum update -y \
+    && yum install -y \
+        openssh-server \
+        openssh-clients
+
+RUN mkdir /var/run/sshd \
+    && echo 'root:Bashpass' | chpasswd
 
 # SSH login fix. Otherwise user is kicked off after login
-RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-RUN ssh-keygen -f ~/.ssh/id_rsa -t rsa -N ''
-# Generate the host keys...
-RUN /usr/bin/ssh-keygen -A
+RUN echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
+    && ssh-keygen -f ~/.ssh/id_rsa -t rsa -N '' \
+    # Generate the host keys...
+    && /usr/bin/ssh-keygen -A
 
 #RUN yum install -y policycoreutils-python
 #RUN semanage fcontext -a -t sshd_key_t "/usr/local/etc/ssh/ssh_host.*_key"
@@ -62,42 +67,53 @@ EXPOSE 22
 #############################################################################
 # INSTALL PYTHON 3                  	                                    #
 #############################################################################
-RUN yum install -y sudo
-RUN yum install -y which
-RUN sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm
-RUN sudo yum -y update
-RUN sudo yum install -y python36u python36u-libs gcc python36u-devel python36u-pip
+RUN yum install -y \
+            sudo \
+            which
 
-RUN ln -sf /usr/bin/python3.6 /usr/bin/python3
+RUN sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
+    && sudo yum -y update \
+    && sudo yum install -y \
+                python36u \
+                python36u-libs \
+                gcc \
+                python36u-devel \
+                python36u-pip \
+    && ln -sf /usr/bin/python3.6 /usr/bin/python3
 
 #############################################################################
 # INSTALL FSWATCH                                                           #
 #############################################################################
-RUN yum group install -y 'Development Tools'
-RUN sudo yum install -y wget
-RUN wget https://github.com/emcrisostomo/fswatch/releases/download/1.9.3/fswatch-1.9.3.tar.gz
-RUN tar -xvzf fswatch-1.9.3.tar.gz
+RUN yum group install -y 'Development Tools' \
+    && sudo yum install -y wget
+
+RUN wget https://github.com/emcrisostomo/fswatch/releases/download/1.9.3/fswatch-1.9.3.tar.gz \
+    && tar -xvzf fswatch-1.9.3.tar.gz
+
 WORKDIR /fswatch-1.9.3
-RUN ./configure
-RUN make
-RUN sudo make install
-RUN sudo ldconfig
+
+RUN ./configure \
+    && make \
+    && sudo make install \
+    && sudo ldconfig
 
 #############################################################################
 # INSTALL LSOF                                                              #
 #############################################################################
 RUN yum -y install lsof
 
-
 #############################################################################
 # INSTALL THE SHELL 	                                                    #
 #############################################################################
 RUN mkdir -p /opt/IBM/clai/
 WORKDIR /opt/IBM/clai/
-add . .
-RUN sudo pip3 install -r requirements.txt
-RUN if [ "$jenkinsbuild" = "true" ] ; then sudo pip3 install -r test-requirements.txt; fi
-RUN sudo python3 install.py --unassisted --shell bash
+ADD . .
+RUN sudo pip3 install -r requirements.txt \
+    && sudo python3 install.py --unassisted --shell bash
+RUN if [ "$jenkinsbuild" = "true" ] ; 
+    	then sudo pip3 install -r test-requirements.txt \
+    	&& sudo python3 install.py --unassisted --shell bash; \
+   	fi
 
 #############################################################################
 # END Install the shell                                                     #
@@ -115,4 +131,4 @@ RUN echo "export LC_ALL='en_US.utf8'" >> /root/.bashrc
 # The CMD is the default command run when the docker container is started.
 # We need to use 'basename' to determine the full jar filename since it is
 # generated with a different timestamp every time we build
-#CMD ["sudo setenforce 0 && /usr/sbin/sshd", "-D"]
+# CMD ["sudo setenforce 0 && /usr/sbin/sshd", "-D"]
