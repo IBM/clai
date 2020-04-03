@@ -108,10 +108,11 @@ RUN yum -y install lsof
 RUN mkdir -p /opt/IBM/clai/
 WORKDIR /opt/IBM/clai/
 ADD . .
-RUN sudo pip3 install -r requirements.txt \
-    && sudo python3 install.py --unassisted --shell bash
 RUN if [ "$jenkinsbuild" = "true" ] ; then \
-        sudo pip3 install -r test-requirements.txt \
+        sudo pip3 install -r requirements.txt -r test-requirements.txt \
+        && sudo python3 install.py --unassisted --shell bash; \
+    else \
+        sudo pip3 install -r requirements.txt \
         && sudo python3 install.py --unassisted --shell bash; \
     fi
 
