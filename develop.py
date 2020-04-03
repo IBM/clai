@@ -147,9 +147,9 @@ def revert():
         os.system(f'chmod 755 {install_directory}/bin')
         for file in os.listdir(f'{install_directory}/bin'):
             if file in ['emulator.py', 'process-command']:
-                os.system(f'chmod 755 {os.path.join(install_directory, f"bin{file}")}')
+                os.system(f'chmod 755 {os.path.join(install_directory, f"bin/{file}")}')
             else:
-                os.system(f'chmod 644 {os.path.join(install_directory, f"bin{file}")}')
+                os.system(f'chmod 644 {os.path.join(install_directory, f"bin/{file}")}')
         
         for file in json_files:
             os.system(f'chmod 666 {os.path.join(install_directory, file)}')
