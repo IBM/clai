@@ -41,8 +41,8 @@ if [ -n "$CLAI_DOCKER_JENKINSBUILD" ]; then
     #   Mount a host directory to the container directory           (-v ${HostBaseDir}:/root)
     #   Use pytest as the entrypoint                                (--entrypoint pytest)
     
-    docker_run_command="${docker_run_command}                              \
-                        -v ${HostBaseDir}:/root                            \
+    docker_run_command="${docker_run_command}                      \
+                        -v ${HostBaseDir}:/root                    \
                         --entrypoint pytest"
 else
     # Additional docker-run settings we will normally want:
@@ -50,9 +50,9 @@ else
     #   Forward the ports to the localhost so we can SSH            (-P)
     #   Mount a host directory to the container directory           (-v ${HostBaseDir}:${ContainerBaseDir})
     
-    docker_run_command="${docker_run_command}                              \
-                       -d                                                  \
-                       -P                                                  \
+    docker_run_command="${docker_run_command}                     \
+                       -d                                         \
+                       -P                                         \
                        -v ${HostBaseDir}:${ContainerBaseDir}"
 fi
 docker_run_command="${docker_run_command} $CLAI_DOCKER_IMAGE_NAME"
@@ -63,6 +63,7 @@ if [ -n "$CLAI_DOCKER_OUTPUT" ]; then
 fi
 
 # Execute the docker-run command
+echo ${docker_run_command}
 eval ${docker_run_command}
 
 if [ -e "$CLAI_DOCKER_JENKINSBUILD" ]; then
