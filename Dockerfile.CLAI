@@ -109,12 +109,11 @@ RUN mkdir -p /opt/IBM/clai/
 WORKDIR /opt/IBM/clai/
 ADD . .
 RUN if [ "$jenkinsbuild" = "true" ] ; then \
-        sudo pip3 install -r requirements.txt -r test-requirements.txt \
-        && sudo python3 install.py --unassisted --shell bash; \
+        sudo pip3 install -r requirements.txt -r test-requirements.txt ; \
     else \
-        sudo pip3 install -r requirements.txt \
-        && sudo python3 install.py --unassisted --shell bash; \
-    fi
+        sudo pip3 install -r requirements.txt ; \
+    fi \
+    && sudo python3 install.py --unassisted --shell bash
 
 #############################################################################
 # END Install the shell                                                     #
