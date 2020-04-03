@@ -370,5 +370,5 @@ def append_setup_to_file(rc_path, bin_path):
         rc_path,
         "\n[[ -f %s/clai.sh ]] && source %s/clai.sh" % (bin_path, bin_path))
 
-
-sys.exit(execute(parse_args()))
+if __name__ == '__main__':
+    sys.exit(execute(parse_args()))

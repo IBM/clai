@@ -1,1 +1,1 @@
-{"selected": {"user": ["nlc2cmd"]}, "default": ["nlc2cmd"], "default_orchestrator": "max_orchestrator", "installed": [], "report_enable": false}
+{"selected": {"user": ["nlc2cmd"]}, "default": ["nlc2cmd"], "default_orchestrator": "max_orchestrator", "installed": ["nlc2cmd"], "report_enable": false, "orchestrator": "max_orchestrator"}
