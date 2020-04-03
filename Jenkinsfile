@@ -158,12 +158,12 @@ def getNumberOfErrors(String resultsFile){
 
 def commonCleanupProcedures(){
     if(doesOutputFileExist()){
-        echo "Test results are in ${env.OUTFILE_PATH}"
         def numErrors = getNumberOfErrors(env.OUTFILE_PATH)
-        echo "Automated testing completed with ${numErrors} errors"
         if(numErrors > 0){
             sh "cat ${env.OUTFILE_PATH}"
         }
+        echo "Automated testing completed with ${numErrors} errors"
+        echo "Test results are in ${env.OUTFILE_PATH}"
     }
     cleanupBuild()
 }
