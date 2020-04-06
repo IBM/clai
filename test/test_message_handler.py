@@ -133,7 +133,7 @@ def test_should_return_the_install_command_when_the_new_plugin_is_not_installed_
     select_agent = clai_select_state('nlc2cmd')
     action = message_handler.process_message(select_agent)
 
-    assert action.suggested_command == "$CLAI_PATH/fileExist.sh nlc2cmd --path $CLAI_PATH"
+    assert action.suggested_command == "$CLAI_PATH/fileExist.sh nlc2cmd $CLAI_PATH"
     assert action.origin_command == select_agent.command
     assert message_handler.agent_datasource.get_current_plugin_name(select_agent.user_name) == ['nlc2cmd']
 

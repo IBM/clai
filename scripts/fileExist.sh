@@ -1,6 +1,7 @@
 #!/bin/bash -e
 flags=""
 PLUGIN=$1
+CLAI_PATH=$2
 
 # Check for user passed args
 while test $# != 0
@@ -9,9 +10,6 @@ do
       --user) 
         USER_INSTALL=true
         flags="$flags --user"
-      ;;
-       --path) 
-        CLAI_PATH=$1
       ;;
       # add more flags here
       *) 

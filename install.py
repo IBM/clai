@@ -31,11 +31,6 @@ SUPPORTED_SHELLS = ['bash']
 URL_BASH_PREEXEC = 'http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh'
 BASH_PREEXEC = 'bash-preexec.sh'
 
-config_storage = ConfigStorage(
-        alternate_path=f"{bin_path}/configPlugins.json"
-    )
-
-
 def valid_python_version():
     return sys.version_info[0] == 3 and sys.version_info[1] >= 6
 
@@ -189,7 +184,7 @@ def remove(path):
 def install_plugins_dependencies(path, plugin, user_install):
     print(f'installing dependencies of plugin {plugin}')
     result = os.system(
-        f'{path}/fileExist.sh {plugin} --path {path} ' \
+        f'{path}/fileExist.sh {plugin} {path} ' \
             f'{"--user" if user_install else ""}'
     )
 
@@ -272,19 +267,12 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
     stats_tracker.log_install(getpass.getuser())
 
 def mark_user_flag(bin_path:str, value:bool):
+    config_storage = ConfigStorage(
+        alternate_path=f"{bin_path}/configPlugins.json"
+    )
     plugins_config = config_storage.read_config(None)
     plugins_config.user_install = value
     config_storage.store_config(plugins_config, None)
-
-def update_default_plugins():
-    default = ["nlc2cmd"]
-    if platform == 'zos':
-        default = ["nlc2cmd"]
-
-    plugins_config = config_storage.read_config(None)
-    plugins_config.default = default
-    config_storage.store_config(plugins_config, None)
-        
 
 def execute(args):
     unassisted = args.unassisted
@@ -339,12 +327,15 @@ def execute(args):
 
     install_orchestration(bin_path)
     if not no_skills:
-        update_default_plugins()
         agent_datasource = AgentDatasource(
             config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
         plugins = agent_datasource.all_plugins()
         for plugin in plugins:
-            if plugin.default:
+            default = plugin.default
+            if platform == 'zos':
+                plugin.z_default
+
+            if default:
                 installed = install_plugins_dependencies(bin_path, plugin.pkg_name, user_install)
                 if installed:
                     agent_datasource.mark_plugins_as_installed(plugin.name, None)

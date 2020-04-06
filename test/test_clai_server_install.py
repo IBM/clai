@@ -12,7 +12,7 @@ from clai.server.command_runner.clai_install_command_runner import ClaiInstallCo
 
 PLUGIN_NAME = "example"
 CMD_TO_COPY_PLUGIN_FOLDER = f'sudo cp {ANY_ROUTE} $CLAI_PATH/src/server/plugins | ' \
-                            f'sh $CLAI_PATH/fileExist.sh {PLUGIN_NAME} --path $CLAI_PATH'
+                            f'sh $CLAI_PATH/fileExist.sh {PLUGIN_NAME} $CLAI_PATH'
 CMD_TO_COPY_URL_PLUGIN = f'cd $CLAI_PATH/src/server/plugins && curl -O {ANY_URL}'
 
 

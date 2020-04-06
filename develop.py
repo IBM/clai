@@ -141,8 +141,12 @@ def install(repo_path: str):
     )
     plugins = agent_datasource.all_plugins()
     for plugin in plugins:
-        if plugin.default:
-            installed = install_plugins_dependencies(install_directory, plugin.pkg_name)
+        default = plugin.default
+        if platform == 'zos':
+            plugin.z_default
+            
+        if default:
+            installed = install_plugins_dependencies(install_directory, plugin.pkg_name, False)
             if installed:
                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
