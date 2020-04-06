@@ -331,7 +331,7 @@ def execute(args):
     if not user_install:
         os.system(f'chmod -R 777 /var/tmp')
 
-    print_complete("CLAI has been installed correctly, you need restart your shell.")
+    print_complete("CLAI has been installed correctly, you will need to restart your shell.")
 
 
 def install_orchestration(bin_path):
