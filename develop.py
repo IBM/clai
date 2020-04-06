@@ -94,7 +94,7 @@ def link(src, dest):
 
 def install(repo_path: str):
     createInstallDir()
-
+    
     required_scripts = os.listdir(os.path.join(repo_path, "scripts"))
     required_dirs = ["bin", "clai"]
     required_files = [file for file in os.listdir(repo_path) if file.endswith(".json")]
@@ -193,8 +193,6 @@ def main(args: list):
         uninstall(["--user"])
 
         # revert plugins config
-        print(f"{repo_path}/configPlugins.json")
-
         with open(f"{repo_path}/configPlugins.json", "w") as file:
             file.write(
                 json.dumps(

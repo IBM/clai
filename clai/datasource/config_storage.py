@@ -59,6 +59,7 @@ class ConfigStorage:
             current_config.installed = config.installed
             current_config.report_enable = config.report_enable
             current_config.orchestrator = config.orchestrator
+            current_config.user_install = config.user_install
             json_as_string = str(current_config.json())
             json_file.write(json_as_string)
 

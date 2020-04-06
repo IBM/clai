@@ -132,6 +132,7 @@ def parse_args():
                 os.path.expanduser('~/.bin'),
                 'clai',
             )
+        
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
@@ -206,7 +207,6 @@ def cli_executable(cli_path):
 def read_users(bin_path):
     with open(bin_path + '/usersInstalled.json') as json_file:
         users = json.load(json_file)
-        print(users)
         return users
 
 
@@ -263,6 +263,14 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
     stats_tracker.report_enable = enable_report
     stats_tracker.log_install(getpass.getuser())
 
+def mark_user_flag(bin_path:str, value:bool):
+    config_storage = ConfigStorage(
+            alternate_path=f"{bin_path}/configPlugins.json"
+        )
+    plugins_config = config_storage.read_config(None)
+    plugins_config.user_install = value
+    config_storage.store_config(plugins_config, None)
+
 
 def execute(args):
     unassisted = args.unassisted
@@ -277,6 +285,8 @@ def execute(args):
     mkdir(f"{temp_path}/")
 
     create_rc_file_if_not_exist(args.system)
+
+    mark_user_flag(True) if user_install else mark_user_flag(False)
 
     if clai_installed(get_setup_file()):
         print_error('CLAI is already in you system. You should execute uninstall first')

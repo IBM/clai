@@ -6,7 +6,7 @@
 #
 
 import unicodedata
-from clai.platform import platform
+from clai import platform
 
 class Colorize:
     WARNING = "\033[91m"

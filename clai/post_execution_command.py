@@ -7,11 +7,10 @@
 
 import importlib
 from typing import List
-from  clai.platform import platform
+from clai import platform
 
 try:
     psutil = importlib.import_module('psutil')
-    print(psutil)
 except ImportError:
     if platform != 'zos':
         print('Error: psutil not installed')
