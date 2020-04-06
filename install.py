@@ -17,6 +17,7 @@ from distutils.dir_util import copy_tree
 from distutils.dir_util import remove_tree
 from distutils.file_util import copy_file
 
+from clai import platform
 from clai.datasource.config_storage import ConfigStorage
 from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
@@ -29,6 +30,10 @@ from clai.tools.file_util import append_to_file, get_rc_file, is_windows, get_se
 SUPPORTED_SHELLS = ['bash']
 URL_BASH_PREEXEC = 'http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh'
 BASH_PREEXEC = 'bash-preexec.sh'
+
+config_storage = ConfigStorage(
+        alternate_path=f"{bin_path}/configPlugins.json"
+    )
 
 
 def valid_python_version():
@@ -267,13 +272,19 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
     stats_tracker.log_install(getpass.getuser())
 
 def mark_user_flag(bin_path:str, value:bool):
-    config_storage = ConfigStorage(
-            alternate_path=f"{bin_path}/configPlugins.json"
-        )
     plugins_config = config_storage.read_config(None)
     plugins_config.user_install = value
     config_storage.store_config(plugins_config, None)
 
+def update_default_plugins():
+    default = ["nlc2cmd"]
+    if platform == 'zos':
+        default = ["nlc2cmd"]
+
+    plugins_config = config_storage.read_config(None)
+    plugins_config.default = default
+    config_storage.store_config(plugins_config, None)
+        
 
 def execute(args):
     unassisted = args.unassisted
@@ -328,6 +339,7 @@ def execute(args):
 
     install_orchestration(bin_path)
     if not no_skills:
+        update_default_plugins()
         agent_datasource = AgentDatasource(
             config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
         plugins = agent_datasource.all_plugins()
