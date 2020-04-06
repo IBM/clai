@@ -115,5 +115,7 @@ nohup.out
 # hide kube bot config
 */kube_agent/config/*
 */kube_agent/bb-survey-server/*
+
+# Ignore Eclipse and PyDev project files
 /.project
 /.pydevproject
