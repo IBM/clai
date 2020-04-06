@@ -8,4 +8,9 @@ echo ""
 echo "==============================================================="
 # Install Python3 dependencies
 echo ">> Installing python dependencies"
-sudo pip3 install -r requirements.txt 2> /dev/null
+if [[ "$1" = "--user" ]]; then
+    pip3 install --user -r requirements.txt 2> /dev/null
+else
+    sudo pip3 install -r requirements.txt 2> /dev/null
+fi
+

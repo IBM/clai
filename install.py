@@ -181,9 +181,12 @@ def remove(path):
     remove_tree(path)
 
 
-def install_plugins_dependencies(path, plugin):
+def install_plugins_dependencies(path, plugin, user_install):
     print(f'installing dependencies of plugin {plugin}')
-    result = os.system(f'{path}/fileExist.sh {plugin} {path}')
+    result = os.system(
+        f'{path}/fileExist.sh {plugin} --path {path} ' \
+            f'{"--user" if user_install else ""}'
+    )
 
     return result == 0
 
@@ -330,7 +333,7 @@ def execute(args):
         plugins = agent_datasource.all_plugins()
         for plugin in plugins:
             if plugin.default:
-                installed = install_plugins_dependencies(bin_path, plugin.pkg_name)
+                installed = install_plugins_dependencies(bin_path, plugin.pkg_name, user_install)
                 if installed:
                     agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
