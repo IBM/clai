@@ -270,7 +270,7 @@ def execute(args):
     demo_mode = args.demo_mode
     user_install = args.user_install
     bin_path = os.path.join(args.destdir, 'bin')
-    
+
     code_path = os.path.join(bin_path, 'clai')
     cli_path = os.path.join(bin_path, 'bin')
     temp_path = '~/tmp'
