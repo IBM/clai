@@ -29,6 +29,8 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         plugin_to_select = extract_quoted_agent_name(plugin_to_select)
 
         agent_descriptor = self.agent_datasource.get_agent_descriptor(plugin_to_select)
+        
+        plugins_config = self.config_storage.read_config(None)
 
         if not agent_descriptor:
             return create_error_select(plugin_to_select)
@@ -36,7 +38,8 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         if agent_descriptor and not agent_descriptor.installed:
             logger.info(f'installing dependencies of plugin {agent_descriptor.name}')
 
-            command = f'$CLAI_PATH/fileExist.sh {agent_descriptor.pkg_name}'
+            command = f'$CLAI_PATH/fileExist.sh {agent_descriptor.pkg_name} $CLAI_PATH' \
+                    f'{"--user" if plugins_config.user_install else ""}'
             action_selected_to_return = Action(
                 suggested_command=command,
                 execute=True
@@ -53,6 +56,7 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         if selected_plugin:
             self.stats_tracker.log_activate_skills(state.user_name, plugin_to_select)
             plugins_config = self.config_storage.read_config(state.user_name)
+            
             if plugins_config.selected is None:
                 plugins_config.selected = [selected_plugin.name]
             else:

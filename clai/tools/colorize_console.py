@@ -5,6 +5,9 @@
 # of this source tree for licensing information.
 #
 
+import unicodedata
+from clai import platform
+
 class Colorize:
     WARNING = "\033[91m"
     INFO = "\033[95m"
@@ -39,7 +42,10 @@ class Colorize:
         return self
 
     def emoji(self, emoji_code):
-        self._text_complete += emoji_code
+        if platform == 'zos':
+            self._text_complete += f'[ {unicodedata.name(emoji_code)} ]'
+        else:
+            self._text_complete += emoji_code
         return self
 
     def to_console(self):
