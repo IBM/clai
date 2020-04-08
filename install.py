@@ -288,7 +288,7 @@ def execute(args):
 
     create_rc_file_if_not_exist(args.system)
 
-    mark_user_flag(True) if user_install else mark_user_flag(False)
+    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
 
     if clai_installed(get_setup_file()):
         print_error('CLAI is already in you system. You should execute uninstall first')
