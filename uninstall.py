@@ -29,7 +29,7 @@ def remove(path):
         print("folder not found")
 
 
-def remove_system_folder(path:str=None):
+def remove_system_folder(path: str = None):
     if path is not None:
         # path to the clai dir in a local user installation
         default_system_destdir = "/".join(path.split("/")[0:-1])
