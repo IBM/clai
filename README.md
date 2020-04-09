@@ -72,9 +72,12 @@ $ ./BuildDockerImage.sh
 ```
 
 **Fedora and Ubuntu**
+
 ```
 $ sudo ./BuildDockerImage.sh
 ```
+
+> Control flags: Note that you may have to run `BuildDockerImage.sh` without the --no-cache flag for kernel version below 4.4.0-173-generic (Trusty Tahr/ Ubuntu 14.04 LTS).
 
 The end of a successful build process (this can take a while) should resemble the following output:
 
