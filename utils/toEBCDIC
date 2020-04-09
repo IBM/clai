@@ -77,7 +77,7 @@ until [ "$#" -eq 0 ]; do
       done
     else
       if [ -f "$1" ]; then
-        if /bin/test "$1" -CS IBM-1047 || [ "$FORCE" == "true" ]; then
+        if ! /bin/test "$1" -CS IBM-1047 || [ "$FORCE" == "true" ]; then
           iconv -f ISO8859-1 -t IBM-1047 "$1" > "$1".toEBCDICtmp
           getPerms "$1"
           rm "$1"
