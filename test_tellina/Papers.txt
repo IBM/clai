@@ -1,0 +1,10 @@
+Paper for good read:- 
+a) Program synthesis from natural language using recurrent neural networks
+b) NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System
+
+Original Repository:- 
+https://github.com/TellinaTool/tellina.git
+
+Steps and instructions:-
+a) clean any tensorflow and tensorboard. 
+b) 

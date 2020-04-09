@@ -1,0 +1,482 @@
+{% extends "annotator/base.html" %}
+    {% block head %}
+        <link rel="stylesheet" href="/static/css/annotator/panel.css">
+        <link rel="stylesheet" href="/static/css/comment.css">
+    {% endblock %}
+
+    {% block body %}
+        <!-- {% block navbar %}
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="previous-url">Prev</a></li>
+                            <li><a class="next-url">Next</a></li>
+                            <li><a href="/url_panel?utility={{utility}}">URL Panel</a></li>
+                            <li><a class="logout">Logout ({{access_code}})</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        {% endblock %} -->
+        <div class="container-fluid" style="">
+            <div class="row" style="padding-left: 20px; margin-right: 20px;">
+                <div class="url-content-panel col-md-8 col-xs-12" style="text-align:left">
+                    {% if url %}
+                        <object class="url-content-data" data="{{url}}"></object>
+                    {% endif %}
+                </div>
+                <div class="collect-panel col-lg-3 col-md-4 col-xs-12" style="text-align:left">
+                    <h1>Collect all bash commands with the utility <code>{{utility}}</code> and the corresponding English description</h1>
+                    <h1>You may submit other bash commands in the page to earn bonus, but this is not required.</h1>
+                    <hr>
+                    <div class="collect-box-group">
+                        <!-- Add existing annotations -->
+                        {% for annotation_id, command, nl in annotation_list %}
+                            <div class="collect-box" id="collect-box-{{forloop.counter}}" style="display: None">
+                                <textarea class="form-control command-input vresize" placeholder="Copy a bash command..."></textarea>
+                                <br>
+                                <textarea class="form-control nl-input vresize" placeholder="Type a natural language description..."></textarea>
+                                <br>
+                                <button type="button" class="btn btn-primary btn-sm submit-pair" id="submit-pair-{{forloop.counter}}" style="float: right">Submit</button>
+                                <button type="button" class="btn btn-primary btn-sm save-edit" id="save-edit-{{forloop.counter}}" style="float: right; display: None">Save</button>
+                                <button type="button" class="btn btn-warning btn-sm cancel-edit" id="cancel-edit-{{forloop.counter}}" style="float: right; margin-right: 20px; display: None">Cancel</button>
+                                <button type="button" class="btn btn-danger btn-sm delete-pair" id="delete-pair-{{forloop.counter}}" style="float: right; margin-right: 20px; display: None">Delete</button>
+                                <br>
+                            </div>
+                            <div class="annotation-box" id="annotation-box-{{forloop.counter}}">
+                                <p class="submission-index">#<strong>{{forloop.counter}}</strong></p>
+                                <span class="backend-id" style="display: None">{{annotation_id}}</span>
+                                {% if is_judger %}
+                                    <p class="command-submission">{{command}}<i class="glyphicon glyphicon-pencil command-submission-edit" style="float: right"></i></p>
+                                    <p class="nl-submission">{{nl}}<i class="glyphicon glyphicon-pencil nl-submission-edit" style="float: right"></i></p>
+                                    <input class="command-submission-edit-input" value="{{command}}" style="display: None"></p>
+                                    <input class="nl-submission-edit-input" value="{{nl}}" style="display: None"></p>
+                                {% else %}
+                                    <p class="command-submission">{{command}}</p>
+                                    <p class="nl-submission">{{nl}}</p>
+                                    <button type="button" class="btn btn-success btn-sm edit-pair" id="edit-pair-{{forloop.counter}}" style="float: right">Edit</button>
+                                    <br>
+                                {% endif %}
+                                <ul class="comment-list" id="comment-list-{{forloop.counter}}" style="padding-left: 0px"></ul>
+                                <hr>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="collection-complete">
+                        <div class="small-push"></div>
+                        {% if completed %}
+                            <label><input type="checkbox" id="collection-completed" value="" checked> All bash commands that meet the requirements on this web page have been entered.</label>
+                        {% else %}
+                            <label><input type="checkbox" id="collection-completed" value=""> All bash commands that meet the requirements on this web page have been entered.</label>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block other-js %}
+        <script src="/static/lib/bootstrap/js/bootstrap-modal.js"></script>
+        <script src="/static/lib/bootstrap/js/bootstrap-dialog.js"></script>
+
+        <script src="/static/js/annotator/main.js"></script>
+        <script src="/static/js/comment.js"></script>
+
+        <script>
+            var utility = '{{utility}}';
+            var nl_submission_cache = [];
+            var command_submission_cache = [];
+
+            var hypothes_prefix = 'https://via.hypothes.is/';
+            var url = '{{url}}'.substring(hypothes_prefix.length);
+
+            var num_annotations = {{annotation_list|length}};
+            var num_commands = {{command_list|length}};
+
+            var self_comment_color = '#FAE5D3';
+            var others_comment_color = '#D6EAF8';
+
+            $(document).ready(function () {
+                $('.url-content-data').height($(window).height() * .9);
+                $('.collect-panel').css({"min-width": "400px"});
+
+                /* add collect boxes when the page is first loaded */
+                if (num_annotations > 0) {
+                    for (i = 1; i < (num_annotations+1); i ++) {
+                        nl_submission_cache.push($(`#annotation-box-${i}`).find('.nl-submission').text());
+                        command_submission_cache.push($(`#annotation-box-${i}`).find(`.command-submission`).text());
+                        set_up_collect_panel(i);
+                    }
+                }
+
+                if ('{{is_judger}}' != 'True') {
+                    var num_commands = {{command_list|length}};
+                    if (num_commands == 0) {
+                        var annotation_id = num_annotations + 1;
+                        add_collect_panel(annotation_id, '', '');
+                    } else {
+                        var command_list = {{command_list|safe}};
+                        for (i = 1; i < (num_commands+1); i ++) {
+                            var annotation_id = num_annotations + i;
+                            add_collect_panel(annotation_id, command_list[i-1], '');
+                        }
+                    }
+                }
+
+                $('.previous-url').click(function() {
+                    $.get(`previous_url`, {url: url, utility: utility}, function(data){
+                        if (data.status == 'IS_FIRST_URL') {
+                            BootstrapDialog.show({
+								message: "Already reached the first URL.",
+								buttons: [{
+									label: "Okay",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+                        } else if (data.status == 'URL_DOES_NOT_EXIST') {
+                            BootstrapDialog.show({
+								message: "URL " + url + " does not exist.",
+								buttons: [{
+									label: "Okay",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+                        } else if (data.status == 'PREVIOUS_URL_SUCCESS') {
+                            window.location.replace(`collect_page?url=${data.url}&utility=${utility}`);
+                        }
+                    })
+                })
+
+                $('.next-url').click(function() {
+                    $.get(`next_url`, {url: url, utility: utility}, function(data){
+                        if (data.status == 'IS_LAST_URL') {
+                            BootstrapDialog.show({
+								message: "Already reached the last URL.",
+								buttons: [{
+									label: "Okay",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+                        } else if (data.status == 'URL_DOES_NOT_EXIST') {
+                            BootstrapDialog.show({
+								message: "URL " + url + " does not exist.",
+								buttons: [{
+									label: "Okay",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+                        } else if (data.status == 'NEXT_URL_SUCCESS') {
+                            window.location.replace(`collect_page?url=${data.url}&utility=${utility}`);
+                        }
+                    })
+                })
+
+                /* --- collection complete check --- */
+                $('#collection-completed').change(function() {
+                    if ($(this).is(":checked")) {
+                        $.get(`update_progress`, {url: url, utility: utility, status: 'completed'});
+                    } else {
+                        $.get(`update_progress`, {url: url, utility: utility, status: 'in-progress'});
+                    }
+                });
+
+                /* --- textual input auto-resize --- */
+                var observe;
+                if (window.attachEvent) {
+                    observe = function (element, event, handler) {
+                        element.attachEvent('on'+event, handler);
+                    };
+                }
+                else {
+                    observe = function (element, event, handler) {
+                        element.addEventListener(event, handler, false);
+                    };
+                }
+                function init () {
+                    var cmd = $('.command-input');
+                    var text = $('.nl-input');
+                    function resize () {
+                        cmd.style.height = 'auto';
+                        cmd.style.height = cmd.scrollHeight+'px';
+                        text.style.height = 'auto';
+                        text.style.height = text.scrollHeight+'px';
+                    }
+                    /* 0-timeout to get the already changed text */
+                    function delayedResize () {
+                        window.setTimeout(resize, 0);
+                    }
+                    observe(cmd, 'change',  resize);
+                    observe(cmd, 'cut',     delayedResize);
+                    observe(cmd, 'paste',   delayedResize);
+                    observe(cmd, 'drop',    delayedResize);
+                    observe(cmd, 'keydown', delayedResize);
+                    observe(text, 'change',  resize);
+                    observe(text, 'cut',     delayedResize);
+                    observe(text, 'paste',   delayedResize);
+                    observe(text, 'drop',    delayedResize);
+                    observe(text, 'keydown', delayedResize);
+
+                    cmd.focus();
+                    cmd.select();
+                    text.focus();
+                    text.select();
+                    resize();
+                }
+            })
+
+            /* -- data entry -- */
+            function add_collect_panel(annotation_id, cmd_extraction, nl_extraction) {
+                // add a new collect box
+                $(".collect-box-group").append(
+                    `<div class="collect-box" id="collect-box-${annotation_id}">
+                        <textarea class="form-control command-input vresize" placeholder="Copy a bash command...">${cmd_extraction}</textarea>
+                        <br>
+                        <textarea class="form-control nl-input vresize" placeholder="Type a natural language description...">${nl_extraction}</textarea>
+                        <br>
+                        <button type="button" class="btn btn-primary btn-sm submit-pair" id="submit-pair-${annotation_id}" style="float: right">Submit</button>
+                        <button type="button" class="btn btn-primary btn-sm save-edit" id="save-edit-${annotation_id}" style="float: right; display: None">Save</button>
+                        <button type="button" class="btn btn-warning btn-sm cancel-edit" id="cancel-edit-${annotation_id}" style="float: right; margin-right: 20px; display: None">Cancel</button>
+                        <button type="button" class="btn btn-danger btn-sm delete-pair" id="delete-pair-${annotation_id}" style="float: right; margin-right: 20px; display: None">Delete</button>
+                        <input type="radio" id="mark-as-duplicate-${annotation_id}" value="duplicate" style="display:None">
+                            <span id="mark-as-duplicate-radio-text-${annotation_id}" style="display: None">&nbsp;Duplicate</span>
+                        </input>
+                        &nbsp;&nbsp;
+                        <input type="radio" id="mark-as-wrong-${annotation_id}" value="wrong" style="display:None">
+                            <span id="mark-as-wrong-radio-text-${annotation_id}" style="display: None">&nbsp;Wrong</span>
+                        </input>
+                        &nbsp;&nbsp;
+                        <input type="radio" id="mark-as-i-dont-know-${annotation_id}" value="i-dont-know" style="display:None">
+                            <span id="mark-as-i-dont-know-radio-text-${annotation_id}" style="display: None">&nbsp;Not Sure</span>
+                        </input>
+                        <br>
+                    </div>
+                    <div class="annotation-box" id="annotation-box-${annotation_id}" style="display: None">
+                        <p class="submission-index"><strong>#${annotation_id}</strong></p>
+                        <p class="command-submission"></p>
+                        <p class="nl-submission"></p>
+                        <button type="button" class="btn btn-success btn-sm edit-pair" id="edit-pair-${annotation_id}" style="float: right">Edit</button>
+                        <br>
+                    </div>
+                    <hr>`
+                );
+                if (cmd_extraction.length > 0) {
+                    $(`#mark-as-duplicate-${annotation_id}`).show();
+                    $(`#mark-as-duplicate-radio-text-${annotation_id}`).show();
+                    $(`#mark-as-wrong-${annotation_id}`).show();
+                    $(`#mark-as-wrong-radio-text-${annotation_id}`).show();
+                    $(`#mark-as-i-dont-know-${annotation_id}`).show();
+                    $(`#mark-as-i-dont-know-radio-text-${annotation_id}`).show();
+                }
+
+                $(`#mark-as-duplicate-${annotation_id}`).change(function() {
+                    $.get(`mark_duplicate`, {url: url, command: cmd_extraction}, function(data) {
+                        if (data.status == 'MARK_DUPLICATE_SUCCESS') {
+                            var index = parseInt(annotation_id);
+                            var annotation_box = $('#annotation-box-' + index);
+                            var collect_box = $('#collect-box-' + index);
+                            collect_box.hide();
+                            annotation_box.find('.command-submission').text(cmd_extraction);
+                            annotation_box.find('.nl-submission').text('DUPLICATE');
+                            annotation_box.show();
+                        }
+                    });
+                    num_commands --;
+                    if (num_commands == 0) {
+                        add_collect_panel(num_annotations+1, '', '');
+                    }
+                });
+
+                $(`#mark-as-wrong-${annotation_id}`).change(function() {
+                    $.get(`mark_wrong`, {url: url, command: cmd_extraction}, function(data) {
+                        if (data.status == 'MARK_WRONG_SUCCESS') {
+                            var index = parseInt(annotation_id);
+                            var annotation_box = $('#annotation-box-' + index);
+                            var collect_box = $('#collect-box-' + index);
+                            collect_box.hide();
+                            annotation_box.find('.command-submission').text(cmd_extraction);
+                            annotation_box.find('.nl-submission').text('WRONG');
+                            annotation_box.show();
+                        }
+                    });
+                    num_commands --;
+                    if (num_commands == 0) {
+                        add_collect_panel(num_annotations+1, '', '');
+                    }
+                });
+
+                $(`#mark-as-i-dont-know-${annotation_id}`).change(function() {
+                    $.get(`mark_i_dont_know`, {url: url, command: cmd_extraction}, function(data) {
+                        if (data.status == 'MARK_I_DONT_KNOW_SUCCESS') {
+                            var index = parseInt(annotation_id);
+                            var annotation_box = $('#annotation-box-' + index);
+                            var collect_box = $('#collect-box-' + index);
+                            collect_box.hide();
+                            annotation_box.find('.command-submission').text(cmd_extraction);
+                            annotation_box.find('.nl-submission').text('I\'M NOT SURE');
+                            annotation_box.show();
+                        }
+                    });
+                    num_commands --;
+                    if (num_commands == 0) {
+                        add_collect_panel(num_annotations+1, '', '');
+                    }
+                });
+
+                set_up_collect_panel(annotation_id);
+            }
+
+            function set_up_collect_panel(annotation_id) {
+                var is_judger = ("{{is_judger}}" == 'True');
+                var annotation_box = $(`#annotation-box-${annotation_id}`);
+                var index = parseInt(annotation_id);
+                var annotation_box_backend_id = parseInt(annotation_box.find('.backend-id').text());
+                var collect_box = $(`#collect-box-${annotation_id}`);
+
+                /* --- annotator control --- */
+                $(`#submit-pair-${annotation_id}`).click(function(event) {
+                    var nl = collect_box.find('.nl-input').val();
+                    var cmd = collect_box.find('.command-input').val();
+                    if (nl != '' && cmd != '') {
+                        $.get(`submit_annotation`, {url: url, nl: nl, command: cmd, utility: utility}, function(data) {
+                            if (data.status == 'ANNOTATION_SAVED') {
+                                // change the current collection box to submitted mode
+                                collect_box.hide();
+                                annotation_box.find('.nl-submission').text(data.nl);
+                                annotation_box.find('.command-submission').text(data.command);
+                                annotation_box.show();
+
+                                // and open a new collection box
+                                num_annotations ++;
+                                num_commands --;
+                                if (num_commands <= 0) {
+                                    add_collect_panel(num_annotations+1, '', '');
+                                }
+                            }
+                        });
+                    }
+                });
+
+                $(`#save-edit-${annotation_id}`).click(function(event) {
+                    var original_nl = nl_submission_cache[index-1];
+                    var original_cmd = command_submission_cache[index-1];
+                    var nl = collect_box.find('.nl-input').val();
+                    var cmd = collect_box.find('.command-input').val();
+                    if (nl != '' && cmd != '') {
+                        $.get(`submit_edit`, {url: url, original_nl: original_nl,
+                                original_command: original_cmd, nl: nl, command: cmd}, function(data) {
+                            if (data.status == 'EDIT_SAVED') {
+                                // change the current collection box to submitted mode
+                                collect_box.hide();
+                                annotation_box.find('.nl-submission').text(data.nl);
+                                annotation_box.find('.command-submission').text(data.command);
+                                annotation_box.show();
+                            }
+                        });
+                    }
+                });
+
+                $(`#edit-pair-${annotation_id}`).click(function() {
+                    var nl = annotation_box.find('.nl-submission').text();
+                    var cmd = annotation_box.find('.command-submission').text();
+                    nl_submission_cache[index-1] = nl;
+                    command_submission_cache[index-1] = cmd;
+                    annotation_box.hide();
+                    collect_box.show();
+                    collect_box.find('.nl-input').val(nl);
+                    collect_box.find('.command-input').val(cmd);
+                    collect_box.find('.submit-pair').hide();
+                    collect_box.find('.save-edit').show();
+                    collect_box.find('.cancel-edit').show();
+                    collect_box.find('.delete-pair').show();
+                });
+
+                $(`#delete-pair-${annotation_id}`).click(function() {
+                    var nl = annotation_box.find('.nl-submission').text();
+                    var cmd = annotation_box.find('.command-submission').text();
+                    $.get(`delete_annotation`, {url: url, nl: nl, command: cmd}, function(data) {
+                        if (data.status == 'DELETION_SUCCESS') {
+                            // Simply mark up the annotation as deleted
+                            collect_box.hide();
+                            annotation_box.find('.nl-submission').css("text-decoration", "line-through");
+                            annotation_box.find('.command-submission').css("text-decoration", "line-through");
+                            annotation_box.find('.edit-pair').hide();
+                            annotation_box.show();
+                        }
+                    });
+                });
+
+                $(`#cancel-edit-${annotation_id}`).click(function() {
+                    var nl = collect_box.find('.nl-input').val();
+                    var cmd = collect_box.find('.command-input').val();
+                    collect_box.hide();
+                    annotation_box.show();
+                    annotation_box.find('.nl-submission').text(nl_submission_cache[index-1]);
+                    annotation_box.find('.command-submission').text(command_submission_cache[index-1]);
+                });
+
+                /* --- judger control --- */
+                if (is_judger) {
+                    var edit_btn = annotation_box.find('.nl-submission').find('.nl-submission-edit');
+                    var edit_input = annotation_box.find('.nl-submission-edit-input');
+                    edit_btn.click(function(event) {
+                        // cache the old nl submission
+                        var nl = annotation_box.find('.nl-submission').text();
+                        nl_submission_cache[index-1] = nl;
+                        $(this).parent().hide();
+                        edit_input.css("display", "block");
+                        edit_input.css("width", "100%");
+                        edit_input.css("border-style", "solid");
+                        edit_input.css("border-color", "#D6EAF8");
+                        open_change_and_comment_panel(annotation_box, 'annotation', 0,
+                            'Leave a comment for your changes...');
+                    });
+                }
+
+                /* -- judger & annotator: display update requests of each annotation
+                    if there is any, including their replies -- */
+                if (!isNaN(annotation_box_backend_id)) {
+                    $.get(`get_relevant_updates`, {annotation_id: annotation_box_backend_id},
+                                                   function(data) {
+                        if (data.update_list.length > 0) {
+                            $(`#edit-pair-${annotation_id}`).hide();
+                        }
+                        for (i = 0; i < data.update_list.length; i ++) {
+                            var update = data.update_list[i];
+                            if (update.access_code == update.annotation_access_code) {
+                                add_update_and_comment(annotation_box, update.access_code,
+                                    update.submission_time, update.update_str, update.comment_str, 'by-author',
+                                    update.update_id);
+                            } else {
+                                add_update_and_comment(annotation_box, update.access_code,
+                                    update.submission_time, update.update_str, update.comment_str, 'by-judger',
+                                    update.update_id);
+                            }
+                            set_up_update_and_comment(i, update.update_id, annotation_box, '{{access_code}}');
+                        }
+                    });
+                }
+            }
+        </script>
+    {% endblock %}

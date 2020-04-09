@@ -1,0 +1,140 @@
+{% extends "annotator/base.html" %}
+    {% block head %}
+        <link rel="stylesheet" href="/static/css/annotator/panel.css">
+    {% endblock %}
+
+    {% block body %}
+        {% block navbar %}
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="logout">Logout ({{access_code}})</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        {% endblock %}
+        <div class="container" style="padding-top: 60px">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-0 col-xs-12 col-xs-offset-0 utility-button-group" style="text-align:left">
+                {% if utility_groups %}
+                    {% for utility_group1, utility_group2 in utility_groups %}
+                        {% for utility, completion_ratio, completion_ratio_by_user in utility_group1 %}
+                            <div style="display: inline-block; position: relative">
+                            {% if completion_ratio == -1 %}
+                                <button type="button" class="btn btn-default annotate-utility disabled" style="text-decoration: line-through">{{utility}}</button>
+                            {% elif completion_ratio_by_user > 0.5 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-self-completed">{{utility}}</button>
+                            {% elif completion_ratio_by_user > 0 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-self-in-progress">{{utility}}</button>
+                            {% elif completion_ratio > 0.5 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-completed">{{utility}}</button>
+                            {% elif completion_ratio > 0 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-in-progress">{{utility}}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-default annotate-utility">{{utility}}</button>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                        <br>
+                        <br>
+                        {% for utility, completion_ratio, completion_ratio_by_user in utility_group2 %}
+                            <div style="display: inline-block; position: relative">
+                            {% if completion_ratio == -1 %}
+                                <button type="button" class="btn btn-default annotate-utility disabled" style="text-decoration: line-through">{{utility}}</button>
+                            {% elif completion_ratio_by_user > 0.5 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-self-completed" style="border: 1px; border-style: dotted">{{utility}}</button>
+                            {% elif completion_ratio_by_user > 0 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-self-in-progress" style="border: 1px; border-style: dotted">{{utility}}</button>
+                            {% elif completion_ratio > 0.5 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-completed">{{utility}}</button>
+                            {% elif completion_ratio > 0 %}
+                                <button type="button" class="btn btn-default annotate-utility annotate-utility-in-progress">{{utility}}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-default annotate-utility">{{utility}}</button>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                        <hr>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                <div class="col-md-4 col-xs-12 utility-stats" style="display:None">
+                    <h4><code class="hovered-utility"></code></h4>
+                    <p># urls annotated: <span class="num-urls-annotated"></span></p>
+                    <p># pairs annotated: <span class="num-pairs-annotated"></span></p>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block other-js %}
+    <script src="/static/js/annotator/main.js"></script>
+    <script>
+        $(function() {
+            $('.annotate-utility').each(function() {
+                var button = $(this);
+                var utility = $(this).text();
+                $.get(`get_utility_stats`, {utility: utility}, function(data) {
+                    if (data.status == 'UTILITY_STATS_SUCCESS') {
+                        var parent = button.parent('div');
+                        var original_height = parent.height(); 
+                        var original_width = parent.width();
+                        if (data.num_commands_missing > 0) {
+                             parent.append(`<span class="missing_command_badge">${data.num_commands_missing}</span>`);
+                        }
+                        parent.height(original_height);
+                        parent.width(original_width);
+                    }
+                });
+
+                $.get(`get_utility_num_notifications`, {utility: utility}, function(data) {
+                    if (data.status == 'GET_UTILITY_NUM_NOTIFICATIONS_SUCCESS') {
+                        var parent = button.parent('div');
+                        if (data.num_notifications > 0) {
+                             console.log(data.num_notifications);
+                             parent.append(`<span class="notification_badge">${data.num_notifications}</span>`);
+                        }  
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('.annotate-utility').click(function() {
+                var utility = $(this).text();
+                window.location.replace(`url_panel?utility=${utility}`);
+            });
+
+            $('.utility-button-group').hover(
+                function() { $('.utility-stats').show(); },
+                function() { $('.utility-stats').hide(); }
+            );
+
+            $('.annotate-utility').hover(
+                function() {
+                    var utility = $(this).text();
+                    $.get(`get_utility_stats`, {utility: utility}, function(data) {
+                        if (data.status == 'UTILITY_STATS_SUCCESS') {
+                            $('.utility-stats').show();
+                            $('.hovered-utility').text(utility);
+                            $('.num-urls-annotated').text(data.num_urls_annotated);
+                            $('.num-pairs-annotated').text(data.num_pairs_annotated);
+                        }
+                    });
+                }
+            );
+        });
+    </script>
+    {% endblock %}

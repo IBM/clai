@@ -1,0 +1,291 @@
+html {
+    overflow-y: scroll;
+}
+
+body {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+p {
+  text-align:left;
+}
+
+li {
+  text-align: left;
+}
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('/static/img/gears.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}
+
+/* Change the height of the nav bar */
+.navbar-nav > li > a {
+    padding-top:10px !important; padding-bottom:10px !important;
+}
+
+.navbar {min-height:32px !important}
+
+/*.command {
+    font-family: Monaco, Menlo, Consolas, monospace;
+    font-size: 18px;
+    text-align: center;
+}*/
+
+.program-text {
+    font-weight: bold;
+}
+
+#command-wrapper {
+    z-index: 3;
+}
+
+#command-wrapper.affix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 70px;
+    box-shadow: 0 0 15px 5px #ffffff;
+}
+
+#about {
+	text-align: justify;
+    width: 700px;
+    margin: 0 auto;
+}
+
+#canvas {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    pointer-events: none;
+}
+
+#help {
+    z-index: 2;
+}
+
+.tiny-push {
+    height: 10px;
+}
+
+.small-push {
+    height: 20px;
+}
+
+.push {
+    height: 40px;
+}
+
+.taggernooption {
+    background-color: #f8c7c7;
+}
+
+.taggeroption {
+    background-color: #caf8c7;
+}
+
+.taggercurrent {
+    border-color: red;
+    border-width: 2px;
+}
+
+.dropdown-menu {
+    font-size: 14px;
+}
+
+.oneliner-index h4 {
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-left: 20px;
+}
+
+.explanation {
+    margin-left: 20px;
+}
+
+.explanation h4 {
+    font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* .oneliner .line {
+    background: #eee;
+    font-size: 16px;
+    font-family: Consolas,monaco,monospace
+}
+
+.oneliner .line .add-on {
+    color: #253;
+    padding-right: .5em;
+    font-weight: bold;
+} */
+
+.index {
+    font-size: 20px;
+}
+
+.center-block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.well {
+    background: white;
+    height:auto;
+}
+
+.translate-menu {
+    left: 120px;
+}
+
+.top-search-container {
+    padding-top: 6px;
+}
+
+.input-group .nl-request {
+    width: 100%;
+    border-radius: 6px;
+}
+
+#top-search {
+   -webkit-transition: all .5s ease;
+   -moz-transition: all .5s ease;
+   transition: all .5s ease;
+   position: relative;
+   left: 0;
+}
+
+/* #top-search:focus {
+   border-color: #7DCEA0;
+   -moz-box-shadow: 0 0 8px rgba(125, 125, 206, 0.6);
+   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(125, 125, 206, 0.6);
+   outline: 0 none;
+} */
+
+#prevnext {
+    text-align: center;
+    padding-top: 10px;
+}
+
+#prevnext li:not(:first-child), #prevnext span:not(:first-child) {
+    cursor: pointer;
+}
+
+.help-box {
+    background-color: white;
+}
+
+.help-synopsis {
+    background-color: #f5f5f5;
+}
+
+.popover-content {
+    font-size: 12px;
+    text-align: justify;
+}
+
+.popover {
+    font-weight: normal;
+    max-width: 450px;
+}
+
+.btn-search{
+    background: white;
+    box-shadow: none;
+    outline: 0;
+}
+
+.btn-search:hover{
+    background: rgba(250, 215, 160, 1);
+    #box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px rgba(250, 215, 160, 0.75);
+}
+
+/* -- navigation bar -- */
+
+.navbar-default {
+  background: none;
+  border-color: transparent;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.navbar-default .navbar-nav > li > a {
+  font-size: 15px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 200;
+  color: #666;
+  padding: 5px 15px;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: #f48e5c;
+}
+
+.navbar-nav {
+  float: right;
+  display: inline-block;
+}
+
+.logo > a {
+  font-size: 24px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 200;
+  color: #666;
+  padding: 5px 15px;
+}
+
+.logo > a:hover {
+  color: #f48e5c;
+  text-decoration: none;
+}
+
+.main-website-header {
+  position: fixed;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.96);
+  z-index: 999;
+  padding: 12px 0 8px 0
+}
+
+.fixed-in-scroll {
+    position:fixed; 
+    top:0; 
+    left:0;
+}
