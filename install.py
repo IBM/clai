@@ -288,8 +288,6 @@ def execute(args):
 
     create_rc_file_if_not_exist(args.system)
 
-    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
-
     if clai_installed(get_setup_file()):
         print_error('CLAI is already in you system. You should execute uninstall first')
         sys.exit(1)
@@ -321,6 +319,8 @@ def execute(args):
         download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
         copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
 
+    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
+        
     register_the_user(bin_path, args.system)
     append_setup_to_file(get_setup_file(), bin_path)
     register_file(args.system)
