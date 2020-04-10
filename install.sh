@@ -53,8 +53,12 @@ if [ "$UNAME" = "Darwin" ]; then
     fi
 fi
 
-if lsof -i -P -n | grep 8010 > /dev/null 2>&1; then
-  die "\n Another process is running on port 8010."
+if [ ! $(uname) == 'OS/390' ]; then
+  if lsof -i -P -n | grep 8010 > /dev/null 2>&1; then
+    die "\n Another process is running on port 8010."
+  fi
+else
+  # TODO: find equivalent for z/OS
 fi
 
 if [ "$USER_INSTALL" == true ]; then

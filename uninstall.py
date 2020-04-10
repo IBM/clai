@@ -29,7 +29,7 @@ def remove(path):
         print("folder not found")
 
 
-def remove_system_folder(path:str=None):
+def remove_system_folder(path: str = None):
     if path is not None:
         # path to the clai dir in a local user installation
         default_system_destdir = "/".join(path.split("/")[0:-1])
@@ -183,7 +183,7 @@ def execute(args):
 
     print_complete("CLAI has been uninstalled correctly, you need restart your shell.")
 
-    sys.exit(0)
+    return 0
 
 
 if __name__ == "__main__":

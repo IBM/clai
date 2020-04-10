@@ -17,6 +17,7 @@ from distutils.dir_util import copy_tree
 from distutils.dir_util import remove_tree
 from distutils.file_util import copy_file
 
+from clai import platform
 from clai.datasource.config_storage import ConfigStorage
 from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
@@ -29,7 +30,6 @@ from clai.tools.file_util import append_to_file, get_rc_file, is_windows, get_se
 SUPPORTED_SHELLS = ['bash']
 URL_BASH_PREEXEC = 'http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh'
 BASH_PREEXEC = 'bash-preexec.sh'
-
 
 def valid_python_version():
     return sys.version_info[0] == 3 and sys.version_info[1] >= 6
@@ -132,6 +132,7 @@ def parse_args():
                 os.path.expanduser('~/.bin'),
                 'clai',
             )
+        
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
@@ -180,9 +181,12 @@ def remove(path):
     remove_tree(path)
 
 
-def install_plugins_dependencies(path, plugin):
+def install_plugins_dependencies(path, plugin, user_install):
     print(f'installing dependencies of plugin {plugin}')
-    result = os.system(f'{path}/fileExist.sh {plugin} {path}')
+    result = os.system(
+        f'{path}/fileExist.sh {plugin} {path} ' \
+            f'{"--user" if user_install else ""}'
+    )
 
     return result == 0
 
@@ -206,7 +210,6 @@ def cli_executable(cli_path):
 def read_users(bin_path):
     with open(bin_path + '/usersInstalled.json') as json_file:
         users = json.load(json_file)
-        print(users)
         return users
 
 
@@ -263,6 +266,13 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
     stats_tracker.report_enable = enable_report
     stats_tracker.log_install(getpass.getuser())
 
+def mark_user_flag(bin_path:str, value:bool):
+    config_storage = ConfigStorage(
+        alternate_path=f"{bin_path}/configPlugins.json"
+    )
+    plugins_config = config_storage.read_config(None)
+    plugins_config.user_install = value
+    config_storage.store_config(plugins_config, None)
 
 def execute(args):
     unassisted = args.unassisted
@@ -270,7 +280,7 @@ def execute(args):
     demo_mode = args.demo_mode
     user_install = args.user_install
     bin_path = os.path.join(args.destdir, 'bin')
-    
+
     code_path = os.path.join(bin_path, 'clai')
     cli_path = os.path.join(bin_path, 'bin')
     temp_path = '~/tmp'
@@ -314,6 +324,8 @@ def execute(args):
         if is_zos():
             os.system(f'chtag -tc 819 {bin_path}/{BASH_PREEXEC}')
 
+    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
+        
     register_the_user(bin_path, args.system)
     append_setup_to_file(get_setup_file(), bin_path)
     register_file(args.system)
@@ -324,8 +336,12 @@ def execute(args):
             config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
         plugins = agent_datasource.all_plugins()
         for plugin in plugins:
-            if plugin.default:
-                installed = install_plugins_dependencies(bin_path, plugin.pkg_name)
+            default = plugin.default
+            if platform == 'zos':
+                plugin.z_default
+
+            if default:
+                installed = install_plugins_dependencies(bin_path, plugin.pkg_name, user_install)
                 if installed:
                     agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
@@ -336,7 +352,7 @@ def execute(args):
     if not user_install:
         os.system(f'chmod -R 777 /var/tmp')
 
-    print_complete("CLAI has been installed correctly, you need restart your shell.")
+    print_complete("CLAI has been installed correctly, you will need to restart your shell.")
 
 
 def install_orchestration(bin_path):
@@ -387,4 +403,5 @@ def append_setup_to_file(rc_path, bin_path):
         rc_path,
         "\n[[ -f %s/clai.sh ]] && source %s/clai.sh" % (bin_path, bin_path))
 
-sys.exit(execute(parse_args()))
+if __name__ == '__main__':
+    sys.exit(execute(parse_args()))

@@ -25,3 +25,33 @@ Sometimes pip3 is redirected to other path and old version. For fixing that invo
 ```commandline
 sudo rm -rf <path_wrong_version>
 ```
+
+## Docker on Windows
+
+In some cases when attempting to run clai within a docker container, all bash scripts will be unable to run due to windows changing the line break character from `\n` to `\r\n`. 
+
+To resolve this in the docker container first we must uninstall the broken clai instance by running:
+
+*note: we use the python script directly rather than the shell script which is currently broken*
+
+```
+sudo python3 ./uninstall.py
+```
+
+Next, we install a package to convert the line breaks for us:
+
+```
+sudo yum install dos2unix -y
+```
+
+Now that we have the package lets run it on the contents of the repo. Run the following in the root of the repo:
+
+```
+dos2unix $(find . -type f)
+```
+
+Finally, we can reinstall clai:
+
+```
+sudo ./install.sh
+```

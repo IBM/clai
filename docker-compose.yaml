@@ -1,0 +1,18 @@
+#
+# Copyright (C) 2020 IBM. All Rights Reserved.
+#
+# See LICENSE.txt file in the root directory
+# of this source tree for licensing information.
+#
+# Filename: docker-compose.yaml
+# Purpose: for isolated development
+# Usage: `docker-compose run clai bash -c "cd /zclai && python3 develop.py install --path /zclai && bash"`
+
+version: '3'
+services:
+  clai:
+    build:
+      context: .
+      dockerfile: Dockerfile.Dev
+    volumes:
+        - .:/zclai
