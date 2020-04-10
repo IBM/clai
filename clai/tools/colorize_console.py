@@ -13,8 +13,8 @@ class Colorize:
 
     EMOJI_ROBOT = '@'
   # EMOJI_ROBOT = '\U0001F916'
-    EMOJI_CHECK = '\u2611'
-  # EMOJI_CHECK = '[x]'
+  # EMOJI_CHECK = '\u2611'
+    EMOJI_CHECK = '[x]'
     EMOJI_BOX = '[ ]'
   # EMOJI_BOX = '\u25FB'
 

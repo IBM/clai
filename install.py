@@ -24,7 +24,7 @@ from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.colorize_console import Colorize
 from clai.tools.console_helper import print_complete, print_error
-from clai.tools.file_util import append_to_file, get_rc_file, is_windows, get_setup_file, get_rc_files
+from clai.tools.file_util import append_to_file, get_rc_file, is_windows, get_setup_file, get_rc_files, is_zos, is_rw_with_EBCDIC
 
 SUPPORTED_SHELLS = ['bash']
 URL_BASH_PREEXEC = 'http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh'
@@ -305,9 +305,14 @@ def execute(args):
         os.system(f'chmod 666 {bin_path}/anonymize.json')
         os.system(f'chmod -R 777 {bin_path}')
         cli_executable(cli_path)
+        if is_zos():
+            os.system(f'chtag -tc 1047 -R {bin_path}')
+            os.system(f'chtag -tc 1047 -R {cli_path}')
 
         download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
         copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
+        if is_zos():
+            os.system(f'chtag -tc 819 {bin_path}/{BASH_PREEXEC}')
 
     register_the_user(bin_path, args.system)
     append_setup_to_file(get_setup_file(), bin_path)
@@ -346,18 +351,30 @@ def install_orchestration(bin_path):
 def register_file(system):
     rc_files = get_rc_files(system)
     for file in rc_files:
+        encoding = "utf-8"
+        newline = "\n"
+        left_bracket = "["
+        right_bracket = "]"
+        # The open() with encoding cp1047 (IBM-1047) doesn't work well or works as cp037 (IBM-037)
+        # so handle special characters (newline, IBM-1047 vs IBM-037) used here 
+        if is_rw_with_EBCDIC(file):
+            encoding = "cp1047"
+            newline = "\x85"
+            left_bracket = "\xDD"
+            right_bracket = "\xA8"
+
         print(f"registering {file}")
-        append_to_file(file, "# CLAI setup\n")
+        append_to_file(file, "# CLAI setup"+newline, encoding)
 
-        append_to_file(file, 'if ! [ ${#preexec_functions[@]} -eq 0 ]; then\n')
-        append_to_file(file, '  if ! [[ " ${preexec_functions[@]} " =~ " preexec_override_invoke " ]]; then\n')
-        append_to_file(file, f"     source {get_setup_file()} \n")
-        append_to_file(file, '  fi\n')
-        append_to_file(file, 'else\n')
-        append_to_file(file, f" source {get_setup_file()} \n")
-        append_to_file(file, 'fi\n')
+        append_to_file(file, 'if ! '+left_bracket+' ${#preexec_functions'+left_bracket+'@'+right_bracket+'} -eq 0 '+right_bracket+'; then'+newline, encoding)
+        append_to_file(file, '  if ! '+left_bracket+left_bracket+' " ${preexec_functions'+left_bracket+'@'+right_bracket+'} " =~ " preexec_override_invoke " '+right_bracket+right_bracket+'; then'+newline, encoding)
+        append_to_file(file, f"     source {get_setup_file()} "+newline, encoding)
+        append_to_file(file, '  fi'+newline, encoding)
+        append_to_file(file, 'else'+newline, encoding)
+        append_to_file(file, f" source {get_setup_file()} "+newline, encoding)
+        append_to_file(file, 'fi'+newline, encoding)
 
-        append_to_file(file, "# End CLAI setup\n")
+        append_to_file(file, "# End CLAI setup"+newline, encoding)
 
 
 def append_setup_to_file(rc_path, bin_path):
@@ -369,6 +386,5 @@ def append_setup_to_file(rc_path, bin_path):
     append_to_file(
         rc_path,
         "\n[[ -f %s/clai.sh ]] && source %s/clai.sh" % (bin_path, bin_path))
-
 
 sys.exit(execute(parse_args()))

@@ -51,7 +51,7 @@ if [ -z "$2" ]; then
 fi
 
 install_plugin $1
-if [ $? == 0 ]; then
+if [[ $? == 0 ]]; then
         echo "Installed plugins dependencies  $CLAI_PATH/clai/server/plugins/$1/install.sh"
 else
         echo "The plugin don't have dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"

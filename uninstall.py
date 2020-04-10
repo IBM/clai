@@ -18,7 +18,7 @@ from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.console_helper import print_complete, print_error
-from clai.tools.file_util import get_rc_file, get_setup_file, get_rc_files
+from clai.tools.file_util import get_rc_file, get_setup_file, get_rc_files, is_rw_with_EBCDIC
 
 
 def remove(path):
@@ -104,8 +104,28 @@ def remove_setup_file(rc_file_path):
 def remove_between(rc_file_path, start, end):
     path = os.path.expanduser(rc_file_path)
     if os.path.isfile(path):
-        lines = io.open(path, "r",
-                        encoding="utf-8",
+        codeset = "utf-8"
+        lines = []
+        if is_rw_with_EBCDIC(path):
+        # The open() with encoding cp1047 (IBM-1047), working as cp037 (IBM-037), doesn't identify the newline correctly, 
+        # Use \x85 to identify newline
+            codeset = "cp1047"
+            newline = '\x85'
+            err_lines = open(path, "r",
+                           encoding=codeset,
+                           errors="ignore").readlines()
+            for err_line in err_lines:
+                right_line_list = err_line.split(newline)
+                length = len(right_line_list)
+                i = 0
+                for right_line in right_line_list:
+                    i = i + 1
+                    # not empty element or not the last emtpy element
+                    if len(right_line) or length != i:
+                        lines.append(right_line+newline)
+        else:
+            lines = open(path, "r",
+                        encoding=codeset,
                         errors="ignore").readlines()
 
         remove_line = False
@@ -119,7 +139,7 @@ def remove_between(rc_file_path, start, end):
             if line.strip() == end.strip():
                 remove_line = False
 
-        io.open(path, "w").writelines(lines_after_remove)
+        io.open(path, "w", encoding=codeset).writelines(lines_after_remove)
 
 
 def remove_lines_setup(rc_file_path):
