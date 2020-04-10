@@ -1,6 +1,6 @@
 #!/bin/bash
 function cleanUp() {
-rm -f $ERROR_LOG;
+rm -f $ERROR_LOG_FILE;
 }
 
 function clear_history() {
@@ -46,7 +46,20 @@ preexec_override_invoke() {
             LAST_COMMAND=$(eval 'cat $HISTFILE | tail -n 1')
             CURRENT_PWD=$(eval 'pwd')
 
-            ERROR_LOG_FILE=$(mktemp);
+            sys_name=`uname -s`
+            if [ "$sys_name" == "OS/390" ]
+            then
+                random_str=`date +%Y%m%d%H%M%S`
+                if [[ ! "$TMPDIR" ]]
+                then
+                    ERROR_LOG_FILE="/tmp/tmp.$random_str"
+                else
+                    ERROR_LOG_FILE="$TMPDIR/tmp.$random_str"
+                fi
+                touch $ERROR_LOG_FILE
+            else
+                ERROR_LOG_FILE=$(mktemp);
+            fi
 
             trap cleanUp EXIT
             if [ "$current_command_index" -lt "$num_commands" ]
