@@ -1,4 +1,6 @@
-tldr
-requests
-spacy
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.1.0/en_core_web_sm-2.1.0.tar.gz#egg=en_core_web_sm
+nltk==3.4.5
+bs4==0.0.1
+sklearn==0.0
+scipy==1.4.1
+pandas==1.0.3
+gensim==3.8.1
