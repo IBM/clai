@@ -4,8 +4,8 @@ import ssl
 import time
 import urllib
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+# from django.core.exceptions import ObjectDoesNotExist
+# from django.http import JsonResponse
 from website.models import NL, Command, Tag, URL
 
 sys.path.append(os.path.join(

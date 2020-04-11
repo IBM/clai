@@ -211,6 +211,7 @@ def translate(request, ip_address):
 
     return HttpResponse(template.render(context, request))
 
+@csrf_protect
 @ip_address_required
 def translate_clai(request, ip_address):
     # template = loader.get_template('translator/translate.html')

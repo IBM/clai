@@ -1,0 +1,9 @@
+---
+applications:
+- instances: 1
+  timeout: 180
+  name: pythondjangoapp
+  buildpack: python_buildpack
+  command: python3 hello.py 
+  memory: 127M
+  host: not-used65491

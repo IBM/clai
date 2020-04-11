@@ -10,7 +10,7 @@ learning_module_dir = os.path.join(os.path.dirname(__file__), "..",
                                    "tellina_learning_module")
 sys.path.append(learning_module_dir)
 
-from website.utils import NUM_TRANSLATIONS
+#from website.utils import NUM_TRANSLATIONS
 from encoder_decoder import data_utils
 from encoder_decoder import decode_tools
 from encoder_decoder import parse_args

@@ -1,0 +1,97 @@
+Invoking 'cf logs pythondjangoapp --recent'...
+
+Retrieving logs for app pythondjangoapp in org dev_website / space dev as mady902@gmail.com...
+
+   2020-04-11T04:14:43.43-0400 [API/7] OUT Updated app with guid 36aa4837-7909-41d8-9215-110c5eb4eadf ({"name"=>"pythondjangoapp", "command"=>"[PRIVATE DATA HIDDEN]", "instances"=>1, "memory"=>127, "buildpack"=>"python_buildpack", "environment_json"=>"[PRIVATE DATA HIDDEN]", "health_check_timeout"=>180})
+   2020-04-11T04:15:00.64-0400 [API/1] OUT Uploading bits for app with guid 36aa4837-7909-41d8-9215-110c5eb4eadf
+   2020-04-11T04:15:29.41-0400 [API/21] OUT Creating build for app with guid 36aa4837-7909-41d8-9215-110c5eb4eadf
+   2020-04-11T04:15:29.87-0400 [API/21] OUT Updated app with guid 36aa4837-7909-41d8-9215-110c5eb4eadf ({"state"=>"STARTED"})
+   2020-04-11T04:15:30.15-0400 [STG/0] OUT Downloading python_buildpack...
+   2020-04-11T04:15:30.18-0400 [STG/0] OUT Downloaded python_buildpack
+   2020-04-11T04:15:30.18-0400 [STG/0] OUT Cell 58dc0b20-7ef1-45a9-b7b6-4d3ad92134ea creating container for instance 1eb5a54f-ca80-4c75-8022-9928954e8402
+   2020-04-11T04:15:31.76-0400 [STG/0] OUT Cell 58dc0b20-7ef1-45a9-b7b6-4d3ad92134ea successfully created container for instance 1eb5a54f-ca80-4c75-8022-9928954e8402
+   2020-04-11T04:15:32.19-0400 [STG/0] OUT Downloading app package...
+   2020-04-11T04:15:38.76-0400 [STG/0] OUT Downloaded app package (103.7M)
+   2020-04-11T04:15:39.31-0400 [STG/0] OUT -----> Python Buildpack version 1.7.6
+   2020-04-11T04:15:39.31-0400 [STG/0] OUT -----> Supplying Python
+   2020-04-11T04:15:39.31-0400 [STG/0] OUT -----> Installing python 2.7.17
+   2020-04-11T04:15:39.31-0400 [STG/0] OUT        Download [https://buildpacks.cloudfoundry.org/dependencies/python/python-2.7.17-linux-x64-cflinuxfs3-7061c97e.tgz]
+   2020-04-11T04:15:39.88-0400 [STG/0] OUT        [31;1m**WARNING**[0m python 2.7.x will no longer be available in new buildpacks released after 2020-01-01.
+   2020-04-11T04:15:39.88-0400 [STG/0] OUT        See: https://www.python.org/dev/peps/pep-0373/
+   2020-04-11T04:15:43.36-0400 [STG/0] OUT -----> Installing pip-pop 0.1.4
+   2020-04-11T04:15:43.36-0400 [STG/0] OUT        Download [https://buildpacks.cloudfoundry.org/dependencies/manual-binaries/pip-pop/pip-pop-0.1.4-0a3b0f1b.tar.gz]
+   2020-04-11T04:15:49.04-0400 [STG/0] OUT -----> Running Pip Install
+   2020-04-11T04:15:49.55-0400 [STG/0] ERR        DEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7. More details about Python 2 support in pip, can be found at https://pip.pypa.io/en/latest/development/release-process/#python-2-support
+   2020-04-11T04:15:49.71-0400 [STG/0] OUT        Collecting Django>=1.10.8 (from -r /tmp/app/requirements.txt (line 1))
+   2020-04-11T04:15:50.41-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/49/49/178daa8725d29c475216259eb19e90b2aa0b8c0431af8c7e9b490ae6481d/Django-1.11.29-py2.py3-none-any.whl (6.9MB)
+   2020-04-11T04:15:51.86-0400 [STG/0] OUT        Collecting nltk==3.4.5 (from -r /tmp/app/requirements.txt (line 2))
+   2020-04-11T04:15:52.06-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/f6/1d/d925cfb4f324ede997f6d47bea4d9babba51b49e87a767c170b77005889d/nltk-3.4.5.zip (1.5MB)
+   2020-04-11T04:15:52.65-0400 [STG/0] OUT        Collecting matplotlib==1.5.3 (from -r /tmp/app/requirements.txt (line 3))
+   2020-04-11T04:15:54.65-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/5b/50/8254f79504eb539a1ec4648587711ab8604619dbcee1545c6ea61dcb3f28/matplotlib-1.5.3-cp27-cp27mu-manylinux1_x86_64.whl (13.7MB)
+   2020-04-11T04:15:56.00-0400 [STG/0] OUT        Collecting tqdm==4.9.0 (from -r /tmp/app/requirements.txt (line 4))
+   2020-04-11T04:15:56.28-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/e5/28/26a7584bd0b824f8f750a0cd0c6230fc14653dfb88813516caec1cd42475/tqdm-4.9.0-py2.py3-none-any.whl (42kB)
+   2020-04-11T04:15:56.30-0400 [STG/0] OUT        Collecting requests==2.20.0 (from -r /tmp/app/requirements.txt (line 5))
+   2020-04-11T04:15:56.49-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/f1/ca/10332a30cb25b627192b4ea272c351bce3ca1091e541245cccbace6051d8/requests-2.20.0-py2.py3-none-any.whl (60kB)
+   2020-04-11T04:15:56.55-0400 [STG/0] OUT        Collecting scipy (from -r /tmp/app/requirements.txt (line 6))
+   2020-04-11T04:15:57.24-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/24/40/11b12af7f322c1e20446c037c47344d89bab4922b8859419d82cf56d796d/scipy-1.2.3-cp27-cp27mu-manylinux1_x86_64.whl (24.8MB)
+   2020-04-11T04:15:59.82-0400 [STG/0] OUT        Collecting Flask>=1.0.0 (from -r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:15:59.92-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/f2/28/2a03252dfb9ebf377f40fba6a7841b47083260bf8bd8e737b0c6952df83f/Flask-1.1.2-py2.py3-none-any.whl (94kB)
+   2020-04-11T04:16:00.02-0400 [STG/0] OUT        Collecting cloudant==2.4.0 (from -r /tmp/app/requirements.txt (line 8))
+   2020-04-11T04:16:00.21-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/7e/d1/c63aab0f39a33fb242f3553a9b6ca693ece98ba33e9d040ee4b71840ad3b/cloudant-2.4.0-py2-none-any.whl (66kB)
+   2020-04-11T04:16:00.23-0400 [STG/0] OUT        Collecting pytz (from Django>=1.10.8->-r /tmp/app/requirements.txt (line 1))
+   2020-04-11T04:16:00.73-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/e7/f9/f0b53f88060247251bf481fa6ea62cd0d25bf1b11a87888e53ce5b7c8ad2/pytz-2019.3-py2.py3-none-any.whl (509kB)
+   2020-04-11T04:16:01.05-0400 [STG/0] OUT        Collecting six (from nltk==3.4.5->-r /tmp/app/requirements.txt (line 2))
+   2020-04-11T04:16:01.17-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+   2020-04-11T04:16:01.17-0400 [STG/0] OUT        Collecting singledispatch (from nltk==3.4.5->-r /tmp/app/requirements.txt (line 2))
+   2020-04-11T04:16:01.21-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/c5/10/369f50bcd4621b263927b0a1519987a04383d4a98fb10438042ad410cf88/singledispatch-3.4.0.3-py2.py3-none-any.whl
+   2020-04-11T04:16:01.22-0400 [STG/0] OUT        Collecting cycler (from matplotlib==1.5.3->-r /tmp/app/requirements.txt (line 3))
+   2020-04-11T04:16:01.25-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/f7/d2/e07d3ebb2bd7af696440ce7e754c59dd546ffe1bbe732c8ab68b9c834e61/cycler-0.10.0-py2.py3-none-any.whl
+   2020-04-11T04:16:01.26-0400 [STG/0] OUT        Collecting python-dateutil (from matplotlib==1.5.3->-r /tmp/app/requirements.txt (line 3))
+   2020-04-11T04:16:01.34-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl (227kB)
+   2020-04-11T04:16:01.40-0400 [STG/0] OUT        Collecting numpy>=1.6 (from matplotlib==1.5.3->-r /tmp/app/requirements.txt (line 3))
+   2020-04-11T04:16:02.59-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/3a/5f/47e578b3ae79e2624e205445ab77a1848acdaa2929a00eeef6b16eaaeb20/numpy-1.16.6-cp27-cp27mu-manylinux1_x86_64.whl (17.0MB)
+   2020-04-11T04:16:04.13-0400 [STG/0] OUT        Collecting pyparsing!=2.0.0,!=2.0.4,!=2.1.2,>=1.5.6 (from matplotlib==1.5.3->-r /tmp/app/requirements.txt (line 3))
+   2020-04-11T04:16:04.31-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/8a/bb/488841f56197b13700afd5658fc279a2025a39e22449b7cf29864669b15d/pyparsing-2.4.7-py2.py3-none-any.whl (67kB)
+   2020-04-11T04:16:04.32-0400 [STG/0] OUT        Collecting idna<2.8,>=2.5 (from requests==2.20.0->-r /tmp/app/requirements.txt (line 5))
+   2020-04-11T04:16:04.36-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/4b/2a/0276479a4b3caeb8a8c1af2f8e4355746a97fab05a372e4a2c6a6b876165/idna-2.7-py2.py3-none-any.whl (58kB)
+   2020-04-11T04:16:04.37-0400 [STG/0] OUT        Collecting chardet<3.1.0,>=3.0.2 (from requests==2.20.0->-r /tmp/app/requirements.txt (line 5))
+   2020-04-11T04:16:04.41-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl (133kB)
+   2020-04-11T04:16:04.43-0400 [STG/0] OUT        Collecting urllib3<1.25,>=1.21.1 (from requests==2.20.0->-r /tmp/app/requirements.txt (line 5))
+   2020-04-11T04:16:04.52-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/01/11/525b02e4acc0c747de8b6ccdab376331597c569c42ea66ab0a1dbd36eca2/urllib3-1.24.3-py2.py3-none-any.whl (118kB)
+   2020-04-11T04:16:04.56-0400 [STG/0] OUT        Collecting certifi>=2017.4.17 (from requests==2.20.0->-r /tmp/app/requirements.txt (line 5))
+   2020-04-11T04:16:04.63-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/57/2b/26e37a4b034800c960a00c4e1b3d9ca5d7014e983e6e729e33ea2f36426c/certifi-2020.4.5.1-py2.py3-none-any.whl (157kB)
+   2020-04-11T04:16:04.64-0400 [STG/0] OUT        Collecting Werkzeug>=0.15 (from Flask>=1.0.0->-r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:16:04.73-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/cc/94/5f7079a0e00bd6863ef8f1da638721e9da21e5bacee597595b318f71d62e/Werkzeug-1.0.1-py2.py3-none-any.whl (298kB)
+   2020-04-11T04:16:04.79-0400 [STG/0] OUT        Collecting click>=5.1 (from Flask>=1.0.0->-r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:16:04.87-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/dd/c0/4d8f43a9b16e289f36478422031b8a63b54b6ac3b1ba605d602f10dd54d6/click-7.1.1-py2.py3-none-any.whl (82kB)
+   2020-04-11T04:16:04.88-0400 [STG/0] OUT        Collecting Jinja2>=2.10.1 (from Flask>=1.0.0->-r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:16:04.94-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/27/24/4f35961e5c669e96f6559760042a55b9bcfcdb82b9bdb3c8753dbe042e35/Jinja2-2.11.1-py2.py3-none-any.whl (126kB)
+   2020-04-11T04:16:04.97-0400 [STG/0] OUT        Collecting itsdangerous>=0.24 (from Flask>=1.0.0->-r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:16:05.00-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/76/ae/44b03b253d6fade317f32c24d100b3b35c2239807046a4c953c7b89fa49e/itsdangerous-1.1.0-py2.py3-none-any.whl
+   2020-04-11T04:16:05.02-0400 [STG/0] OUT        Collecting MarkupSafe>=0.23 (from Jinja2>=2.10.1->Flask>=1.0.0->-r /tmp/app/requirements.txt (line 7))
+   2020-04-11T04:16:05.10-0400 [STG/0] OUT          Downloading https://files.pythonhosted.org/packages/fb/40/f3adb7cf24a8012813c5edb20329eb22d5d8e2a0ecf73d21d6b85865da11/MarkupSafe-1.1.1-cp27-cp27mu-manylinux1_x86_64.whl
+   2020-04-11T04:16:05.23-0400 [STG/0] OUT        Installing collected packages: pytz, Django, six, singledispatch, nltk, cycler, python-dateutil, numpy, pyparsing, matplotlib, tqdm, idna, chardet, urllib3, certifi, requests, scipy, Werkzeug, click, MarkupSafe, Jinja2, itsdangerous, Flask, cloudant
+   2020-04-11T04:16:09.11-0400 [STG/0] ERR          WARNING: The script django-admin is installed in '/tmp/contents294435366/deps/0/python/bin' which is not on PATH.
+   2020-04-11T04:16:09.11-0400 [STG/0] ERR          Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+   2020-04-11T04:16:10.25-0400 [STG/0] OUT          Running setup.py install for nltk: started
+   2020-04-11T04:16:12.31-0400 [STG/0] OUT            Running setup.py install for nltk: finished with status 'done'
+   2020-04-11T04:16:15.15-0400 [STG/0] ERR          WARNING: The scripts f2py, f2py2 and f2py2.7 are installed in '/tmp/contents294435366/deps/0/python/bin' which is not on PATH.
+   2020-04-11T04:16:15.15-0400 [STG/0] ERR          Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+   2020-04-11T04:16:17.22-0400 [STG/0] ERR          WARNING: The script tqdm is installed in '/tmp/contents294435366/deps/0/python/bin' which is not on PATH.
+   2020-04-11T04:16:17.23-0400 [STG/0] ERR          Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+   2020-04-11T04:16:17.59-0400 [STG/0] ERR          WARNING: The script chardetect is installed in '/tmp/contents294435366/deps/0/python/bin' which is not on PATH.
+   2020-04-11T04:16:17.61-0400 [STG/0] ERR          Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+   2020-04-11T04:16:21.64-0400 [STG/0] ERR          WARNING: The script flask is installed in '/tmp/contents294435366/deps/0/python/bin' which is not on PATH.
+   2020-04-11T04:16:21.65-0400 [STG/0] ERR          Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+   2020-04-11T04:16:21.74-0400 [STG/0] OUT        Successfully installed Django-1.11.29 Flask-1.1.2 Jinja2-2.11.1 MarkupSafe-1.1.1 Werkzeug-1.0.1 certifi-2020.4.5.1 chardet-3.0.4 click-7.1.1 cloudant-2.4.0 cycler-0.10.0 idna-2.7 itsdangerous-1.1.0 matplotlib-1.5.3 nltk-3.4.5 numpy-1.16.6 pyparsing-2.4.7 python-dateutil-2.8.1 pytz-2019.3 requests-2.20.0 scipy-1.2.3 singledispatch-3.4.0.3 six-1.14.0 tqdm-4.9.0 urllib3-1.24.3
+   2020-04-11T04:16:22.85-0400 [STG/0] ERR        WARNING: You are using pip version 19.2.3, however version 20.0.2 is available.
+   2020-04-11T04:16:22.85-0400 [STG/0] ERR        You should consider upgrading via the 'pip install --upgrade pip' command.
+   2020-04-11T04:16:24.69-0400 [STG/0] OUT -----> Downloading NLTK corpora...
+   2020-04-11T04:16:24.69-0400 [STG/0] OUT        nltk.txt not found, not downloading any corpora
+   2020-04-11T04:16:25.44-0400 [STG/0] OUT        [31;1m**ERROR**[0m Error handling collectstatic: manage.py not found!
+   2020-04-11T04:16:27.16-0400 [STG/0] ERR Failed to compile droplet: Failed to run finalize script: exit status 12
+   2020-04-11T04:16:27.23-0400 [STG/0] OUT Exit status 223
+   2020-04-11T04:16:27.69-0400 [STG/0] OUT Cell 58dc0b20-7ef1-45a9-b7b6-4d3ad92134ea stopping instance 1eb5a54f-ca80-4c75-8022-9928954e8402
+   2020-04-11T04:16:27.69-0400 [STG/0] OUT Cell 58dc0b20-7ef1-45a9-b7b6-4d3ad92134ea destroying container for instance 1eb5a54f-ca80-4c75-8022-9928954e8402
+   2020-04-11T04:16:27.97-0400 [API/19] ERR Failed to stage build: staging failed
+   2020-04-11T04:16:29.07-0400 [STG/0] OUT Cell 58dc0b20-7ef1-45a9-b7b6-4d3ad92134ea successfully destroyed container for instance 1eb5a54f-ca80-4c75-8022-9928954e8402
