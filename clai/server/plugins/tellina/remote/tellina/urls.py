@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^index$', views.index),
     url(r'^translate$', views.translate),
+    url(r'^clai_translate$', views.translate_clai),
     url(r'^load_example_requests_with_translations', views.example_requests_with_translations),
     url(r'^load_latest_requests_with_translations', views.latest_requests_with_translations),
     url(r'^developers$', views.developers),

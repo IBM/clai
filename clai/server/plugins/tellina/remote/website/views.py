@@ -1,12 +1,15 @@
 import html
+import math
+
 import numpy as np
 import os, sys
 import requests
 import time
+import scipy as sp
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template import loader
 from django.views.decorators.csrf import csrf_protect
@@ -40,6 +43,35 @@ def ip_address_required(f):
             return index(request)
         return f(request, *args, ip_address=ip_address, **kwargs)
     return g
+
+def convert_logit_to_probability(logit_score):
+    ret_score = 1/(1 + math.exp(-logit_score))
+    return ret_score
+
+
+def scoring_function(top_k_predictions, top_k_scores):
+
+    print("\n--- Printing Top K Preds --- \n")
+    for i in range(len(top_k_predictions)):
+        print ("\n ---- Predicted Command ----")
+        print(top_k_predictions[i][1])
+        print (" ---- Predicted Score ----")
+        print(top_k_scores[i])
+        print (" ---- Predicted Logit Product Probability ----")
+        print(convert_logit_to_probability(top_k_scores[i]))
+        # print(" ---- Predicted Logit StdDev Probability ----")
+
+
+def print_model_step_scores(top_k_predictions, top_k_scores, layers_top_k_scores):
+
+    print("\n ---- Printing Top K Preds and model scores for each step --- ")
+
+    for i in range(len(top_k_predictions)):
+        print("Command: " + top_k_predictions[i][1])
+
+        print("Logit Scores: ")
+        for j in range(len(layers_top_k_scores[i])):
+            print(top_k_scores[j])
 
 
 @csrf_protect
@@ -107,17 +139,28 @@ def translate(request, ip_address):
         if not WEBSITE_DEVELOP:
             # call learning model and store the translations
             batch_outputs, output_logits = translate_fun(request_str)
-            print('---printing batch outputs value')
+            print('---printing batch outputs value\nSize of batch outputs: ')
+            print(len(batch_outputs[0]))
             print(batch_outputs[0])
             print('-------------------------------')
             
-            print('---scores for the predictions---')
+            print('---scores for the predictions\nSize of score/output logits: ')
+            print(len(output_logits[0]))
             print(output_logits[0])
             print('-------------------------------')
+
+            # print('---printing output_logits----')
+            # for i in range(len(output_logits)):
+            #     print(output_logits[i])
             
             if batch_outputs:
                 top_k_predictions = batch_outputs[0]
                 top_k_scores = output_logits[0]
+                layers_top_k_scores = []
+
+                # Storing all layer scores into an array
+                for i in range(len(output_logits)):
+                    layers_top_k_scores.append(output_logits[i])
 
                 for i in range(len(top_k_predictions)):
                     pred_tree, pred_cmd = top_k_predictions[i]
@@ -136,11 +179,14 @@ def translate(request, ip_address):
                     start_time = time.time()
                     annotated_trans_list.append(tokens2html(pred_tree))
                     print(time.time() - start_time)
-                    print('----score value----')
-                    print(score)
-                    print('----score value end----')
-                    print(top_k_predictions)
+                    # print('----score value----')
+                    # print(score)
+                    # print('----score value end----')
+                    # print(top_k_predictions)
                     start_time = time.time()
+
+    # scoring_function(top_k_predictions, top_k_scores)
+    # print_model_step_scores(top_k_predictions, top_k_scores, layers_top_k_scores)
 
     translation_list = []
     for trans, annotated_cmd in zip(trans_list, annotated_trans_list):
@@ -156,11 +202,151 @@ def translate(request, ip_address):
     # sort translation_list based on voting results
     translation_list.sort(
         key=lambda x: x[0].num_votes + x[0].score, reverse=True)
+
+
     context = {
         'nl_request': nl_request,
         'trans_list': translation_list
     }
+
     return HttpResponse(template.render(context, request))
+
+@ip_address_required
+def translate_clai(request, ip_address):
+    # template = loader.get_template('translator/translate.html')
+    if request.method == 'POST':
+        request_str = request.POST.get('request_str')
+    else:
+        request_str = request.GET.get('request_str')
+
+    if not request_str or not request_str.strip():
+        return redirect('/')
+
+    while request_str.endswith('/'):
+        request_str = request_str[:-1]
+
+    # check if the natural language request is in the database
+    nl = get_nl(request_str)
+
+    trans_list = []
+    annotated_trans_list = []
+
+    if CACHE_TRANSLATIONS and \
+            Translation.objects.filter(nl=nl).exists():
+        # model translations exist
+        cached_trans = Translation.objects.filter(nl=nl).order_by('score')
+        count = 0
+        for trans in cached_trans:
+            pred_tree = data_tools.bash_parser(trans.pred_cmd.str)
+            if pred_tree is not None:
+                trans_list.append(trans)
+                annotated_trans_list.append(tokens2html(pred_tree))
+            count += 1
+            if count >= NUM_TRANSLATIONS:
+                break
+
+    # check if the user is in the database
+    # try:
+    #     user = User.objects.get(ip_address=ip_address)
+    # except ObjectDoesNotExist:
+    #     if ip_address == '123.456.789.012':
+    #         organization = ''
+    #         city = '--'
+    #         region = '--'
+    #         country = '--'
+    #     else:
+    #         r = requests.get('http://ipinfo.io/{}/json'.format(ip_address))
+    #         organization = '' if r.json()['org'] is None else r.json()['org']
+    #         city = '--' if r.json()['city'] is None else r.json()['city']
+    #         region = '--' if r.json()['region'] is None else r.json()['region']
+    #         country = '--' if r.json()['country'] is None else r.json()['country']
+    #     user = User.objects.create(
+    #         ip_address=ip_address,
+    #         organization=organization,
+    #         city=city,
+    #         region=region,
+    #         country=country
+    #     )
+
+    # save the natural language request issued by this IP Address
+    # nl_request = NLRequest.objects.create(nl=nl, user=user)
+
+    if not trans_list:
+        if not WEBSITE_DEVELOP:
+            # call learning model and store the translations
+            batch_outputs, output_logits = translate_fun(request_str)
+            print('---printing batch outputs value\nSize of batch outputs: ')
+            print(len(batch_outputs[0]))
+            print(batch_outputs[0])
+            print('-------------------------------')
+
+            print('---scores for the predictions\nSize of score/output logits: ')
+            print(len(output_logits[0]))
+            print(output_logits[0])
+            print('-------------------------------')
+
+            if batch_outputs:
+                top_k_predictions = batch_outputs[0]
+                top_k_scores = output_logits[0]
+                layers_top_k_scores = []
+
+                # Storing all layer scores into an array
+                for i in range(len(output_logits)):
+                    layers_top_k_scores.append(output_logits[i])
+
+                for i in range(len(top_k_predictions)):
+                    pred_tree, pred_cmd = top_k_predictions[i]
+                    score = top_k_scores[i]
+                    cmd = get_command(pred_cmd)
+                    trans_set = Translation.objects.filter(nl=nl, pred_cmd=cmd)
+                    if not trans_set.exists():
+                        trans = Translation.objects.create(
+                            nl=nl, pred_cmd=cmd, score=score)
+                    else:
+                        for trans in trans_set:
+                            break
+                        trans.score = score
+                        trans.save()
+                    trans_list.append(trans)
+                    start_time = time.time()
+                    annotated_trans_list.append(tokens2html(pred_tree))
+                    print(time.time() - start_time)
+                    start_time = time.time()
+
+    tellina_top_response_cmd = top_k_predictions[0][1]
+
+    # scoring_function(top_k_predictions, top_k_scores)
+    # print_model_step_scores(top_k_predictions, top_k_scores, layers_top_k_scores)
+
+    # translation_list = []
+    # for trans, annotated_cmd in zip(trans_list, annotated_trans_list):
+    #     upvoted, downvoted, starred = "", "", ""
+    #     if Vote.objects.filter(translation=trans, ip_address=ip_address).exists():
+    #         v = Vote.objects.get(translation=trans, ip_address=ip_address)
+    #         upvoted = 1 if v.upvoted else ""
+    #         downvoted = 1 if v.downvoted else ""
+    #         starred = 1 if v.starred else ""
+    #     translation_list.append((trans, upvoted, downvoted, starred,
+    #         trans.pred_cmd.str.replace('\\', '\\\\'), annotated_cmd))
+    #
+    # # sort translation_list based on voting results
+    # translation_list.sort(
+    #     key=lambda x: x[0].num_votes + x[0].score, reverse=True)
+
+
+    # context = {
+    #     'nl_request': nl_request,
+    #     'trans_list': translation_list
+    # }
+
+    tellina_return = {
+        'response': tellina_top_response_cmd,
+        'confidence': '0.0'
+    }
+
+    return JsonResponse(tellina_return)
+
+    # return HttpResponse(template.render(context, request))
 
 @ip_address_required
 def vote(request, ip_address):
