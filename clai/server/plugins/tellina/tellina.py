@@ -12,7 +12,8 @@ from clai.tools.colorize_console import Colorize
 import requests
 
 ''' globals '''
-tellina_endpoint = 'https://tellina-server.mybluemix.net/message'
+#tellina_endpoint = 'https://tellina-server.mybluemix.net/message'
+tellina_endpoint = 'http://184.172.250.6:30320/api/translate'
 
 class TELLINA(Agent):
     def __init__(self):
@@ -25,7 +26,7 @@ class TELLINA(Agent):
         command = state.command
 
         try:
-            response = requests.put(tellina_endpoint, json={'text': command}).json()
+            response = requests.put(tellina_endpoint, json={'command': command}).json()
 
             ## tellina endpoint must return a json with
             ## keys "response" and "confidence"
