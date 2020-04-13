@@ -6,7 +6,7 @@ CLAI_PATH=$2
 # Check for user passed args
 while test $# != 0
 do
-    case "$1" in
+    case "$3" in
       --user) 
         USER_INSTALL=true
         flags="$flags --user"
