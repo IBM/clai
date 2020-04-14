@@ -12,6 +12,7 @@ from pathlib import Path
 
 from clai.server.plugins.helpme.search_provider import Provider
 from clai.server.plugins.helpme.se_provider import StackExchange
+from clai.server.plugins.helpme.kc_provider import KnowledgeCenter
 from clai.server.plugins.helpme.man_provider import Manpages
 
 class Datastore:
@@ -26,6 +27,8 @@ class Datastore:
         for section in config.sections():
             if section == "stack_exchange":
                 self.apis[section] = StackExchange(config[section])
+            elif section == "ibm_kc":
+                self.apis[section] = KnowledgeCenter(config[section])
             elif section == "manpages":
                 self.apis[section] = Manpages(config[section])
             else:
