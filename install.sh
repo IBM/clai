@@ -57,15 +57,17 @@ if [ ! $(uname) == 'OS/390' ]; then
   if lsof -i -P -n | grep 8010 > /dev/null 2>&1; then
     die "\n Another process is running on port 8010."
   fi
-else
+# else
   # TODO: find equivalent for z/OS
 fi
 
 if [ "$USER_INSTALL" == true ]; then
   python3 -m pip install --user -r requirements.txt
+  python3 -m pip install --user --upgrade keyrings.alt
 else
   python3 -m pip install -r requirements.txt --ignore-installed
+  python3 -m pip install --upgrade keyrings.alt
 fi
 
-python3 -m pip install --upgrade keyrings.alt
+
 python3 install.py $flags --shell bash
