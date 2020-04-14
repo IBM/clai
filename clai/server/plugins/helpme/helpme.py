@@ -5,6 +5,8 @@
 # of this source tree for licensing information.
 #
 
+from collections import OrderedDict
+
 from clai.tools.colorize_console import Colorize
 
 from clai.server.plugins.helpme.data import Datastore
@@ -58,6 +60,13 @@ class HelpMeAgent(Agent):
                                                                             state.result_code,
                                                                             state.stderr))
         logger.info("============================================================================")
+        
+        # DJF Start
+        apis:OrderedDict=self.store.getAPIs()
+        for api in apis:
+            logger.info(f"DEBUG!!! ==>  {api}: {str(apis[api])}")
+        # DJF End
+        
         if state.result_code != '0':
             # Query data store to find closest matching forum
             forum = self.store.search(state.stderr, service='stack_exchange', size=1)

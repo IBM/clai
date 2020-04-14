@@ -6,59 +6,41 @@
 #
 
 import os
-import json
 import configparser
+from collections import OrderedDict
 from pathlib import Path
 
-import requests
-
+from clai.server.plugins.helpme.search_provider import Provider
+from clai.server.plugins.helpme.se_provider import StackExchange
+from clai.server.plugins.helpme.man_provider import Manpages
 
 class Datastore:
+    # Instance data members
+    apis:OrderedDict = {}
+    
     def __init__(self):
         config = configparser.ConfigParser()
         config.read(os.path.join(str(Path(__file__).parent.absolute()), 'config.ini'))
+        
+        # Get a list of APIs defined in the config file
+        for section in config.sections():
+            if section == "stack_exchange":
+                self.apis[section] = StackExchange(config[section])
+            elif section == "manpages":
+                self.apis[section] = Manpages(config[section])
+            else:
+                raise AttributeError(f"Unsupported service type: '{section}'")
 
-        self.stack_exchange_api = config['API'].get('stack_exchange_api')
-        self.manpage_api = config['API'].get('manpage_api')
-
-    def __call_manpage_api__(self, query: str, limit: int = 1):
-
-        payload = {
-            'text': query,
-            'result_count': limit
-        }
-
-        headers = {'Content-Type': "application/json"}
-
-        r = requests.post(self.manpage_api, params=payload, headers=headers)
-
-        if r.status_code == 200:
-            return r.json()
-
-        return None
-
-    def __call_stack_exchange_api__(self, query: str, limit: int = 1):
-
-        payload = {
-            'text': query,
-            'limit': limit
-        }
-
-        headers = {'Content-Type': "application/json"}
-
-        r = requests.post(self.stack_exchange_api, data=json.dumps(payload), headers=headers)
-
-        if r.status_code == 200:
-            return r.json()['hits']
-
-        return None
+    def getAPIs(self) -> OrderedDict:
+        return self.apis
 
     def search(self, query, service='stack_exchange', size=10):
-        if service == 'stack_exchange':
-            res = self.__call_stack_exchange_api__(query, size)
-        elif service == 'manpages':
-            res = self.__call_manpage_api__(query, size)
+        supportedServices = self.apis.keys()
+        
+        if service in supportedServices:
+            serviceProvider:Provider = self.apis[service]
+            res = serviceProvider.call(query, size)
         else:
-            raise AttributeError("Please select stack_exchange or manpage as a choice for service")
+            raise AttributeError(f"service must be one of: {str(supportedServices)}")
 
         return res
