@@ -1,0 +1,8 @@
+{
+    "grep": {
+        "--line-number": {
+            "equivalent": "-n",
+            "explanation": ""
+        }   
+    }
+}
