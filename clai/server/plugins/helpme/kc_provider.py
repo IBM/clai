@@ -31,11 +31,17 @@ class KnowledgeCenter(Provider):
     def __init__(self, section:dict):
         super().__init__(section)
     
-    def call(self, query:str, limit:int = 1, products:KCscope=KCscope.ZOS_240):
+    def call(self,
+             query:str,
+             limit:int = 1,
+             products:KCscope=KCscope.ZOS_240,
+             searchType:KCtype=KCtype.DOCUMENTATION
+             ):
 
         payload = {
             'query': query,
             'products': products,
+            'type': searchType,
             'intitle': True,
             'intext': True,
             'offset': 0,

@@ -14,6 +14,7 @@ from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 
 from clai.server.logger import current_logger as logger
+from clai.server.plugins.helpme.search_provider import Provider
 
 
 class HelpMeAgent(Agent):
@@ -63,8 +64,15 @@ class HelpMeAgent(Agent):
         
         # DJF Start
         apis:OrderedDict=self.store.getAPIs()
-        for api in apis:
-            logger.info(f"DEBUG!!! ==>  {api}: {str(apis[api])}")
+        for provider in apis:
+            teststr:str = f"DEBUG!!! ==> Provider {provider}"
+            thisAPI:Provider = apis[provider]
+            if thisAPI.canRunOnThisOS():
+                teststr = f"{teststr} can run on this OS"
+            else:
+                teststr = f"{teststr} CANNOT run on this OS"
+            logger.info(teststr)
+            logger.info(f"DEBUG!!! ==> Excludes for provider {provider} are: {str(thisAPI.getExcludes())}")
         # DJF End
         
         if state.result_code != '0':
