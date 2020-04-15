@@ -208,7 +208,7 @@ def install_orchestration_dependencies(path, orchestrator_name):
 
 def cli_executable(cli_path):
     os.system(f'chmod 777 {cli_path}/clai-run')
-    os.system(f'chmod 777 {cli_path}/fswatchl og')
+    os.system(f'chmod 777 {cli_path}/fswatchlog')
     os.system(f'chmod 777 {cli_path}/obtain-command-id')
     os.system(f'chmod 777 {cli_path}/post-execution')
     os.system(f'chmod 777 {cli_path}/process-command')
