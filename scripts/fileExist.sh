@@ -6,7 +6,7 @@ CLAI_PATH=$2
 # Check for user passed args
 while test $# != 0
 do
-    case "$3" in
+    case "$1" in
       --user) 
         USER_INSTALL=true
         flags="$flags --user"
@@ -72,5 +72,5 @@ install_plugin $PLUGIN
 if [[ $? == 0 ]]; then
         echo "Installed plugins dependencies  $CLAI_PATH/clai/server/plugins/$1/install.sh"
 else
-        echo "The plugin don't have dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"
+        echo "The plugin doesn't have dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"
 fi
