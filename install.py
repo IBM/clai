@@ -114,6 +114,14 @@ def parse_args():
         default=False
     )
 
+    parser.add_argument(
+        '--port',
+        help="port listen server",
+        type=int,
+        default=None,
+        dest='port'
+    )
+
     args = parser.parse_args()
 
     if not valid_python_version():
@@ -200,7 +208,7 @@ def install_orchestration_dependencies(path, orchestrator_name):
 
 def cli_executable(cli_path):
     os.system(f'chmod 777 {cli_path}/clai-run')
-    os.system(f'chmod 777 {cli_path}/fswatchlog')
+    os.system(f'chmod 777 {cli_path}/fswatchl og')
     os.system(f'chmod 777 {cli_path}/obtain-command-id')
     os.system(f'chmod 777 {cli_path}/post-execution')
     os.system(f'chmod 777 {cli_path}/process-command')
@@ -322,7 +330,11 @@ def execute(args):
     mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
         
     register_the_user(bin_path, args.system)
-    append_setup_to_file(get_setup_file(), bin_path)
+    append_setup_to_file(
+        get_setup_file(),
+        bin_path, 
+        args.port
+    )
     register_file(args.system)
 
     install_orchestration(bin_path)
@@ -376,7 +388,7 @@ def register_file(system):
         append_to_file(file, "# End CLAI setup\n")
 
 
-def append_setup_to_file(rc_path, bin_path):
+def append_setup_to_file(rc_path, bin_path, port):
     append_to_file(rc_path, "\n export CLAI_PATH=%s" % bin_path)
     append_to_file(rc_path, "\n export PYTHONPATH=%s" % bin_path)
     append_to_file(
@@ -384,7 +396,8 @@ def append_setup_to_file(rc_path, bin_path):
         "\n[[ -f %s/bash-preexec.sh ]] && source %s/bash-preexec.sh" % (bin_path, bin_path))
     append_to_file(
         rc_path,
-        "\n[[ -f %s/clai.sh ]] && source %s/clai.sh" % (bin_path, bin_path))
+        f"\n[[ -f {bin_path}/clai.sh ]] && source {bin_path}/clai.sh {f'--port {port}' if port is not None else '' }"
+    )
 
 if __name__ == '__main__':
     sys.exit(execute(parse_args()))
