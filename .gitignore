@@ -119,8 +119,3 @@ nohup.out
 # Ignore Eclipse and PyDev project files
 /.project
 /.pydevproject
-
-# man page data 
-linux_pages
-z_pages
-spark_pages
