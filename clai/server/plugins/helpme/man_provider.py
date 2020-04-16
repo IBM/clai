@@ -8,11 +8,12 @@
 import requests
 
 from clai.server.plugins.helpme.search_provider import Provider
+from typing import List, Dict
 
 class Manpages(Provider):
     
-    def __init__(self, section:dict):
-        super().__init__(section)
+    def __init__(self, name:str, section:dict):
+        super().__init__(name, section)
     
     def call(self, query: str, limit: int = 1):
         
@@ -29,3 +30,6 @@ class Manpages(Provider):
             return r.json()
 
         return None
+    
+    def extractSearchResult(self, data:List[Dict]) -> str:
+        pass

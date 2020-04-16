@@ -62,30 +62,37 @@ class HelpMeAgent(Agent):
                                                                             state.stderr))
         logger.info("============================================================================")
         
-        # DJF Start
-        apis:OrderedDict=self.store.getAPIs()
-        for provider in apis:
-            teststr:str = f"DEBUG!!! ==> Provider {provider}"
-            thisAPI:Provider = apis[provider]
-            if thisAPI.canRunOnThisOS():
-                teststr = f"{teststr} can run on this OS"
-            else:
-                teststr = f"{teststr} CANNOT run on this OS"
-            logger.info(teststr)
-            logger.info(f"DEBUG!!! ==> Excludes for provider {provider} are: {str(thisAPI.getExcludes())}")
-        # DJF End
+        if state.result_code == '0':
+            return Action(suggested_command=state.command)
         
-        if state.result_code != '0':
-            # Query data store to find closest matching forum
-            forum = self.store.search(state.stderr, service='stack_exchange', size=1)
+        apis:OrderedDict=self.store.getAPIs()
+        helpWasFound = False
+        for provider in apis:
+            thisAPI:Provider = apis[provider]
+            logger.info(f"Processing search provider '{provider}'")
+            logger.info(f"==> Excludes are: {str(thisAPI.getExcludes())}")
+            
+            # We don't want to process the manpages provider... thats the provider
+            # that we use to clarify results from other providers
+            if provider == "manpages":
+                logger.info(f"==> Skipping provider '{provider}'")
+                continue
+            
+            # Skip this provider if it isn't supported on the target OS
+            if not thisAPI.canRunOnThisOS():
+                logger.info(f"====> Provider '{provider}' CANNOT run on this platform; skipping")
+                continue # Move to next provider in list
+        
+            # Query data store to find closest matching data
+            data = self.store.search(state.stderr, service=provider, size=1)
+            if data:
+                logger.info("==> Success!!! Found relevant forums.")
 
-            if forum:
-                logger.info("Success!!! Found relevant forums.")
-
-                # Find closes match b/w relevant forum and manpages for unix
-                manpages = self.store.search(forum[0]['Answer'], service='manpages', size=5)
+                # Find closes match b/w relevant data and manpages for unix
+                searchResult = thisAPI.extractSearchResult(data)
+                manpages = self.store.search(searchResult, service='manpages', size=5)
                 if manpages:
-                    logger.info("Success!!! found relevant manpages.")
+                    logger.info("==> Success!!! found relevant manpages.")
 
                     command = manpages['commands'][-1]
                     confidence = manpages['dists'][-1]
@@ -93,44 +100,40 @@ class HelpMeAgent(Agent):
                     # FIXME: Artificially boosted confidence
                     confidence = 1.0
 
-                    logger.info("Command: {} \t Confidence:{}".format(command, confidence))
-
-                    return Action(suggested_command="man {}".format(command),
-                                  description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                                  .append(f"I did little bit of internet searching for you.\n")
-                                  .info()
-                                  .append("Post: {}\n".format(forum[0]['Content'][:384] + " ..."))
-                                  .append("Answer: {}\n".format(forum[0]['Answer'][:256] + " ..."))
-                                  .append("Link: {}\n\n".format(forum[0]['Url']))
-                                  .warning()
-                                  .append("Do you want to try: man {}".format(command))
-                                  .to_console(),
-                                  confidence=confidence
-                                  )
-                else:
-                    logger.info("Failure: Manpage search")
-                    logger.info("============================================================================")
-
-                    return Action(suggested_command=NOOP_COMMAND,
-                                  description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                                  .append(
-                                      f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
-                                  .info()
-                                  .append(f"Have you tried turning it OFF and ON again. ;)")
-                                  .to_console(),
-                                  confidence=0.0
-                                  )
-            else:
-                logger.info("Failure: Forum search")
-                logger.info("============================================================================")
-                return Action(suggested_command=NOOP_COMMAND,
-                              description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                              .append(
-                                  f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
-                              .warning()
-                              .append(f"Have you tried turning it OFF and ON again. ;)")
-                              .to_console(),
-                              confidence=0.0
-                              )
-
-        return Action(suggested_command=state.command)
+                    logger.info("==> Command: {} \t Confidence:{}".format(command, confidence))
+                    
+                    # Set return data
+                    suggested_command="man {}".format(command)
+                    description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
+                        .append(f"I did little bit of internet searching for you.\n") \
+                        .info() \
+                        .append("Post: {}\n".format(data[0]['Content'][:384] + " ...")) \
+                        .append("Answer: {}\n".format(data[0]['Answer'][:256] + " ...")) \
+                        .append("Link: {}\n\n".format(data[0]['Url'])) \
+                        .warning() \
+                        .append("Do you want to try: man {}".format(command)) \
+                        .to_console()
+                    
+                    # Mark that help was indeed found
+                    helpWasFound = True
+                    
+                    # Leave the loop
+                    break
+                
+        if not helpWasFound:
+            logger.info("Failure: Unable to be helpful")
+            logger.info("============================================================================")
+            
+            suggested_command=NOOP_COMMAND
+            description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
+                .append(
+                    f"Sorry. It looks like you have stumbled across a problem that even the Internet doesn't have answer to.\n") \
+                .info() \
+                .append(f"Have you tried turning it OFF and ON again. ;)") \
+                .to_console()
+            confidence=0.0
+                
+        return Action(suggested_command=suggested_command,
+                      description=description,
+                      confidence=confidence
+                      )

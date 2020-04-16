@@ -10,6 +10,7 @@ import json
 import requests
 
 from clai.server.plugins.helpme.search_provider import Provider
+from typing import List, Dict
 
 # Define permissible search scopings for KnowledgeCenter
 class KCscope(Enum):
@@ -28,8 +29,8 @@ class KCtype(Enum):
 
 class KnowledgeCenter(Provider):
     
-    def __init__(self, section:dict):
-        super().__init__(section)
+    def __init__(self, name:str, section:dict):
+        super().__init__(name, section)
     
     def call(self,
              query:str,
@@ -40,8 +41,8 @@ class KnowledgeCenter(Provider):
 
         payload = {
             'query': query,
-            'products': products,
-            'type': searchType,
+            'products': str(products),
+            'type': str(searchType),
             'intitle': True,
             'intext': True,
             'offset': 0,
@@ -58,3 +59,7 @@ class KnowledgeCenter(Provider):
             return r.json()['hits']
 
         return None
+    
+    def extractSearchResult(self, data:List[Dict]) -> str:
+        topics:Dict = data[0]['topics']
+        return topics[0]['summary']

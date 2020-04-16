@@ -9,11 +9,12 @@ import json
 import requests
 
 from clai.server.plugins.helpme.search_provider import Provider
+from typing import List, Dict
 
 class StackExchange(Provider):
     
-    def __init__(self, section:dict):
-        super().__init__(section)
+    def __init__(self, name:str, section:dict):
+        super().__init__(name, section)
     
     def call(self, query: str, limit: int = 1):
 
@@ -30,4 +31,7 @@ class StackExchange(Provider):
             return r.json()['hits']
 
         return None
+    
+    def extractSearchResult(self, data:List[Dict]) -> str:
+        return data[0]['Answer']
     

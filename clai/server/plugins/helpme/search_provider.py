@@ -8,13 +8,16 @@
 import abc
 import os
 
+from typing import List, Dict
+
 class Provider:
     
     # Define instance data members
     baseURI:str = ""
     excludes:list = []
     
-    def __init__(self, section:dict):
+    def __init__(self, name:str, section:dict):
+        self.name = name
         self.baseURI = section.get('api')
         
         # Get the platform exclusion list, in lowercase if possible
@@ -37,9 +40,15 @@ class Provider:
         os_name:str = os.uname().sysname.lower()
         return (os_name not in self.excludes)
     
-    @abc.abstractmethod
+    @abc.abstractclassmethod
+    def searchResult(self, data:List[Dict]) -> str:
+        """Given the result of an API search, extract the search result from it
+        """
+        pass
+    
+    @abc.abstractclassmethod
     def call(self, query: str, limit: int = 1):
         pass
     
     def __str__(self) -> str:
-        return self.baseURI
+        return self.name
