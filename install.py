@@ -319,7 +319,11 @@ def execute(args):
         download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
         copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
 
-    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
+    if user_install:
+        mark_user_flag(bin_path, True)
+    else:
+        mark_user_flag(bin_path, False)
+   
         
     register_the_user(bin_path, args.system)
     append_setup_to_file(get_setup_file(), bin_path)
