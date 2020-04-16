@@ -31,11 +31,11 @@ class Linuss(Agent):
     def __read_equivalencies(self):
         logger.info('####### read equivalencies inside linuss ########')
         try:
-            with open(self._config_path, 'r') as fileobj:
-                equivalencies = json.load(fileobj)
+            with open(self._config_path, 'r') as json_file:
+                equivalencies = json.load(json_file)
 
         except Exception as e:
-            logger.error(f'Linuss Error: {e}')
+            logger.debug(f'Linuss Error: {e}')
             equivalencies = json.load({})
 
         return equivalencies
@@ -61,11 +61,12 @@ class Linuss(Agent):
             if command.startswith(cmd):
                 s, d = self.__build_suggestion(command, self.equivalencies[cmd], cmd)
                 if s is not None:
+                    # return the suggested command, the confidence is high because these 
+                    # are pre-determined and we know these are correct
                     return Action(
                         suggested_command=s,
-                        confidence=0.9, 
+                        confidence=1.0, 
                         description=d
                     )
-            
 
         return Action(suggested_command=NOOP_COMMAND)

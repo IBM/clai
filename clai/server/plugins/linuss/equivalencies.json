@@ -1,8 +1,105 @@
 {
+    "nsupdate":{
+        "-i": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-D": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-L": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-g": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-o": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-l": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-t": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-u": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-r": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-R": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-T": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "-P": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "xwd":{
+        "-silent":{
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "xfd":{},
+    "iceauth":{},
+    "oclock":{},
+    "dnsdomainname":{},
+    "netstat":{},
+    "xauth" : {
+        "-n": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "xcutsel":{},
+    "xwud":{},
+    "bitmap":{},
+    "ftp":{},
+    "xclock":{},
+    "xlsatoms":{},
+    "editres":{},
+    "xmag":{},
+    "xlogo":{},
+    "xclipboard":{},
+    "domainname":{},
+    "xlsclients":{},
+    "hostname":{},
+    "xprop":{},
+    "rpcgen":{},
+    "whatis":{},
+    "host": {
+        "-v": {
+            "equivalent": "-d",
+            "explanation": "-v is not available on uss, -d is equivalent"
+        }
+    },
+    "animate":{},
+    "xwininfo":{},
+    "xdpyinfo":{},
+    "dig":{},
+    "xlsfonts":{},
+    "appres":{},
+    "nslookup":{},
+
     "grep": {
         "--line-number": {
             "equivalent": "-n",
-            "explanation": ""
+            "explanation": "--line-number is not available on uss, -n is equivalent"
         }   
     }
 }
