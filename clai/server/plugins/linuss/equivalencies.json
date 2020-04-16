@@ -1,50 +1,6 @@
 {
     "nsupdate":{
-        "-i": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-D": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-L": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-g": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-o": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-l": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-t": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-u": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-r": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-R": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-T": {
-            "equivalent": "",
-            "explanation": "This flag is not available on uss"
-        },
-        "-P": {
+        "(-i)|(-D)|(-L)|(-g)|(-o)|(-l)|(-t)|(-u)|(-r)|(-R)|(-T)|(-P)": {
             "equivalent": "",
             "explanation": "This flag is not available on uss"
         }
@@ -55,11 +11,21 @@
             "explanation": "This flag is not available on uss"
         }
     },
-    "xfd":{},
+    "xfd":{
+        "-fa": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
     "iceauth":{},
     "oclock":{},
     "dnsdomainname":{},
-    "netstat":{},
+    "netstat":{
+        "(-w)|(-W)|(-s)|(-p)":{
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
     "xauth" : {
         "-n": {
             "equivalent": "",
@@ -67,20 +33,68 @@
         }
     },
     "xcutsel":{},
-    "xwud":{},
+    "xwud":{
+        "-dumpheader": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
     "bitmap":{},
-    "ftp":{},
+    "ftp":{
+        "-e": {
+            "equivalent": "",
+            "explanation": "The -e flag on linux Disables command editing and history support, however on uss -e is Equivalent to EXIT. There is no equivalant for the linux version"
+        }
+    },
     "xclock":{},
-    "xlsatoms":{},
+    "xlsatoms":{
+        "-v": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
     "editres":{},
     "xmag":{},
     "xlogo":{},
     "xclipboard":{},
     "domainname":{},
-    "xlsclients":{},
-    "hostname":{},
-    "xprop":{},
-    "rpcgen":{},
+    "xlsclients":{
+        "-version": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "hostname":{
+        "(-a)|(--alias)|(-A)|(--all-fqdns)|(-b)|(--boot)|(-f)|(--fqdn)|(--long)|(-F)|(--file)|(filename)|(-i)|(--ip-address)|(-I)|(--all-ip-addresses)|(-y)|(--yp)|(--nis)|(-V)|(--version)": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        },
+        "(-d)|(--domain)": {
+            "equivalent": "",
+            "explanation": "On linux -d or --domain Displays the name of the DNS domain. On uss -d print trace messages for problem diagnosis. There is no equivalant for the linux version"
+        },
+        "--short": {
+            "equivalent": "-s",
+            "explanation": "On uss use -s to display the short host name."
+        },
+        "--help":{
+            "equivalent": "-h",
+            "explanation": "On uss use -h to display the usage message"
+        }
+
+    },
+    "xprop":{
+        "-set":{
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "rpcgen":{
+        "(-D)|(-T)|(-K)|(-M)|(-t)|(I)|(-n)":{
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
     "whatis":{},
     "host": {
         "-v": {
@@ -90,12 +104,26 @@
     },
     "animate":{},
     "xwininfo":{},
-    "xdpyinfo":{},
-    "dig":{},
-    "xlsfonts":{},
+    "xdpyinfo":{
+        "-v": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "dig":{
+        "(-m)|(-q)|(-v)|(-4)|(-6)": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
+        }
+    },
+    "xlsfonts":{
+        "-d": {
+            "equivalent": "-display",
+            "explanation": "-d is not available on uss -display is the equivalant"
+        }
+    },
     "appres":{},
     "nslookup":{},
-
     "grep": {
         "--line-number": {
             "equivalent": "-n",
