@@ -5,34 +5,40 @@
 # of this source tree for licensing information.
 #
 
+import json
 import requests
 
-from clai.server.plugins.search_providers import Provider
+from clai.server.plugins.searchlib import Provider
 from typing import List, Dict
 
-class Manpages(Provider):
+class StackExchange(Provider):
     
     def __init__(self, name:str, section:dict):
         super().__init__(name, section)
     
     def call(self, query: str, limit: int = 1):
-        
+
         payload = {
             'text': query,
-            'result_count': limit
+            'limit': limit
         }
-        
+
         headers = {'Content-Type': "application/json"}
-         
-        r = requests.post(self.baseURI, params=payload, headers=headers)
+
+        r = requests.post(self.baseURI, data=json.dumps(payload), headers=headers)
 
         if r.status_code == 200:
-            return r.json()
+            return r.json()['hits']
 
         return None
     
     def extractSearchResult(self, data:List[Dict]) -> str:
-        pass
+        return data[0]['Answer']
     
     def getPrintableOutput(self, data:List[Dict]) -> str:
-        pass
+        lines = [f"Post: {data[0]['Content'][:384] + ' ...'}",
+                 f"Answer: {data[0]['Answer'][:256] + ' ...'}",
+                 f"Link: {data[0]['Url']}\n"]
+        
+        return "\n".join(lines)
+    

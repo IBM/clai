@@ -9,7 +9,7 @@ from enum import Enum
 import json
 import requests
 
-from clai.server.plugins.search_providers import Provider
+from clai.server.plugins.searchlib import Provider
 from typing import List, Dict
 
 from clai.server.logger import current_logger as logger

@@ -11,7 +11,7 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import List, Dict
 
-from clai.server.plugins.search_providers import StackExchange, KnowledgeCenter, Manpages
+from clai.server.plugins.searchlib import StackExchange, KnowledgeCenter, Manpages
 
 class Datastore:
     # Instance data members
