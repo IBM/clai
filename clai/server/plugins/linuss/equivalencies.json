@@ -128,6 +128,10 @@
         "--line-number": {
             "equivalent": "-n",
             "explanation": "--line-number is not available on uss, -n is equivalent"
-        }   
+        },
+        "(-B)|(--before-context)":{
+            "equivalent": "-P",
+            "explanation": "The linux flag -B Displays num lines of leading context before matching lines. The equivalant on uss is -P"
+        }
     }
 }

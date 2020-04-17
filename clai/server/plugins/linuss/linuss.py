@@ -8,13 +8,10 @@
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 
-import json
-from pathlib import Path
 import os
 import re
-
-# pylint: disable=too-few-public-methods
-from clai.tools.colorize_console import Colorize
+import json
+from pathlib import Path
 
 from clai.server.logger import current_logger as logger
 
@@ -41,32 +38,33 @@ class Linuss(Agent):
         return equivalencies
 
     def __build_suggestion(self, command, options, cmd_key) -> any:
-        suggestion = NOOP_COMMAND
-        description = None
+        actions = []
         for option in options:
             if re.search(r'{}'.format(option), command):
-                suggestion = re.sub(
-                    r'{}'.format(option),
-                    self.equivalencies[cmd_key][option]["equivalent"], 
-                    command
+                # The confidence is high because these 
+                # are pre-determined and we know these are correct
+                actions.append(
+                    Action(
+                        suggested_command=re.sub(
+                            r'{}'.format(option),
+                            self.equivalencies[cmd_key][option]["equivalent"], 
+                            command
+                        ),
+                        confidence=1, 
+                        description=self.equivalencies[cmd_key][option]["explanation"]
+                    )
                 )
-                description = self.equivalencies[cmd_key][option]["explanation"]
 
-        return suggestion, description
+        if not actions:
+            actions.append(Action(suggested_command=NOOP_COMMAND, description=None))
+
+        return actions
 
     def get_next_action(self, state: State) -> Action:
         command = state.command
 
         for cmd in self.equivalencies:            
             if command.startswith(cmd):
-                s, d = self.__build_suggestion(command, self.equivalencies[cmd], cmd)
-                if s is not None:
-                    # return the suggested command, the confidence is high because these 
-                    # are pre-determined and we know these are correct
-                    return Action(
-                        suggested_command=s,
-                        confidence=1.0, 
-                        description=d
-                    )
+                return self.__build_suggestion(command, self.equivalencies[cmd], cmd)
 
         return Action(suggested_command=NOOP_COMMAND)
