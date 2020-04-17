@@ -5,8 +5,6 @@
 # of this source tree for licensing information.
 #
 
-from collections import OrderedDict
-
 from clai.tools.colorize_console import Colorize
 
 from clai.server.plugins.helpme.data import Datastore
@@ -14,7 +12,6 @@ from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 
 from clai.server.logger import current_logger as logger
-from clai.server.plugins.helpme.search_provider import Provider
 
 
 class HelpMeAgent(Agent):

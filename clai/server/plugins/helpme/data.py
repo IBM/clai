@@ -11,10 +11,7 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import List, Dict
 
-from clai.server.plugins.helpme.search_provider import Provider
-from clai.server.plugins.helpme.se_provider import StackExchange
-from clai.server.plugins.helpme.kc_provider import KnowledgeCenter
-from clai.server.plugins.helpme.man_provider import Manpages
+from clai.server.plugins.search_providers import StackExchange, KnowledgeCenter, Manpages
 
 class Datastore:
     # Instance data members
@@ -42,7 +39,7 @@ class Datastore:
         supportedServices = self.apis.keys()
         
         if service in supportedServices:
-            serviceProvider:Provider = self.apis[service]
+            serviceProvider = self.apis[service]
             res = serviceProvider.call(query, size)
         else:
             raise AttributeError(f"service must be one of: {str(supportedServices)}")
