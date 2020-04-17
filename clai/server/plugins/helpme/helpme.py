@@ -5,9 +5,12 @@
 # of this source tree for licensing information.
 #
 
+import os
+from pathlib import Path
+
 from clai.tools.colorize_console import Colorize
 
-from clai.server.plugins.helpme.data import Datastore
+from clai.server.searchlib import Datastore
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 
@@ -17,7 +20,8 @@ from clai.server.logger import current_logger as logger
 class HelpMeAgent(Agent):
     def __init__(self):
         super(HelpMeAgent, self).__init__()
-        self.store = Datastore()
+        inifile_path = os.path.join(str(Path(__file__).parent.absolute()), 'config.ini')
+        self.store = Datastore(inifile_path)
 
     def compute_simple_token_similarity(self, src_sequence, tgt_sequence):
         src_tokens = set([x.lower().strip() for x in src_sequence.split()])

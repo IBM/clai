@@ -6,13 +6,10 @@
 #
 
 from enum import Enum
-import json
 import requests
 
-from clai.server.searchlib import Provider
+from . import Provider
 from typing import List, Dict
-
-from clai.server.logger import current_logger as logger
 
 # Define permissible search scopings for KnowledgeCenter
 class KCscope(Enum):

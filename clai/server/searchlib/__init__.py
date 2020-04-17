@@ -9,3 +9,4 @@ from .providers import Provider
 from .se_provider import StackExchange
 from .kc_provider import KnowledgeCenter
 from .man_provider import Manpages
+from .data import Datastore

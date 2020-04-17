@@ -5,21 +5,20 @@
 # of this source tree for licensing information.
 #
 
-import os
 import configparser
 from collections import OrderedDict
-from pathlib import Path
 from typing import List, Dict
 
 from . import StackExchange, KnowledgeCenter, Manpages
+from clai.server.logger import current_logger as logger
 
 class Datastore:
     # Instance data members
     apis:OrderedDict = {}
     
-    def __init__(self):
+    def __init__(self, inifile_path:str):
         config = configparser.ConfigParser()
-        config.read(os.path.join(str(Path(__file__).parent.absolute()), 'config.ini'))
+        config.read(inifile_path)
         
         # Get a list of APIs defined in the config file
         for section in config.sections():
@@ -31,6 +30,8 @@ class Datastore:
                 self.apis[section] = Manpages("manpages", config[section])
             else:
                 raise AttributeError(f"Unsupported service type: '{section}'")
+        
+        logger.info(f"DEBUG!!! Sections: {str(self.apis)}")
 
     def getAPIs(self) -> OrderedDict:
         return self.apis

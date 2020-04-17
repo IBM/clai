@@ -8,7 +8,7 @@
 import json
 import requests
 
-from clai.server.searchlib import Provider
+from . import Provider
 from typing import List, Dict
 
 class StackExchange(Provider):
