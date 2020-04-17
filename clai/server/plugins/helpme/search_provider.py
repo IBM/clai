@@ -41,8 +41,14 @@ class Provider:
         return (os_name not in self.excludes)
     
     @abc.abstractclassmethod
-    def searchResult(self, data:List[Dict]) -> str:
+    def extractSearchResult(self, data:List[Dict]) -> str:
         """Given the result of an API search, extract the search result from it
+        """
+        pass
+    
+    @abc.abstractclassmethod
+    def getPrintableOutput(self, data:List[Dict]) -> str:
+        """Return an informative string that can be displayed to the user
         """
         pass
     

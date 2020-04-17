@@ -12,6 +12,8 @@ import requests
 from clai.server.plugins.helpme.search_provider import Provider
 from typing import List, Dict
 
+from clai.server.logger import current_logger as logger
+
 # Define permissible search scopings for KnowledgeCenter
 class KCscope(Enum):
     ZOS_ALL='SSLTBW'
@@ -35,14 +37,13 @@ class KnowledgeCenter(Provider):
     def call(self,
              query:str,
              limit:int = 1,
-             products:KCscope=KCscope.ZOS_240,
-             searchType:KCtype=KCtype.DOCUMENTATION
+             products:KCscope = KCscope.ZOS_240,
+             searchType:KCtype = KCtype.DOCUMENTATION
              ):
 
         payload = {
             'query': query,
-            'products': str(products),
-            'type': str(searchType),
+            'products': products.value,
             'intitle': True,
             'intext': True,
             'offset': 0,
@@ -50,16 +51,26 @@ class KnowledgeCenter(Provider):
             'dedup': True,
             'fallback': True
         }
+        
+        if searchType != KCtype.DOCUMENTATION:
+            payload['type'] = searchType.value
 
-        headers = {'Content-Type': "application/json"}
+        headers = {'Content-Type': "application/json", 'Accept': "*/*"}
 
-        r = requests.post(self.baseURI, data=json.dumps(payload), headers=headers)
-
+        r = requests.get(self.baseURI, params=payload, headers=headers)
         if r.status_code == 200:
-            return r.json()['hits']
+            return r.json()['topics']
 
         return None
     
     def extractSearchResult(self, data:List[Dict]) -> str:
-        topics:Dict = data[0]['topics']
-        return topics[0]['summary']
+        return data[0]['summary']
+    
+    def getPrintableOutput(self, data:List[Dict]) -> str:
+        result:Dict = data[0]
+        product:Dict = result['products'][0]
+        lines = [f"Product: {product['label']}",
+                 f"Topic: {result['label'][:384] + ' ...'}",
+                 f"Answer: {result['summary'][:256] + ' ...'}",
+                 f"Link: https://www.ibm.com/support/knowledgecenter/{result['href']}\n"]
+        

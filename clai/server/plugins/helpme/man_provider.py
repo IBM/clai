@@ -33,3 +33,6 @@ class Manpages(Provider):
     
     def extractSearchResult(self, data:List[Dict]) -> str:
         pass
+    
+    def getPrintableOutput(self, data:List[Dict]) -> str:
+        pass

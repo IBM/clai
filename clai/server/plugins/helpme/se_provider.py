@@ -35,3 +35,10 @@ class StackExchange(Provider):
     def extractSearchResult(self, data:List[Dict]) -> str:
         return data[0]['Answer']
     
+    def getPrintableOutput(self, data:List[Dict]) -> str:
+        lines = [f"Post: {data[0]['Content'][:384] + ' ...'}",
+                 f"Answer: {data[0]['Answer'][:256] + ' ...'}",
+                 f"Link: {data[0]['Url']}\n"]
+        
+        return "\n".join(lines)
+    

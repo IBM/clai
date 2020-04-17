@@ -68,25 +68,26 @@ class HelpMeAgent(Agent):
         apis:OrderedDict=self.store.getAPIs()
         helpWasFound = False
         for provider in apis:
-            thisAPI:Provider = apis[provider]
-            logger.info(f"Processing search provider '{provider}'")
-            logger.info(f"==> Excludes are: {str(thisAPI.getExcludes())}")
-            
             # We don't want to process the manpages provider... thats the provider
             # that we use to clarify results from other providers
             if provider == "manpages":
-                logger.info(f"==> Skipping provider '{provider}'")
+                logger.info(f"Skipping search provider 'manpages'")
                 continue
+            
+            thisAPI:Provider = apis[provider]
             
             # Skip this provider if it isn't supported on the target OS
             if not thisAPI.canRunOnThisOS():
-                logger.info(f"====> Provider '{provider}' CANNOT run on this platform; skipping")
+                logger.info(f"Skipping search provider '{provider}'")
+                logger.info(f"==> Excluded on platforms: {str(thisAPI.getExcludes())}")
                 continue # Move to next provider in list
+            
+            logger.info(f"Processing search provider '{provider}'")
         
             # Query data store to find closest matching data
             data = self.store.search(state.stderr, service=provider, size=1)
             if data:
-                logger.info("==> Success!!! Found relevant forums.")
+                logger.info(f"==> Success!!! Found a result in the {thisAPI}")
 
                 # Find closes match b/w relevant data and manpages for unix
                 searchResult = thisAPI.extractSearchResult(data)
@@ -104,12 +105,11 @@ class HelpMeAgent(Agent):
                     
                     # Set return data
                     suggested_command="man {}".format(command)
-                    description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
-                        .append(f"I did little bit of internet searching for you.\n") \
+                    description=Colorize() \
+                        .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
+                        .append(f"and found this in the {thisAPI}:\n") \
                         .info() \
-                        .append("Post: {}\n".format(data[0]['Content'][:384] + " ...")) \
-                        .append("Answer: {}\n".format(data[0]['Answer'][:256] + " ...")) \
-                        .append("Link: {}\n\n".format(data[0]['Url'])) \
+                        .append(thisAPI.getPrintableOutput(data)) \
                         .warning() \
                         .append("Do you want to try: man {}".format(command)) \
                         .to_console()
