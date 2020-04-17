@@ -118,7 +118,7 @@ def parse_args():
         '--port',
         help="port listen server",
         type=int,
-        default=None,
+        default=8010,
         dest='port'
     )
 
@@ -390,13 +390,14 @@ def register_file(system):
 
 def append_setup_to_file(rc_path, bin_path, port):
     append_to_file(rc_path, "\n export CLAI_PATH=%s" % bin_path)
+    append_to_file(rc_path, "\n export CLAI_PORT=%s" % port)
     append_to_file(rc_path, "\n export PYTHONPATH=%s" % bin_path)
     append_to_file(
         rc_path,
         "\n[[ -f %s/bash-preexec.sh ]] && source %s/bash-preexec.sh" % (bin_path, bin_path))
     append_to_file(
         rc_path,
-        f"\n[[ -f {bin_path}/clai.sh ]] && source {bin_path}/clai.sh {f'--port {port}' if port is not None else '' }"
+        f"\n[[ -f {bin_path}/clai.sh ]] && source {bin_path}/clai.sh --port {port}"
     )
 
 if __name__ == '__main__':

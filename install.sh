@@ -1,5 +1,7 @@
 #!/bin/bash -e
 flags=""
+# default
+CLAI_PORT=8010
 
 # Check for user passed args
 while test $# != 0
@@ -7,6 +9,10 @@ do
     case "$1" in
       --user) 
         USER_INSTALL=true
+        flags="$flags --user"
+      ;;
+      --port) 
+        CLAI_PORT=$2
         flags="$flags --user"
       ;;
       # add more flags here
@@ -54,8 +60,8 @@ if [ "$UNAME" = "Darwin" ]; then
 fi
 
 if [ ! $(uname) == 'OS/390' ]; then
-  if lsof -i -P -n | grep 8010 > /dev/null 2>&1; then
-    die "\n Another process is running on port 8010."
+  if lsof -i -P -n | grep $CLAI_PORT > /dev/null 2>&1; then
+    die "\n Another process is running on port $CLAI_PORT."
   fi
 # else
   # TODO: find equivalent for z/OS

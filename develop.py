@@ -129,7 +129,7 @@ def install(repo_path: str):
         URL_BASH_PREEXEC, filename="%s/%s" % (install_directory, BASH_PREEXEC)
     )
     register_the_user(install_directory, False)
-    append_setup_to_file(get_setup_file(), install_directory)
+    append_setup_to_file(get_setup_file(), install_directory, 8010)
     register_file(False)
 
     install_orchestration(install_directory)
