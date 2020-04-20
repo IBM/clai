@@ -5,7 +5,7 @@ flags=""
 while test $# != 0
 do
     case "$1" in
-      --user) 
+      --user)
         USER_INSTALL=true
         flags="$flags --user"
       ;;
@@ -58,6 +58,7 @@ if [ ! $(uname) == 'OS/390' ]; then
     die "\n Another process is running on port 8010."
   fi
 else
+  echo "Hello, zWorld!"
   # TODO: find equivalent for z/OS
 fi
 
