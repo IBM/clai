@@ -141,7 +141,7 @@ def is_user_install(bin_path):
 
 def execute(args):
     bin_path = os.getenv('CLAI_PATH', None)
-    
+
     if "-h" in args or "--help" in args:
         print(
             "usage: uninstall.py [-h] [--help] [--user]\n \
@@ -152,7 +152,7 @@ def execute(args):
         )
         sys.exit(0)
 
-    path = clai_installed(get_setup_file())  
+    path = clai_installed(get_setup_file())
     if not path or bin_path is None:
         print_error("CLAI is not installed.")
         sys.exit(1)
@@ -161,8 +161,8 @@ def execute(args):
     users = unregister_the_user(path)
 
     if "--user" in args or is_user_install(bin_path):
-        remove_system_folder(path)
-    elif users:
+        remove_system_folder(bin_path)
+    elif not users:
         remove_system_folder()
 
     remove_setup_file(get_setup_file())
