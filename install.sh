@@ -7,7 +7,7 @@ CLAI_PORT=8010
 while test $# != 0
 do
     case "$1" in
-      --user) 
+      --user)
         USER_INSTALL=true
         flags="$flags --user"
       ;;
@@ -63,7 +63,8 @@ if [ ! $(uname) == 'OS/390' ]; then
   if lsof -i -P -n | grep $CLAI_PORT > /dev/null 2>&1; then
     die "\n Another process is running on port $CLAI_PORT."
   fi
-# else
+else
+  echo "Hello, zWorld!"
   # TODO: find equivalent for z/OS
 fi
 
