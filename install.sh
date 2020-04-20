@@ -13,7 +13,7 @@ do
       ;;
       --port) 
         CLAI_PORT=$2
-        flags="$flags --user"
+        flags="$flags --port"
       ;;
       # add more flags here
       *) flags="$flags $1"
