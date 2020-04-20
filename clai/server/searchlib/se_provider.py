@@ -13,10 +13,11 @@ from typing import List, Dict
 
 class StackExchange(Provider):
     
-    def __init__(self, name:str, section:dict):
-        super().__init__(name, section)
+    def __init__(self, name:str, description:str, section:dict):
+        super().__init__(name, description, section)
     
     def call(self, query: str, limit: int = 1):
+        self.__log_debug__(f"call(query={query}, limit={str(limit)})")
 
         payload = {
             'text': query,
@@ -24,8 +25,11 @@ class StackExchange(Provider):
         }
 
         headers = {'Content-Type': "application/json"}
-
+        
+        self.__log_debug__(f"POST --> {str(self.baseURI)}\nheaders={str(headers)}\ndata={str(payload)}")
+        
         r = requests.post(self.baseURI, data=json.dumps(payload), headers=headers)
+        self.__log_debug__(f"Got HTTP response with RC={str(r.status_code)}")
 
         if r.status_code == 200:
             return r.json()['hits']

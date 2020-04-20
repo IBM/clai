@@ -23,15 +23,15 @@ class Datastore:
         # Get a list of APIs defined in the config file
         for section in config.sections():
             if section == "stack_exchange":
-                self.apis[section] = StackExchange("Unix StackExchange forums", config[section])
+                self.apis[section] = StackExchange(section, "Unix StackExchange forums", config[section])
             elif section == "ibm_kc":
-                self.apis[section] = KnowledgeCenter("IBM KnowledgeCenter", config[section])
+                self.apis[section] = KnowledgeCenter(section, "IBM KnowledgeCenter", config[section])
             elif section == "manpages":
-                self.apis[section] = Manpages("manpages", config[section])
+                self.apis[section] = Manpages(section, "manpages", config[section])
             else:
                 raise AttributeError(f"Unsupported service type: '{section}'")
         
-        logger.info(f"DEBUG!!! Sections: {str(self.apis)}")
+        logger.debug(f"Sections in {inifile_path}: {str(self.apis)}")
 
     def getAPIs(self) -> OrderedDict:
         return self.apis

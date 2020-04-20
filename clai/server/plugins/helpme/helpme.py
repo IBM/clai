@@ -58,9 +58,9 @@ class HelpMeAgent(Agent):
     def post_execute(self, state: State) -> Action:
 
         logger.info("=========================== In Helpme Bot:post_execute ===================================")
-        logger.info("State:\n Command: {}\n Error Code: {}\n Stderr: {}".format(state.command,
-                                                                                state.result_code,
-                                                                                state.stderr))
+        logger.info("State:\n\tCommand: {}\n\tError Code: {}\n\tStderr: {}".format(state.command,
+                                                                                   state.result_code,
+                                                                                   state.stderr))
         logger.info("============================================================================")
         
         if state.result_code == '0':

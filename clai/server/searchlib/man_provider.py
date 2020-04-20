@@ -12,10 +12,11 @@ from typing import List, Dict
 
 class Manpages(Provider):
     
-    def __init__(self, name:str, section:dict):
-        super().__init__(name, section)
+    def __init__(self, name:str, description:str, section:dict):
+        super().__init__(name, description, section)
     
     def call(self, query: str, limit: int = 1):
+        self.__log_debug__(f"call(query={query}, limit={str(limit)})")
         
         payload = {
             'text': query,
@@ -23,8 +24,10 @@ class Manpages(Provider):
         }
         
         headers = {'Content-Type': "application/json"}
+        self.__log_debug__(f"POST --> {str(self.baseURI)}\nheaders={str(headers)}\nparams={str(payload)}")
          
         r = requests.post(self.baseURI, params=payload, headers=headers)
+        self.__log_debug__(f"Got HTTP response with RC={str(r.status_code)}")
 
         if r.status_code == 200:
             return r.json()
