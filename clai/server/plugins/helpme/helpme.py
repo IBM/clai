@@ -59,8 +59,8 @@ class HelpMeAgent(Agent):
 
         logger.info("=========================== In Helpme Bot:post_execute ===================================")
         logger.info("State:\n Command: {}\n Error Code: {}\n Stderr: {}".format(state.command,
-                                                                            state.result_code,
-                                                                            state.stderr))
+                                                                                state.result_code,
+                                                                                state.stderr))
         logger.info("============================================================================")
         
         if state.result_code == '0':
@@ -90,7 +90,7 @@ class HelpMeAgent(Agent):
             if data:
                 logger.info(f"==> Success!!! Found a result in the {thisAPI}")
 
-                # Find closes match b/w relevant data and manpages for unix
+                # Find closest match b/w relevant data and manpages for unix
                 searchResult = thisAPI.extractSearchResult(data)
                 manpages = self.store.search(searchResult, service='manpages', size=5)
                 if manpages:
@@ -136,5 +136,4 @@ class HelpMeAgent(Agent):
                 
         return Action(suggested_command=suggested_command,
                       description=description,
-                      confidence=confidence
-                      )
+                      confidence=confidence)
