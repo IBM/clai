@@ -331,11 +331,13 @@ def execute(args):
             config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
         plugins = agent_datasource.all_plugins()
         for plugin in plugins:
-            default = plugin.default
+            default = z_default = False
             if platform == 'zos':
-                plugin.z_default
+                z_default = plugin.z_default
+            else:
+                default = plugin.default
 
-            if default:
+            if default or z_default:
                 installed = install_plugins_dependencies(bin_path, plugin.pkg_name, user_install)
                 if installed:
                     agent_datasource.mark_plugins_as_installed(plugin.name, None)
