@@ -1,3 +1,6 @@
+:link: Check out the [`NLC2CMD Challenge`](https://ibm.biz/nlc2cmd) @ Neurips 2020
+
+
 ![CLAI Logo](https://www.dropbox.com/s/nbkfa59khtlcs79/clai-logo.png?raw=1)
 
 Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to bring the power of AI to the command line. Using CLAI, users of Bash can access a wide range of skills that will enhance their command line experience. This repository contains the source code and documentation to get you started.
