@@ -1,1 +1,1 @@
-{"selected": {"user": ["nlc2cmd"]}, "default": ["nlc2cmd"], "default_orchestrator": "max_orchestrator", "installed": [], "report_enable": false}
+{"selected": {"user": ["nlc2cmd"], "root": ["nlc2cmd", "helpme"]}, "default": ["nlc2cmd"], "z_default": ["demo_agent"], "default_orchestrator": "max_orchestrator", "installed": ["nlc2cmd", "howdoi", "helpme"], "report_enable": false, "orchestrator": "max_orchestrator", "user_install": false}

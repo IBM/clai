@@ -36,12 +36,12 @@ class Datastore:
     def getAPIs(self) -> OrderedDict:
         return self.apis
 
-    def search(self, query, service='stack_exchange', size=10) -> List[Dict]:
+    def search(self, query, service='stack_exchange', size=10, **kwargs) -> List[Dict]:
         supportedServices = self.apis.keys()
         
         if service in supportedServices:
             serviceProvider = self.apis[service]
-            res = serviceProvider.call(query, size)
+            res = serviceProvider.call(query, size, **kwargs)
         else:
             raise AttributeError(f"service must be one of: {str(supportedServices)}")
 

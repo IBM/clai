@@ -84,42 +84,67 @@ class HelpMeAgent(Agent):
                 continue # Move to next provider in list
             
             logger.info(f"Processing search provider '{provider}'")
-        
-            # Query data store to find closest matching data
-            data = self.store.search(state.stderr, service=provider, size=1)
-            if data:
-                logger.info(f"==> Success!!! Found a result in the {thisAPI}")
-
-                # Find closest match b/w relevant data and manpages for unix
-                searchResult = thisAPI.extractSearchResult(data)
-                manpages = self.store.search(searchResult, service='manpages', size=5)
-                if manpages:
-                    logger.info("==> Success!!! found relevant manpages.")
-
-                    command = manpages['commands'][-1]
-                    confidence = manpages['dists'][-1]
-
-                    # FIXME: Artificially boosted confidence
-                    confidence = 1.0
-
-                    logger.info("==> Command: {} \t Confidence:{}".format(command, confidence))
-                    
-                    # Set return data
-                    suggested_command="man {}".format(command)
-                    description=Colorize() \
-                        .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
-                        .append(f"and found this in the {thisAPI}:\n") \
-                        .info() \
-                        .append(thisAPI.getPrintableOutput(data)) \
-                        .warning() \
-                        .append("Do you want to try: man {}".format(command)) \
-                        .to_console()
-                    
-                    # Mark that help was indeed found
-                    helpWasFound = True
-                    
-                    # Leave the loop
-                    break
+            
+            if thisAPI.hasVariants():
+                logger.info(f"==> Has search variants: {str(thisAPI.getVariants())}")
+                variants:List = thisAPI.getVariants()
+            else:
+                logger.info(f"==> Has no search variants")
+                variants:List = [None]
+            
+            # For each search variant supported by the current API, query
+            # the data store to find the closest matching data.  If there are
+            # no search variants (ie: the singleton variant case), the variants
+            # list will only contain a single, Nonetype value.
+            for variant in variants:
+                
+                if variant is not None:
+                    logger.info(f"==> Searching variant '{variant}'")
+                    data = self.store.search(state.stderr, service=provider, size=1, searchType=variant)
+                else:
+                    data = self.store.search(state.stderr, service=provider, size=1)
+                
+                if data:
+                    apiString = str(thisAPI)
+                    if variant is not None:
+                        apiString = f"{apiString} '{variant}' variant"
+                        
+                    logger.info(f"==> Success!!! Found a result in the {apiString}")
+    
+                    # Find closest match b/w relevant data and manpages for unix
+                    searchResult = thisAPI.extractSearchResult(data)
+                    manpages = self.store.search(searchResult, service='manpages', size=5)
+                    if manpages:
+                        logger.info("==> Success!!! found relevant manpages.")
+    
+                        command = manpages['commands'][-1]
+                        confidence = manpages['dists'][-1]
+    
+                        # FIXME: Artificially boosted confidence
+                        confidence = 1.0
+    
+                        logger.info("==> Command: {} \t Confidence:{}".format(command, confidence))
+                        
+                        # Set return data
+                        suggested_command="man {}".format(command)
+                        description=Colorize() \
+                            .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
+                            .append(f"and found this in the {thisAPI}:\n") \
+                            .info() \
+                            .append(thisAPI.getPrintableOutput(data)) \
+                            .warning() \
+                            .append("Do you want to try: man {}".format(command)) \
+                            .to_console()
+                        
+                        # Mark that help was indeed found
+                        helpWasFound = True
+                        
+                        # We've found help; no need to keep searching
+                        break
+                
+            # If we found help, then break out of the outer loop as well
+            if helpWasFound:
+                break
                 
         if not helpWasFound:
             logger.info("Failure: Unable to be helpful")
