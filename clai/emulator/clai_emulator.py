@@ -198,7 +198,8 @@ class ClaiEmulator:
 
     def add_log_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
-        self.log_image = tk.PhotoImage(file=f"{path}/log.png")
+        temp_image = Image.open(f"{path}/log.png")
+        self.log_image = ImageTk.PhotoImage(temp_image)
         log_button = ttk.Button(toolbar, image=self.log_image, command=self.open_log_window)
         log_button.pack(side=tk.LEFT, padx=2, pady=2)
 
