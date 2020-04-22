@@ -60,8 +60,7 @@ class Provider:
             getters = ['files', 'data', 'json', 'params', 'auth', 'cookies', 'hooks']
         elif isinstance(data, Response):
             output.append(f"RESPONSE[{data.status_code}] <-- {data.url}")
-            getters = ['apparent_encoding', 'cookies', 'elapsed', 'encoding', 'history', 
-                       'is_permanent_redirect', 'is_redirect', 'links', 'next',
+            getters = ['apparent_encoding', 'cookies', 'elapsed', 'encoding',
                        'ok', 'status_code', 'reason', 'content']
         
         # We will always have message headers
@@ -75,12 +74,8 @@ class Provider:
                 
                 lineHeader = f"|    {key}: "
                 printData:str = str(data.headers[key])
-                
-                if len(lineHeader) + len(printData) > 77:
-                    linePartTwo = f" ... {printData[-10:]}"
-                    lastIndexInlinePartOne = 77 - len(lineHeader) - len(linePartTwo)
-                    linePartOne = printData[:lastIndexInlinePartOne]
-                    printData = f"{linePartOne}{linePartTwo}"
+                if len(printData) > 64:
+                    printData = f"{printData[:50]} ... {printData[-10:]}"
                 output.append(f"{lineHeader}{printData}")
             output.append("`".ljust(80, '-'))
         
@@ -94,12 +89,8 @@ class Provider:
             else:
                 printData:str = str(result)
                 lineHeader = f"{method}: "
-                
-                if len(lineHeader) + len(printData) > 77:
-                    linePartTwo = f" ... {printData[-10:]}"
-                    lastIndexInlinePartOne = 77 - len(lineHeader) - len(linePartTwo)
-                    linePartOne = printData[:lastIndexInlinePartOne]
-                    printData = f"{linePartOne}{linePartTwo}"
+                if len(printData) > 64:
+                    printData = f"{printData[:50]} ... {printData[-10:]}"
                 output.append(f"{lineHeader}{printData}")
         
         self.__log_info__("\n\t".join(output))
