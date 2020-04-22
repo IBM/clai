@@ -139,8 +139,8 @@ def install(repo_path: str, install_path: str):
         URL_BASH_PREEXEC, filename="%s/%s" % (install_path, BASH_PREEXEC)
     )
 
-    register_the_user(install_directory, False)
-    append_setup_to_file(get_setup_file(), install_directory, DEFAULT_PORT)
+    register_the_user(install_path, False)
+    append_setup_to_file(get_setup_file(), install_path, DEFAULT_PORT)
     register_file(False)
 
     install_orchestration(install_path)
