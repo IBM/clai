@@ -70,7 +70,6 @@ RUN python3 -m pip install --user -r requirements.txt \
 #############################################################################
 # UPDATE LOCALE                                                             #
 #############################################################################
-RUN echo "export LC_ALL='en_US.utf8'" >> /root/.bashrc \
-    && adduser developer
+RUN echo "export LC_ALL='en_US.utf8'" >> /root/.bashrc
 
 
