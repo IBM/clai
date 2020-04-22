@@ -12,6 +12,8 @@ from tkinter import ttk, messagebox
 from tkinter.font import Font
 from typing import List
 
+from PIL import Image, ImageTk
+
 from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 from clai.emulator.log_window import LogWindow
 from clai.emulator.toggled_frame import ToggledFrame
@@ -189,7 +191,8 @@ class ClaiEmulator:
 
     def add_refresh_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
-        self.refresh_image = tk.PhotoImage(file=f"{path}/refresh.png")
+        temp_image = Image.open(f"{path}/refresh.png")
+        self.refresh_image = ImageTk.PhotoImage(temp_image)
         refresh_button = ttk.Button(toolbar, image=self.refresh_image, command=self.on_refresh_click)
         refresh_button.pack(side=tk.LEFT, padx=2, pady=2)
 
