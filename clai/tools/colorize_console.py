@@ -14,9 +14,15 @@ class Colorize:
     COMPLETE = "\033[32m"
     NORMAL = "\033[0m"
 
-    EMOJI_ROBOT = '\U0001F916'
-    EMOJI_CHECK = '\u2611'
-    EMOJI_BOX = '\u25FB'
+    
+    if platform == 'zos':
+        EMOJI_ROBOT = '@'
+        EMOJI_CHECK = '[x]'
+        EMOJI_BOX = '[ ]'
+    else:
+        EMOJI_ROBOT = '\U0001F916'
+        EMOJI_CHECK = '\u2611'
+        EMOJI_BOX = '\u25FB'
 
     def __init__(self):
         self._text_complete = ""
@@ -42,10 +48,7 @@ class Colorize:
         return self
 
     def emoji(self, emoji_code):
-        if platform == 'zos':
-            self._text_complete += f'[ {unicodedata.name(emoji_code)} ]'
-        else:
-            self._text_complete += emoji_code
+        self._text_complete += emoji_code
         return self
 
     def to_console(self):
