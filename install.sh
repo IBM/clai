@@ -63,8 +63,7 @@ if [ ! $(uname) == 'OS/390' ]; then
   if lsof -i -P -n | grep $CLAI_PORT > /dev/null 2>&1; then
     die "\n Another process is running on port $CLAI_PORT."
   fi
-else
-  echo "Hello, zWorld!"
+#else
   # TODO: find equivalent for z/OS
 fi
 
