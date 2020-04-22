@@ -17,12 +17,16 @@
 #     runLocalTests.sh [OPTIONS]
 #
 #     Options:
+#         -h
+#               Display a usage message and exit
 #
 #         -n NAME
 #               Perform a test named "test_NAME.py" or (if -p is specified)
 #               "test_clai_plugins_NAME.py"
+#
 #         -p
 #              Only perform tests on CLAI plugins
+#
 #         -v
 #              Print verbose pytest output
 #
