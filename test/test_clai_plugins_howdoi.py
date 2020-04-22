@@ -16,7 +16,7 @@ from builtins import classmethod
 OS_NAME:str = os.uname().sysname.lower()
 
 
-#@unittest.skip("Only for local testing")
+@unittest.skip("Only for local testing")
 class SearchAgentTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -78,7 +78,7 @@ class SearchAgentTest(unittest.TestCase):
         
         return(question, answer)
 
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_without_question(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
@@ -92,7 +92,7 @@ class SearchAgentTest(unittest.TestCase):
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
 
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_with_question(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
@@ -106,7 +106,7 @@ class SearchAgentTest(unittest.TestCase):
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
 
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_sudo(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
@@ -120,7 +120,7 @@ class SearchAgentTest(unittest.TestCase):
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
 
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_disk(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
@@ -134,7 +134,7 @@ class SearchAgentTest(unittest.TestCase):
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
 
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_zip(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
@@ -148,7 +148,7 @@ class SearchAgentTest(unittest.TestCase):
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
     
-    #@unittest.skip("Only for local testing")
+    @unittest.skip("Only for local testing")
     def test_get_next_action_pds(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
