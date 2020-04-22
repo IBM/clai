@@ -5,7 +5,7 @@ flags=""
 while test $# != 0
 do
     case "$1" in
-      --user) 
+      --user)
         USER_INSTALL=true
         flags="$flags --user"
       ;;
