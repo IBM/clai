@@ -32,6 +32,8 @@ platform = sys.platform
 
 actions = ["install", "uninstall"]
 
+DEFAULT_PORT = os.getenv('CLAI_PORT', 8010)
+
 URL_BASH_PREEXEC = (
     "http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh"
 )
@@ -136,8 +138,9 @@ def install(repo_path: str, install_path: str):
     download_file(
         URL_BASH_PREEXEC, filename="%s/%s" % (install_path, BASH_PREEXEC)
     )
-    register_the_user(install_path, False)
-    append_setup_to_file(get_setup_file(), install_path)
+
+    register_the_user(install_directory, False)
+    append_setup_to_file(get_setup_file(), install_directory, DEFAULT_PORT)
     register_file(False)
 
     install_orchestration(install_path)

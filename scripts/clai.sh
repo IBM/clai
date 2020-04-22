@@ -1,4 +1,15 @@
 #!/bin/bash
+flags=""
+
+# add all flags to one var to be passed onto the clai script
+while test $# != 0
+do
+    case "$1" in
+      *) flags="$flags $1"
+    esac
+    shift
+done
+
 function cleanUp() {
 rm -f $ERROR_LOG_FILE;
 }
@@ -100,7 +111,7 @@ preexec_functions+=(preexec_override_invoke)
 
 #launch server
 if ! ps -Ao args | grep "[c]lai-run" > /dev/null 2>&1; then
-  eval nohup $CLAI_PATH/bin/clai-run new &
+  eval nohup $CLAI_PATH/bin/clai-run new $flags &
 fi
 
 NEXT_WAIT_TIME=0
