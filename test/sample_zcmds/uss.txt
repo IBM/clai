@@ -1,0 +1,76 @@
+DISPLAY
+	ls
+	ls -al
+	ls -al <filename>
+	df -P
+	df -S
+	df -v
+	du <pathname> 
+	du <filename>
+	cd pathname
+	pwd
+	dircmp pathname1 pathname2
+	pathchk pathname
+	cmp filename1 filename2
+	diff filename1 filename2
+	chtag -p *
+
+	find / -name "*.py"
+	grep -i "string" *
+	egrep use grep -E
+	fgrep use grep -F
+
+	file filename
+	cat filename
+	head -n 20 filename
+	tail -n 15 filename 
+	more filename
+	date
+	echo "string"
+	man ls
+
+	uptime
+	uname -rsv
+	ps -ef
+	top
+	jobs
+	who
+	whoami
+	id
+	zlsof -d
+	
+	tso tsocmd
+	tsocmd authtsocmd
+
+SEND
+	talk - not useful bc 2 sided setup
+
+EDIT
+	oedit fn.ft
+	obrowse fn.ft
+	vi fn.ft
+
+HELP
+	help ls
+	man ls
+
+SUBMIT
+	submit fn.ft
+
+COPY
+	cp 
+
+RENAME
+	mv
+
+DELETE
+	rm
+	rmdir
+	unmount
+
+CREATE
+	mkdir
+	mount
+
+OTHER
+	docker --version
