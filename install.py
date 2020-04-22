@@ -332,7 +332,11 @@ def execute(args):
         if is_zos():
             os.system(f'chtag -tc 819 {bin_path}/{BASH_PREEXEC}')
 
-    mark_user_flag(bin_path,True) if user_install else mark_user_flag(bin_path, False)
+    if user_install:
+        mark_user_flag(bin_path, True)
+    else:
+        mark_user_flag(bin_path, False)
+   
         
     register_the_user(bin_path, args.system)
     append_setup_to_file(
