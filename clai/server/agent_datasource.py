@@ -112,9 +112,12 @@ class AgentDatasource:
             config_parser = configparser.ConfigParser()
             config_parser.read(file_path)
 
-            default = False
+            default = z_default = False
             if config_parser.has_option('DEFAULT', 'default'):
                 default = config_parser.getboolean('DEFAULT', 'default')
+
+            if config_parser.has_option('DEFAULT', 'z_default'):
+                z_default = config_parser.getboolean('DEFAULT', 'z_default')
 
             exclude = []
             if config_parser.has_option('DEFAULT', 'exclude'):
@@ -125,7 +128,8 @@ class AgentDatasource:
                 name=config_parser['DEFAULT']['name'],
                 description=config_parser['DEFAULT']['description'],
                 exclude=exclude,
-                default=default
+                default=default,
+                z_default=z_default
             )
 
         return AgentDescriptor(

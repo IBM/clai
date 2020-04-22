@@ -32,7 +32,7 @@ platform = sys.platform
 
 actions = ["install", "uninstall"]
 
-install_directory = "/home/dev/.bin/clai/bin"
+DEFAULT_PORT = os.getenv('CLAI_PORT', 8010)
 
 URL_BASH_PREEXEC = (
     "http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh"
@@ -56,6 +56,16 @@ def parse_args():
         "-p", "--path", help="path to source directory", dest="path", action="store"
     )
 
+    parser.add_argument(
+        "-i",
+        "--install-directory",
+        dest="install_path",
+        action="store",
+        type=str,
+        help="The location that clai is installed in",
+        default=f"{os.getenv('HOME', '/home/root')}/.bin/clai/bin"
+    )
+
     args = parser.parse_args()
 
     if args.action not in actions:
@@ -71,11 +81,11 @@ def parse_args():
     return args
 
 
-def createInstallDir():
+def createInstallDir(directory):
     try:
-        if not os.path.exists(install_directory):
-            print(f"creating install directory: {install_directory}")
-            os.makedirs(install_directory, exist_ok=True)
+        if not os.path.exists(directory):
+            print(f"creating install directory: {directory}")
+            os.makedirs(directory, exist_ok=True)
         else:
             print(f"Install directory already exists")
     except Exception as e:
@@ -92,8 +102,8 @@ def link(src, dest):
         sys.exit(1)
 
 
-def install(repo_path: str):
-    createInstallDir()
+def install(repo_path: str, install_path: str):
+    createInstallDir(install_path)
     
     required_scripts = os.listdir(os.path.join(repo_path, "scripts"))
     required_dirs = ["bin", "clai"]
@@ -105,75 +115,78 @@ def install(repo_path: str):
         for script in required_scripts:
             link(
                 os.path.join(repo_path, f"scripts/{script}"),
-                os.path.join(install_directory, script),
+                os.path.join(install_path, script),
             )
-            os.system(f"chmod 775 {os.path.join(install_directory, script)}")
+            os.system(f"chmod 775 {os.path.join(install_path, script)}")
 
         for directory in required_dirs:
             link(
                 os.path.join(repo_path, directory),
-                os.path.join(install_directory, directory),
+                os.path.join(install_path, directory),
             )
             if directory == "bin":
-                os.system(f"chmod -R 777 {os.path.join(install_directory, directory)}")
+                os.system(f"chmod -R 777 {os.path.join(install_path, directory)}")
 
         for file in required_files:
-            link(os.path.join(repo_path, file), os.path.join(install_directory, file))
-            os.system(f"chmod 666 {os.path.join(install_directory, file)}")
+            link(os.path.join(repo_path, file), os.path.join(install_path, file))
+            os.system(f"chmod 666 {os.path.join(install_path, file)}")
 
     except Exception as e:
         print(e)
         sys.exit(1)
 
     download_file(
-        URL_BASH_PREEXEC, filename="%s/%s" % (install_directory, BASH_PREEXEC)
+        URL_BASH_PREEXEC, filename="%s/%s" % (install_path, BASH_PREEXEC)
     )
+
     register_the_user(install_directory, False)
-    append_setup_to_file(get_setup_file(), install_directory)
+    append_setup_to_file(get_setup_file(), install_directory, DEFAULT_PORT)
     register_file(False)
 
-    install_orchestration(install_directory)
+    install_orchestration(install_path)
 
     agent_datasource = AgentDatasource(
         config_storage=ConfigStorage(
-            alternate_path=f"{install_directory}/configPlugins.json"
+            alternate_path=f"{install_path}/configPlugins.json"
         )
     )
     plugins = agent_datasource.all_plugins()
     for plugin in plugins:
-        default = plugin.default
+        default = z_default = False
         if platform == 'zos':
-            plugin.z_default
-            
-        if default:
-            installed = install_plugins_dependencies(install_directory, plugin.pkg_name, False)
+            z_default = plugin.z_default
+        else:
+            default = plugin.default
+
+        if default or z_default:
+            installed = install_plugins_dependencies(install_path, plugin.pkg_name, False)
             if installed:
                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
     print_complete("CLAI has been installed correctly, you need restart your shell.")
 
 
-def revert():
+def revert(install_path):
     print("Reverting file permissions to original state")
-    scripts = [file for file in os.listdir(install_directory) if file.endswith(".sh")]
+    scripts = [file for file in os.listdir(install_path) if file.endswith(".sh")]
     json_files = [
-        file for file in os.listdir(install_directory) if file.endswith(".json")
+        file for file in os.listdir(install_path) if file.endswith(".json")
     ]
 
     try:
         for script in scripts:
-            os.system(f"chmod 644 {os.path.join(install_directory, script)}")
+            os.system(f"chmod 644 {os.path.join(install_path, script)}")
 
         # Reset bin directory
-        os.system(f"chmod 755 {install_directory}/bin")
-        for file in os.listdir(f"{install_directory}/bin"):
+        os.system(f"chmod 755 {install_path}/bin")
+        for file in os.listdir(f"{install_path}/bin"):
             if file in ["emulator.py", "process-command"]:
-                os.system(f'chmod 755 {os.path.join(install_directory, f"bin/{file}")}')
+                os.system(f'chmod 755 {os.path.join(install_path, f"bin/{file}")}')
             else:
-                os.system(f'chmod 644 {os.path.join(install_directory, f"bin/{file}")}')
+                os.system(f'chmod 644 {os.path.join(install_path, f"bin/{file}")}')
 
         for file in json_files:
-            os.system(f"chmod 666 {os.path.join(install_directory, file)}")
+            os.system(f"chmod 666 {os.path.join(install_path, file)}")
 
     except Exception as e:
         print(e)
@@ -183,9 +196,10 @@ def revert():
 def main(args: list):
     action = args.action
     repo_path = args.path
+    install_path = args.install_path
 
     if action == "install":
-        install(repo_path)
+        install(repo_path, install_path)
     elif action == "uninstall":
         path = clai_installed(get_setup_file())
         if not path:
@@ -193,7 +207,7 @@ def main(args: list):
             sys.exit(1)
 
         # revert file permissions back to normal
-        revert()
+        revert(install_path)
         uninstall(["--user"])
 
         # revert plugins config
