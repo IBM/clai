@@ -120,11 +120,6 @@ nohup.out
 /.project
 /.pydevproject
 
-# man page data 
-linux_pages
-z_pages
-spark_pages
-
 # editor
 .vs
 .vscode
