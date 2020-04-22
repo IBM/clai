@@ -5,6 +5,8 @@
 # of this source tree for licensing information.
 #
 
+import re
+
 from enum import Enum
 
 from . import Provider
@@ -121,8 +123,8 @@ class KnowledgeCenter(Provider):
             topic:Dict = data[0]
             product:Dict = topic['products'][0]
             lines = [f"Product: {product['label']}",
-                     f"Topic: {topic['label'][:384] + ' ...'}",
-                     f"Answer: {topic['summary'][:256] + ' ...'}",
+                     f"Topic: {self.__clean__(topic['label'][:384] + ' ...')}",
+                     f"Answer: {self.__clean__(topic['summary'][:256] + ' ...')}",
                      f"Tags: {str(topic['tags'])}",
                      f"Link: https://www.ibm.com/support/knowledgecenter/{topic['href']}\n"]
         
@@ -149,9 +151,12 @@ class KnowledgeCenter(Provider):
         #       ]
         else:
             result:Dict = data[0]
-            lines = [f"Title: {result['title'][:384] + ' ...'}",
-                     f"Answer: {result['summary'][:256] + ' ...'}",
+            lines = [f"Title: {self.__clean__(result['title'][:384] + ' ...')}",
+                     f"Answer: {self.__clean__(result['summary'][:256] + ' ...')}",
                      f"Link: {result['link']}\n"]
         
         self.__log_debug__(f"getPrintableOutput() returns {str(lines)}")
         return "\n".join(lines)
+    
+    def __clean__(self, html:str) -> str:
+        return re.sub(re.compile('<.*?>'), '', html)
