@@ -45,8 +45,8 @@ if ! command_exists python3 ; then
 fi
 
 running_process=
-if ps -Ao args | grep "[c]lai-run" &> /dev/null ; then
-  running_process=$(ps -Ao args | grep "[c]lai-run" | head -1)
+if ps -o args -u $USER | grep "[c]lai-run" &> /dev/null ; then
+  running_process=$(ps -o args -u $USER | grep "[c]lai-run" | head -1)
   pkill -f "${running_process}"
 fi
 

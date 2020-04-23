@@ -152,8 +152,16 @@ def remove_setup_register():
     for file in rc_files:
         remove_lines_setup(file)
 
+def is_user_install(bin_path):
+    plugins_config = ConfigStorage(
+        alternate_path=f"{bin_path}/configPlugins.json"
+    ).read_config(None).user_install
+
+    return plugins_config
 
 def execute(args):
+    bin_path = os.getenv('CLAI_PATH', None)
+
     if "-h" in args or "--help" in args:
         print(
             "usage: uninstall.py [-h] [--help] [--user]\n \
@@ -165,17 +173,16 @@ def execute(args):
         sys.exit(0)
 
     path = clai_installed(get_setup_file())
-    if not path:
+    if not path or bin_path is None:
         print_error("CLAI is not installed.")
         sys.exit(1)
 
     stat_uninstall(path)
     users = unregister_the_user(path)
 
-    if "--user" in args:
-        remove_system_folder(path)
-
-    if not users:
+    if "--user" in args or is_user_install(bin_path):
+        remove_system_folder(bin_path)
+    elif not users:
         remove_system_folder()
 
     remove_setup_file(get_setup_file())
