@@ -48,7 +48,8 @@ class ConfigStorage:
             default=config_for_all_users.default,
             default_orchestrator=config_for_all_users.default_orchestrator,
             installed=config_for_all_users.installed,
-            report_enable=config_for_all_users.report_enable
+            report_enable=config_for_all_users.report_enable,
+            user_install=config_for_all_users.user_install
         )
 
     def store_config(self, config: PluginConfig, user_name: str = None):
