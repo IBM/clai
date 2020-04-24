@@ -167,14 +167,25 @@ if [ "$OPSYS" != "OS/390" ]; then
     done
 fi
 
+if [ -n "$force" ] ; then
+    if [ -d ".claitest" ]; then
+        rm -rf .claitest/*
+    else
+        mkdir .claitest
+    fi
+fi
+
 numBucketsFailed=0
 for target in $targets; do
     echo "Executing $target"
     
     if [ -n "$force" ] ; then
-        tmpfile=$(mktemp /tmp/test_clai_autotest_XXXXXX.py)
-        sed 's/@unittest.skip(/#@unittest.skip(/g' "$target" > "$tmpfile"
-        target="$tmpfile"
+        oldPrefix="$TEST_DIR/"
+        newPrefix=".claitest/"
+        newfile="${target/$oldPrefix/$newPrefix}"
+        cp $target $newfile
+        sed -i 's/@unittest.skip(/#@unittest.skip(/g' "$newfile"
+        target="$newfile"
     fi
     
     pytestCommand='${PYTEST}'
@@ -187,9 +198,11 @@ for target in $targets; do
     if [ $? -ne 0 ]; then
         let "numBucketsFailed=numBucketsFailed+1"
     fi
-    
-    if [ -n "$tmpfile" ]; then
-        rm "$tmpfile"
-    fi
 done
+
+if [ -d ".claitest" ]; then
+    rm -rf .claitest/*
+    rmdir .claitest
+fi
+
 exit $numFailres
