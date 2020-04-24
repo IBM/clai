@@ -8,15 +8,15 @@
 import importlib
 from typing import List
 from clai import platform
+from clai.server.clai_client import send_command_post_execute
+from clai.server.command_message import Process, ProcessesValues
 
 try:
-    psutil = importlib.import_module('psutil')
+    PSUTIL = importlib.import_module('psutil')
 except ImportError:
     if platform != 'zos':
         print('Error: psutil not installed')
 
-from clai.server.clai_client import send_command_post_execute
-from clai.server.command_message import Process, ProcessesValues
 
 EXCLUDE_OWN_PROCESS = 1
 SIZE_PROCESS = 11
@@ -27,10 +27,10 @@ def map_processes(processes) -> List[Process]:
 
 
 def obtain_last_processes(user_name):
-    process_changes = [] 
+    process_changes = []
 
     if platform != 'zos':
-        for process in psutil.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
+        for process in PSUTIL.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
             process_changes.append(process.info)
     else:
         # TODO: Figure out the equivilant on z/OS
