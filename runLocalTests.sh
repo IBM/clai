@@ -2,8 +2,8 @@
 
 ################################################################
 # Licensed Materials - Property of IBM
-# “Restricted Materials of IBM”
-# © Copyright IBM Corp. 2020 ALL RIGHTS RESERVED
+# Restricted Materials of IBM
+# (C) Copyright IBM Corp. 2020 ALL RIGHTS RESERVED
 ################################################################
 
 #
@@ -17,6 +17,9 @@
 #     runLocalTests.sh [OPTIONS]
 #
 #     Options:
+#         -f
+#               Ignore any \"@unittest.skip\" statements in testcases
+#
 #         -h
 #               Display a usage message and exit
 #
@@ -44,17 +47,28 @@
 TEST_DIR="test"
 if [ -z "$VIRTUAL_ENV" ]; then
     ROOT_DIR=""
+    PIP_FLAGS="--user"
 else
     ROOT_DIR="$VIRTUAL_ENV"
+    PIP_FLAGS=""
 fi
 PYTHON_VERSION=`python3 -c 'import sys; print(str(sys.version_info[0])+"."+str(sys.version_info[1]))'`
 PYTHONLIB="python${PYTHON_VERSION}/site-packages"
+OPSYS=`uname -s`
+if [ "$OPSYS" == "OS/390" ]; then
+    PYTEST='pytest'
+else
+    PYTEST='pytest-3'
+fi
+PIP3='python3 -m pip'
 
 function displayUsage {
     echo ""
     echo "Usage: runLocalTests.sh [OPTIONS]"
     echo ""
     echo "Options:"
+    echo "  -f"
+    echo "     Ignore any \"@unittest.skip\" statements in testcases"
     echo "  -n NAME"
     echo "     Perform a test named \"test_NAME.py\" or (if -p is specified) \"test_clai_plugins_NAME.py\""
     echo "  -p"
@@ -69,8 +83,11 @@ plugins in the test directory will be run."
 }
 
 # Parse command line arguments
-while getopts ":hn:pv" opt; do
+while getopts ":fhn:pv" opt; do
     case $opt in
+        f )
+            force=true
+            ;;
         h )
             displayUsage
             exit 0
@@ -126,30 +143,41 @@ for dir in "${ROOT_DIR}" "${ROOT_DIR}/usr"; do
     done
 done
 
-# Make sure that we have pip installed
-isPipThere=$(command -v pip3)
-if [ -z $isPipThere ]; then
-    echo "pip3 is not installed; unable to continue"
-    exit 1
-fi
+# If we're not already running on a system where CLAI is installed,
+# we will want to install the CLAI dependencies
+if [ "$OPSYS" != "OS/390" ]; then
 
-# Make sure that pip is up to date
-pip3 install --upgrade pip > /dev/null
-
-# Install the prerequisites
-for file in requirements.txt requirements_test.txt ; do
-    pip3 install -r $file > /dev/null
-    if [ $? -ne 0 ]; then
-        echo "Prerequisites can not be installed; unable to continue"
+    # Make sure that we have pip installed
+    isPipThere=$(command -v pip3)
+    if [ -z $isPipThere ]; then
+        echo "pip is not installed; unable to continue"
         exit 1
     fi
-done
+    
+    # Make sure that pip is up to date
+    $PIP3 install $PIP_FLAGS --upgrade pip > /dev/null
+    
+    # Install the prerequisites
+    for file in requirements.txt requirements_test.txt ; do
+        $PIP3 install $PIP_FLAGS -r $file > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Prerequisites can not be installed; unable to continue"
+            exit 1
+        fi
+    done
+fi
 
 numBucketsFailed=0
 for target in $targets; do
     echo "Executing $target"
     
-    pytestCommand='pytest-3'
+    if [ -n "$force" ] ; then
+        tmpfile=$(mktemp /tmp/test_clai_autotest_XXXXXX.py)
+        sed 's/@unittest.skip(/#@unittest.skip(/g' "$target" > "$tmpfile"
+        target="$tmpfile"
+    fi
+    
+    pytestCommand='${PYTEST}'
     if [ -z "$verbose" ] ; then
         pytestCommand="${pytestCommand} -vra --tb=no"
     fi
@@ -158,6 +186,10 @@ for target in $targets; do
     eval "${pytestCommand}"
     if [ $? -ne 0 ]; then
         let "numBucketsFailed=numBucketsFailed+1"
+    fi
+    
+    if [ -n "$tmpfile" ]; then
+        rm "$tmpfile"
     fi
 done
 exit $numFailres
