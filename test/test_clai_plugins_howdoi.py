@@ -43,22 +43,19 @@ class SearchAgentTest(unittest.TestCase):
             elif method == "test_get_next_action_pwd_with_question":
                 if OS_NAME == "OS/390":
                     question = "What is a pds?"
-                    answer = "man dde"
+                    answer = "man readlink"
                 else:
                     question = "What is pwd?"
                     answer = "man pwd"
             
             elif method == "test_get_next_action_sudo":
                 question = "when to use sudo vs su?"
-                if OS_NAME == "OS/390":
-                    answer = "man ssh"
-                else:
-                    answer = "man su"
+                answer = "man su"
             
             elif method == "test_get_next_action_disk":
                 question = "find out disk usage per user?"
                 if OS_NAME == "OS/390":
-                    answer = "man perlopentut"
+                    answer = "man du"
                 else:
                     answer = "man df"
             
@@ -72,7 +69,7 @@ class SearchAgentTest(unittest.TestCase):
             elif method == "test_get_next_action_pds":
                 question = "copy a PDS member?"
                 if OS_NAME == "OS/390":
-                    answer = "man rpc.h"
+                    answer = "man tcsh"
                 else:
                     answer = "man cmp"
         

@@ -45,9 +45,7 @@ class RetrievalAgentTest(unittest.TestCase):
                                        size=10)
         
         print("Got this result from the Manpages service: " + str(man_hits))
-        self.assertEqual('platform', man_hits['commands'][-1])
-        
-        assert False
+        self.assertEqual('connect', man_hits['commands'][-1])
 
     @unittest.skip("Local testing")
     def test_get_command(self):
