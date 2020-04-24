@@ -54,7 +54,8 @@ class KnowledgeCenter(Provider):
         the KnowledgeCenter documentation (ie: IBM publications) library'''
         kwargs = self.__set_default_values__(kwargs,
             searchType = KCtype.DOCUMENTATION,
-            products = KCscope.ZOS_240)
+            products = KCscope.ZOS_240,
+            tags = "bpx")
         self.__log_debug__(f"call(query={query}, limit={str(limit)}, **kwargs={str(kwargs)})")
         
         searchType:KCtype = kwargs['searchType']
@@ -62,7 +63,8 @@ class KnowledgeCenter(Provider):
         payload = {
             'query': query,
             'offset': 0,
-            'limit': limit
+            'limit': limit,
+            'tags' : kwargs['tags']
         }
         
         products:KCscope = kwargs['products']
