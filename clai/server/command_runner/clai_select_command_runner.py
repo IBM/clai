@@ -39,7 +39,7 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
             logger.info(f'installing dependencies of plugin {agent_descriptor.name}')
 
             command = f'$CLAI_PATH/fileExist.sh {agent_descriptor.pkg_name} $CLAI_PATH' \
-                    f'{"--user" if plugins_config.user_install else ""}'
+                    f'{" --user" if plugins_config.user_install else ""}'
             action_selected_to_return = Action(
                 suggested_command=command,
                 execute=True
