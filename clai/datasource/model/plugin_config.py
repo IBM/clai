@@ -16,14 +16,12 @@ class PluginConfig:
                  selected: List[str] = [],
                  orchestrator: Optional[str] = None,
                  default: List[str] = [],
-                 z_default: List[str] = [],
                  installed: List[str] = [],
                  report_enable: bool = False,
                  default_orchestrator: str = "",
                  user_install: bool = False):
         self.selected = selected
         self.default = default
-        self.z_default = z_default
         self.installed = installed
         self.report_enable = report_enable
         self.default_orchestrator = default_orchestrator
@@ -34,7 +32,6 @@ class PluginConfig:
 class PluginConfigJson(BaseModel):
     selected: Dict[str, list] = {}
     default: Union[List[str], str] = ["demo_agent"]
-    z_default: Union[List[str], str] = ["demo_agent"]
     default_orchestrator: str = "max_orchestrator"
     installed: List[str] = []
     report_enable: bool = False
