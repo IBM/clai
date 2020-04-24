@@ -140,7 +140,7 @@ def parse_args():
                 os.path.expanduser('~/.bin'),
                 'clai',
             )
-        
+
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
@@ -336,12 +336,12 @@ def execute(args):
         mark_user_flag(bin_path, True)
     else:
         mark_user_flag(bin_path, False)
-   
-        
+
+
     register_the_user(bin_path, args.system)
     append_setup_to_file(
         get_setup_file(),
-        bin_path, 
+        bin_path,
         args.port
     )
     register_file(args.system)
@@ -390,7 +390,7 @@ def register_file(system):
         left_bracket = "["
         right_bracket = "]"
         # The open() with encoding cp1047 (IBM-1047) doesn't work well or works as cp037 (IBM-037)
-        # so handle special characters (newline, IBM-1047 vs IBM-037) used here 
+        # so handle special characters (newline, IBM-1047 vs IBM-037) used here
         if is_rw_with_EBCDIC(file):
             encoding = "cp1047"
             newline = "\x85"

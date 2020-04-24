@@ -7,14 +7,14 @@
 
 import importlib
 from typing import List
-from clai import PLATFORM
+from clai import platform
 from clai.server.clai_client import send_command_post_execute
 from clai.server.command_message import Process, ProcessesValues
 
 try:
     PSUTIL = importlib.import_module('psutil')
 except ImportError:
-    if PLATFORM != 'zos':
+    if platform != 'zos':
         print('Error: psutil not installed')
 
 
@@ -29,7 +29,7 @@ def map_processes(processes) -> List[Process]:
 def obtain_last_processes(user_name):
     process_changes = []
 
-    if PLATFORM != 'zos':
+    if platform != 'zos':
         for process in PSUTIL.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
             process_changes.append(process.info)
     else:
