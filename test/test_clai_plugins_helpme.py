@@ -33,6 +33,21 @@ class RetrievalAgentTest(unittest.TestCase):
     def test_get_forum(self):
         forum = self.agent.store.search("Permission denied", service='stack_exchange', size=1)
         self.assertEqual(1, len(forum))
+    
+    @unittest.skip("Local testing")
+    def test_get_KnowledgeCenter(self):
+        kc_hits = self.agent.store.search("Permission denied", service='ibm_kc', size=1)
+        print("Got this result from the KnowledgeCenter: " + str(kc_hits))
+        self.assertEqual(1, len(kc_hits))
+        
+        man_hits = self.agent.store.search(kc_hits[0]['summary'],
+                                       service='manpages',
+                                       size=10)
+        
+        print("Got this result from the Manpages service: " + str(man_hits))
+        self.assertEqual('platform', man_hits['commands'][-1])
+        
+        assert False
 
     @unittest.skip("Local testing")
     def test_get_command(self):
