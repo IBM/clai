@@ -51,10 +51,10 @@ class MsgCodeAgent(Agent):
         bad_bpx_result_2 = re.compile("[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n")
         
         # See if the contents of state.stderr match that of a z/OS message
-        helpWasFound = False
         matches = zmessage.match(state.stderr)
         if(matches is not None):
             logger.info(f"Analyzing error message '{matches[0]}'")
+            helpWasFound = False
             
             # See if this message contains data which can be parse by bpxmtext.
             # If it does, we will use that. Otherwise, we will search the
@@ -106,18 +106,20 @@ class MsgCodeAgent(Agent):
                             .to_console()
                         helpWasFound = True # Mark that help was indeed found
                 
-        if not helpWasFound:
-            logger.info("Failure: Unable to be helpful")
-            logger.info("============================================================================")
-            
-            suggested_command=NOOP_COMMAND
-            description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
-                .append(
-                    f"Sorry. It looks like you have stumbled across a problem that even the Internet doesn't have answer to.\n") \
-                .info() \
-                .append(f"Have you tried turning it OFF and ON again. ;)") \
-                .to_console()
+            if not helpWasFound:
+                logger.info("Failure: Unable to be helpful")
+                logger.info("============================================================================")
                 
-        return Action(suggested_command=suggested_command,
-                      description=description,
-                      confidence=1.0)
+                suggested_command=NOOP_COMMAND
+                description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
+                    .append(
+                        f"Sorry. It looks like you have stumbled across a problem that even the Internet doesn't have answer to.\n") \
+                    .info() \
+                    .append(f"Have you tried turning it OFF and ON again. ;)") \
+                    .to_console()
+                    
+            return Action(suggested_command=suggested_command,
+                          description=description,
+                          confidence=1.0)
+        
+        return Action(suggested_command=state.command, confidence=0.0)
