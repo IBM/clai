@@ -31,29 +31,6 @@ class MsgCodeAgent(Agent):
 
         return len(src_tokens & tgt_tokens) / len(src_tokens)
 
-    def compute_confidence(self, query, forum, manpage):
-        """
-        Computes the confidence based on query, stack-exchange post answer and manpage
-
-        Algorithm:
-            1. Compute token-wise similarity b/w query and forum text
-            2. Compute token-wise similarity b/w forum text and manpage description
-            3. Return product of two similarities
-
-
-        Args:
-            query (str): standard error captured in state variable
-            forum (str): answer text from most relevant stack exchange post w.r.t query
-            manpage (str): manpage description for most relevant manpage w.r.t. forum
-
-        Returns:
-             confidence (float): confidence on the returned manpage w.r.t. query
-        """
-        query_forum_similarity = self.compute_simple_token_similarity(query, forum[0]['Content'])
-        forum_manpage_similarity = self.compute_simple_token_similarity(forum[0]['Answer'], manpage)
-        confidence = query_forum_similarity * forum_manpage_similarity
-        return confidence
-
     def get_next_action(self, state: State) -> Action:
         return Action(suggested_command=state.command)
 
@@ -72,7 +49,7 @@ class MsgCodeAgent(Agent):
         bpxmsg = re.compile("^.*FAILED WITH RC=([0-9A-F]{1,4}),\s*RSN=([0-9A-F]{7,8})\s*.*$")
         bad_bpx_result_1 = re.compile("BPXMTEXT does not support reason code qualifier [0-9A-Z]{1,8}\\n")
         bad_bpx_result_2 = re.compile("[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n")
-        
+        confidence=1.0
         # See if the contents of state.stderr match that of a z/OS message
         helpWasFound = False
         matches = zmessage.match(state.stderr)
