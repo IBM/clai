@@ -6,6 +6,7 @@
 #
 
 import os
+import re
 from pathlib import Path
 
 from clai.tools.colorize_console import Colorize
@@ -57,62 +58,35 @@ class MsgCodeAgent(Agent):
 
     def post_execute(self, state: State) -> Action:
 
-        logger.info("==================== In zOSMsgCode Bot:post_execute ============================")
+        logger.info("==================== In zMsgCode Bot:post_execute ============================")
         logger.info("State:\n\tCommand: {}\n\tError Code: {}\n\tStderr: {}".format(state.command,
                                                                                    state.result_code,
                                                                                    state.stderr))
         logger.info("============================================================================")
         
-        if state.result_code == '0':
-            return Action(suggested_command=state.command)
+        # This bot should be triggered if the message on STDERR resembles an
+        # IBM z Systems message ID.  For example:
+        #   FSUM8977 cp: source "test.txt" and target "test.txt" are identical
+        zmessage = re.compile("(^[A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})([:]?\s)(.*$)")
         
-        apis:OrderedDict=self.store.getAPIs()
+        # See if the contents of state.stderr match that of a z/OS message
         helpWasFound = False
-        for provider in apis:
-            # We don't want to process the manpages provider... thats the provider
-            # that we use to clarify results from other providers
-            if provider == "manpages":
-                logger.info(f"Skipping search provider 'manpages'")
-                continue
+        matches = zmessage.match(re.escape(state.stderr))
+        if(matches is not None):
+            # Use the KnowledgeCenter provider to look up information on this msgid
+            kc_api:Provider = self.store.getAPIs()['ibm_kc']
             
-            thisAPI:Provider = apis[provider]
-            
-            # Skip this provider if it isn't supported on the target OS
-            if not thisAPI.canRunOnThisOS():
-                logger.info(f"Skipping search provider '{provider}'")
-                logger.info(f"==> Excluded on platforms: {str(thisAPI.getExcludes())}")
-                continue # Move to next provider in list
-            
-            logger.info(f"Processing search provider '{provider}'")
-            
-            if thisAPI.hasVariants():
-                logger.info(f"==> Has search variants: {str(thisAPI.getVariants())}")
-                variants:List = thisAPI.getVariants()
-            else:
-                logger.info(f"==> Has no search variants")
-                variants:List = [None]
-            
-            # For each search variant supported by the current API, query
-            # the data store to find the closest matching data.  If there are
-            # no search variants (ie: the singleton variant case), the variants
-            # list will only contain a single, Nonetype value.
-            for variant in variants:
+            # Only do this if the KnowledgeCenter API can run on this OS
+            if kc_api is not None and kc_api.canRunOnThisOS(): 
+                # Isolate the message ID
+                msgid:str = matches[1]
                 
-                if variant is not None:
-                    logger.info(f"==> Searching variant '{variant}'")
-                    data = self.store.search(state.stderr, service=provider, size=1, searchType=variant)
-                else:
-                    data = self.store.search(state.stderr, service=provider, size=1)
-                
+                data = self.store.search(msgid, service='ibm_kc', size=1) 
                 if data:
-                    apiString = str(thisAPI)
-                    if variant is not None:
-                        apiString = f"{apiString} '{variant}' variant"
-                        
-                    logger.info(f"==> Success!!! Found a result in the {apiString}")
+                    logger.info(f"==> Success!!! Found information for msgid {msgid}")
     
                     # Find closest match b/w relevant data and manpages for unix
-                    searchResult = thisAPI.extractSearchResult(data)
+                    searchResult = kc_api.extractSearchResult(data)
                     manpages = self.store.search(searchResult, service='manpages', size=5)
                     if manpages:
                         logger.info("==> Success!!! found relevant manpages.")
@@ -129,22 +103,15 @@ class MsgCodeAgent(Agent):
                         suggested_command="man {}".format(command)
                         description=Colorize() \
                             .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
-                            .append(f"and found this in the {thisAPI}:\n") \
+                            .append(f"and found this in the {kc_api}:\n") \
                             .info() \
-                            .append(thisAPI.getPrintableOutput(data)) \
+                            .append(kc_api.getPrintableOutput(data)) \
                             .warning() \
                             .append("Do you want to try: man {}".format(command)) \
                             .to_console()
                         
                         # Mark that help was indeed found
                         helpWasFound = True
-                        
-                        # We've found help; no need to keep searching
-                        break
-                
-            # If we found help, then break out of the outer loop as well
-            if helpWasFound:
-                break
                 
         if not helpWasFound:
             logger.info("Failure: Unable to be helpful")
