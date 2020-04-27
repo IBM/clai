@@ -7,6 +7,7 @@
 
 import os
 import re
+import subprocess
 from pathlib import Path
 
 from clai.tools.colorize_console import Colorize
@@ -68,7 +69,9 @@ class MsgCodeAgent(Agent):
         # IBM z Systems message ID.  For example:
         #   FSUM8977 cp: source "test.txt" and target "test.txt" are identical
         zmessage = re.compile("(^[A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})([:]?\s)(.*$)")
-        bpxmsg = re.compile("^.*FAILED WITH RC=([0-9]{1,}),\s*RSN=([0-9A-F]{8})\s*.*$")
+        bpxmsg = re.compile("^.*FAILED WITH RC=([0-9A-F]{1,4}),\s*RSN=([0-9A-F]{7,8})\s*.*$")
+        bad_bpx_result_1 = re.compile("BPXMTEXT does not support reason code qualifier [0-9A-Z]{1,8}\\n")
+        bad_bpx_result_2 = re.compile("[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n")
         
         # See if the contents of state.stderr match that of a z/OS message
         helpWasFound = False
@@ -86,18 +89,23 @@ class MsgCodeAgent(Agent):
                 logger.info(f"==> Return Code: {return_code}")
                 logger.info(f"==> Reason Code: {reason_code}")
                 
-                # TODO: Search for stuff
+                # Call bpmxtext to get info about that message
+                result:CompletedProcess = subprocess.run(["bpxmtext", reason_code], stdout=subprocess.PIPE)
                 
-                logger.info(f"==> Success!!! Found bpxmtext info for code {reason_code}")
-                suggested_command=state.command
-                description=Colorize() \
-                    .emoji(Colorize.EMOJI_ROBOT) \
-                    .append(f"I asked bpxmtext about that message:") \
-                    .info() \
-                    .append("TODO: Message here") \
-                    .warning() \
-                    .to_console()
-                helpWasFound = True # Mark that help was indeed found
+                # Make sure that we actually found something useful
+                if result.returncode == 0 \
+                and bad_bpx_result_1.match(result.stdout) is None \
+                and bad_bpx_result_2.match(result.stdout) is None:
+                    logger.info(f"==> Success!!! Found bpxmtext info for code {reason_code}")
+                    suggested_command=state.command
+                    description=Colorize() \
+                        .emoji(Colorize.EMOJI_ROBOT) \
+                        .append(f"I asked bpxmtext about that message:") \
+                        .info() \
+                        .append(result.stdout.decode('UTF8')) \
+                        .warning() \
+                        .to_console()
+                    helpWasFound = True # Mark that help was indeed found
                 
             # If we still haven't found any help, see if we can get some information
             # from the KnowledgeCenter documentation library
