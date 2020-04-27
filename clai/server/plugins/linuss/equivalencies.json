@@ -133,5 +133,29 @@
             "equivalent": "-P",
             "explanation": "The linux flag -B Displays num lines of leading context before matching lines. The equivalant on uss is -P"
         }
+    },
+    "lsof": {
+        "*": {
+            "equivalent": "zlsof",
+            "explanation": "Try the equivalant for uss: zlsof"
+        }
+    },
+    "df": {
+        "-H": {
+            "equivalent": "-Pk",
+            "explanation": "The equivalant on uss is -Pk"
+        }
+    },
+    "ping": {
+        "*": {
+            "equivalent": "oping",
+            "explanation": "Try the equivalant for uss: oping"
+        }
+    },
+    "traceroute": {
+        "*": {
+            "equivalent": "otracert",
+            "explanation": "Try the equivalant for uss: otracert"
+        }
     }
 }
