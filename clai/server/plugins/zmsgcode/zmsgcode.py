@@ -68,50 +68,58 @@ class MsgCodeAgent(Agent):
         # IBM z Systems message ID.  For example:
         #   FSUM8977 cp: source "test.txt" and target "test.txt" are identical
         zmessage = re.compile("(^[A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})([:]?\s)(.*$)")
+        bpxmsg = re.compile("^.*FAILED WITH RC=([0-9]{1,}),\s*RSN=([0-9A-F]{8})\s*.*$")
         
         # See if the contents of state.stderr match that of a z/OS message
         helpWasFound = False
-        matches = zmessage.match(re.escape(state.stderr))
+        matches = zmessage.match(state.stderr)
         if(matches is not None):
-            # Use the KnowledgeCenter provider to look up information on this msgid
-            kc_api:Provider = self.store.getAPIs()['ibm_kc']
+            logger.info(f"Analyzing error message '{matches[0]}'")
             
-            # Only do this if the KnowledgeCenter API can run on this OS
-            if kc_api is not None and kc_api.canRunOnThisOS(): 
-                # Isolate the message ID
-                msgid:str = matches[1]
+            # See if this message contains data which can be parse by bpxmtext.
+            # If it does, we will use that. Otherwise, we will search the
+            # IBM KnowledgeCenter for that information.
+            bpx_matches = bpxmsg.match(matches[0])
+            if bpx_matches is not None:
+                return_code:str = bpx_matches[1]
+                reason_code:str = bpx_matches[2]
+                logger.info(f"==> Return Code: {return_code}")
+                logger.info(f"==> Reason Code: {reason_code}")
                 
-                data = self.store.search(msgid, service='ibm_kc', size=1) 
-                if data:
-                    logger.info(f"==> Success!!! Found information for msgid {msgid}")
-    
-                    # Find closest match b/w relevant data and manpages for unix
-                    searchResult = kc_api.extractSearchResult(data)
-                    manpages = self.store.search(searchResult, service='manpages', size=5)
-                    if manpages:
-                        logger.info("==> Success!!! found relevant manpages.")
-    
-                        command = manpages['commands'][-1]
-                        confidence = manpages['dists'][-1]
-    
-                        # FIXME: Artificially boosted confidence
-                        confidence = 1.0
-    
-                        logger.info("==> Command: {} \t Confidence:{}".format(command, confidence))
-                        
-                        # Set return data
-                        suggested_command="man {}".format(command)
+                # TODO: Search for stuff
+                
+                logger.info(f"==> Success!!! Found bpxmtext info for code {reason_code}")
+                suggested_command=state.command
+                description=Colorize() \
+                    .emoji(Colorize.EMOJI_ROBOT) \
+                    .append(f"I asked bpxmtext about that message:") \
+                    .info() \
+                    .append("TODO: Message here") \
+                    .warning() \
+                    .to_console()
+                helpWasFound = True # Mark that help was indeed found
+                
+            # If we still haven't found any help, see if we can get some information
+            # from the KnowledgeCenter documentation library
+            if not helpWasFound:
+                # Use the KnowledgeCenter provider to look up information on this msgid
+                kc_api:Provider = self.store.getAPIs()['ibm_kc']
+                
+                # Only do this if the KnowledgeCenter API can run on this OS
+                if kc_api is not None and kc_api.canRunOnThisOS(): 
+                    msgid:str = matches[1]  # Isolate the message ID
+                    data = self.store.search(msgid, service='ibm_kc', size=1) 
+                    if data:
+                        logger.info(f"==> Success!!! Found information for msgid {msgid}")
+                        suggested_command=state.command
                         description=Colorize() \
-                            .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
-                            .append(f"and found this in the {kc_api}:\n") \
+                            .emoji(Colorize.EMOJI_ROBOT) \
+                            .append(f"I looked up {msgid} in the IBM KnowledgeCenter for you:") \
                             .info() \
                             .append(kc_api.getPrintableOutput(data)) \
                             .warning() \
-                            .append("Do you want to try: man {}".format(command)) \
                             .to_console()
-                        
-                        # Mark that help was indeed found
-                        helpWasFound = True
+                        helpWasFound = True # Mark that help was indeed found
                 
         if not helpWasFound:
             logger.info("Failure: Unable to be helpful")
