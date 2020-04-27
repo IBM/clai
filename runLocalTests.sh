@@ -18,7 +18,7 @@
 #
 #     Options:
 #         -f
-#               Ignore any \"@unittest.skip\" statements in testcases
+#               Ignore any "@unittest.skip" statements in testcases
 #
 #         -h
 #               Display a usage message and exit
