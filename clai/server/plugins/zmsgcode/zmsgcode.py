@@ -49,7 +49,7 @@ class MsgCodeAgent(Agent):
         bpxmsg = re.compile("^.*FAILED WITH RC=([0-9A-F]{1,4}),\s*RSN=([0-9A-F]{7,8})\s*.*$")
         bad_bpx_result_1 = re.compile("BPXMTEXT does not support reason code qualifier [0-9A-Z]{1,8}\\n")
         bad_bpx_result_2 = re.compile("[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n")
-        confidence=1.0
+        
         # See if the contents of state.stderr match that of a z/OS message
         helpWasFound = False
         matches = zmessage.match(state.stderr)
@@ -99,7 +99,7 @@ class MsgCodeAgent(Agent):
                         suggested_command=state.command
                         description=Colorize() \
                             .emoji(Colorize.EMOJI_ROBOT) \
-                            .append(f"I looked up {msgid} in the IBM KnowledgeCenter for you:") \
+                            .append(f"I looked up {msgid} in the IBM KnowledgeCenter for you:\n") \
                             .info() \
                             .append(kc_api.getPrintableOutput(data)) \
                             .warning() \
@@ -117,8 +117,7 @@ class MsgCodeAgent(Agent):
                 .info() \
                 .append(f"Have you tried turning it OFF and ON again. ;)") \
                 .to_console()
-            confidence=0.0
                 
         return Action(suggested_command=suggested_command,
                       description=description,
-                      confidence=confidence)
+                      confidence=1.0)
