@@ -63,8 +63,12 @@ if [ ! $(uname) == 'OS/390' ]; then
   if lsof -i -P -n | grep $CLAI_PORT > /dev/null 2>&1; then
     die "\n Another process is running on port $CLAI_PORT."
   fi
-# else
-  # TODO: find equivalent for z/OS
+else
+  if [ -z `bash --version | grep 4.3` ]; then
+    die "\n Please use bash 4.3"
+  fi
+
+  # TODO: find lsof equivalent for z/OS
 fi
 
 if [ "$USER_INSTALL" == true ]; then
