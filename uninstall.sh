@@ -45,8 +45,13 @@ if ! command_exists python3 ; then
 fi
 
 if ps -o args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
-  running_process=$(ps -o args -u $(whoami) | grep "[c]lai-run" | head -1)
-  pkill -f "${running_process}"
+  if [ ! $(uname) == 'OS/390' ]; then
+    running_process=$(ps -o args -u $(whoami) | grep "[c]lai-run" | head -1)
+    pkill -f "${running_process}"
+  else
+    clai_pid=$(ps -e -o pid,args -u `whoami` | grep "[c]lai-run" | head -1 | awk '{print $1}')
+    kill -9 $clai_pid
+  fi
 fi
 
 eval "python3 uninstall.py $flags"
