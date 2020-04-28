@@ -9,6 +9,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
+from typing import List
 
 from clai.tools.colorize_console import Colorize
 
@@ -20,12 +21,12 @@ from clai.server.logger import current_logger as logger
 
 # Define constant strings for regular expressions
 REGEX_ZMSG:str = "([A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})[:]?\s?(.*$)"
-REGEX_BPX:list[str] = [
+REGEX_BPX:List[str] = [
     "^.*FAILED WITH RC=[0-9A-F]{1,4},\s*RSN=([0-9A-F]{7,8})\s*.*$",
     "errno2=0x([0-9A-Z]{8})",
     "0x([0-9A-Z]{8})"
 ]
-REGEX_BPX_BADANSWER:list[str] = [
+REGEX_BPX_BADANSWER:List[str] = [
     "BPXMTEXT does not support reason code qualifier [0-9A-Z]{1,8}\\n",
     "[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n"
 ]
@@ -71,12 +72,8 @@ class MsgCodeAgent(Agent):
         
         # Check all possible regexes for ID'ing a bpxmtext-able message
         bpx_matches = None
-        for this_match in list(
-            map(
-                (
-                    lambda x: re.compile(x).match(matches[0]), REGEX_BPX)
-                )
-            ):
+        for regex in REGEX_BPX:
+            this_match = re.compile(regex).match(matches[0])
             if this_match is not None:
                 bpx_matches = this_match
                 break
@@ -92,18 +89,14 @@ class MsgCodeAgent(Agent):
             if result.returncode == 0:
                 
                 # Make sure our response from bpxmtext is useful
-                bpxmtextResponseIsUseful:bool = True
-                for this_bad_response in list(
-                    map(
-                        (
-                            lambda x: re.compile(x).match(result.stdout), REGEX_BPX_BADANSWER)
-                        )
-                    ):
-                    if this_bad_response is not None:
-                        bpxmtextResponseIsUseful = False
+                bpxmtext_response_is_useful:bool = True
+                for regex in REGEX_BPX_BADANSWER:
+                    bad_answer = re.compile(regex).match(result.stdout)
+                    if bad_answer is not None:
+                        bpxmtext_response_is_useful = False
                         break
                 
-                if bpxmtextResponseIsUseful:
+                if bpxmtext_response_is_useful:
                     logger.info(f"==> Success!!! Found bpxmtext info for code {reason_code}")
                     suggested_command=state.command
                     description=Colorize() \
