@@ -26,8 +26,11 @@ START_SERVER_COMMAND_TO_EXECUTE = 'nohup $CLAI_PATH/bin/clai-run start &'
 def override_last_command(last_command):
     lines = read_history()
 
-    new_last_line = (lines[-1].rstrip() + last_command)
-    lines[-1] = new_last_line
+    if len(lines):
+        new_last_line = (lines[-1].rstrip() + last_command)
+        lines[-1] = new_last_line
+    else:
+        lines.append(last_command)
 
     io.open(get_history_file_name(), 'w').writelines(lines)
 
