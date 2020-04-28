@@ -181,6 +181,12 @@ You can activate (and install) a skill specifically by invoking:
 $ clai activate <skill-name>
 ```
 
+Or remove (and uninstall) a skill specifically by invoking:
+
+```
+$ clai deactivate <skill-name>
+```
+
 You can also start or stop the CLAI support as follows:
 
 ```
