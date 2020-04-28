@@ -24,7 +24,7 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 ### Prerequisites
 
-+ `Bash`
++ `Bash` bash 4.3 is required if you are working on z/OS
 + `Python 3.6` or higher
 + `Homebrew` + `fswatch` if you are working on MacOS
 + `Docker` if you are using the containerized version of CLAI (see below)
@@ -33,7 +33,7 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 1. Open a Bash emulator or console.
 2. In the console navigate to the location of the CLAI project source code.
-3. Execute the necessary commands found in the preferred option below
+3. Execute the necessary commands found in the preferred option below. You can specify the port with `--port`, the default is `8010`
 
 #### System Wide
 
@@ -179,6 +179,12 @@ You can activate (and install) a skill specifically by invoking:
 
 ```
 $ clai activate <skill-name>
+```
+
+Or remove (and uninstall) a skill specifically by invoking:
+
+```
+$ clai deactivate <skill-name>
 ```
 
 You can also start or stop the CLAI support as follows:

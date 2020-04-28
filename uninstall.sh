@@ -4,30 +4,30 @@ flags=""
 # Check for user passed args
 while test $# != 0
 do
-    case "$1" in
-      --user) 
-        USER_INSTALL=true
-        flags="$flags --user"
-      ;;
-      # add more flags here
-      *) flags="$flags $1"
-    esac
-    shift
+  case "$1" in
+    --user) 
+      USER_INSTALL=true
+      flags="$flags --user"
+    ;;
+    # add more flags here
+    *) flags="$flags $1"
+  esac
+  shift
 done
 
 die () {
-    echo -e $1;
-    exit $2;
+  echo -e $1;
+  exit $2;
 }
 
 is_sh () {
-    value=$(ps -o args= -p "$$" | cut -f 1 -d " ")
-    test "sh" = $value
-    return
+  value=$(ps -o args= -p "$$" | cut -f 1 -d " ")
+  test "sh" = $value
+  return
 }
 
 command_exists () {
-    type "$1" &> /dev/null ;
+  type "$1" &> /dev/null ;
 }
 
 if is_sh ; then
@@ -41,13 +41,17 @@ if [ "$USER_INSTALL" != true ]; then
 fi
 
 if ! command_exists python3 ; then
-    die "\n Sorry you need to have Python3 installed. Please install it and rerun this script."  1
+  die "\n Sorry you need to have Python3 installed. Please install it and rerun this script."  1
 fi
 
-running_process=
-if ps -o args -u $USER | grep "[c]lai-run" &> /dev/null ; then
-  running_process=$(ps -o args -u $USER | grep "[c]lai-run" | head -1)
-  pkill -f "${running_process}"
+if ps -o args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
+  if [ ! $(uname) == 'OS/390' ]; then
+    running_process=$(ps -o args -u $(whoami) | grep "[c]lai-run" | head -1)
+    pkill -f "${running_process}"
+  else
+    clai_pid=$(ps -e -o pid,args -u `whoami` | grep "[c]lai-run" | head -1 | awk '{print $1}')
+    kill -9 $clai_pid
+  fi
 fi
 
 eval "python3 uninstall.py $flags"

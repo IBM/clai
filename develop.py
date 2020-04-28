@@ -28,7 +28,7 @@ from clai.datasource.stats_tracker import StatsTracker
 from clai.datasource.config_storage import ConfigStorage
 from clai.server.agent_datasource import AgentDatasource
 
-platform = sys.platform
+from clai import platform
 
 actions = ["install", "uninstall"]
 
@@ -215,8 +215,8 @@ def main(args: list):
             file.write(
                 json.dumps(
                     {
-                        "selected": {"user": ["nlc2cmd"]},
-                        "default": ["nlc2cmd"],
+                        "selected": {"user": [""]},
+                        "default": [""],
                         "default_orchestrator": "max_orchestrator",
                         "installed": [],
                         "report_enable": False,
