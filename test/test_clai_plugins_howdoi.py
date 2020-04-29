@@ -13,7 +13,7 @@ from clai.server.command_message import State
 from clai.server.plugins.howdoi.howdoi import HowDoIAgent
 from builtins import classmethod
 
-OS_NAME:str = os.uname().sysname.lower()
+OS_NAME:str = os.uname().sysname.upper()
 
 
 @unittest.skip("Only for local testing")
@@ -33,7 +33,7 @@ class SearchAgentTest(unittest.TestCase):
             method:str = callerFrame.f_code.co_name
             
             if method == "test_get_next_action_pwd_without_question":
-                if OS_NAME == "OS/390":
+                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     question = "pds"
                     answer = "pds"
                 else:
@@ -41,7 +41,7 @@ class SearchAgentTest(unittest.TestCase):
                     answer = None
             
             elif method == "test_get_next_action_pwd_with_question":
-                if OS_NAME == "OS/390":
+                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     question = "What is a pds?"
                     answer = "man readlink"
                 else:
@@ -54,21 +54,21 @@ class SearchAgentTest(unittest.TestCase):
             
             elif method == "test_get_next_action_disk":
                 question = "find out disk usage per user?"
-                if OS_NAME == "OS/390":
+                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man du"
                 else:
                     answer = "man df"
             
             elif method == "test_get_next_action_zip":
                 question = "How to process gz files?"
-                if OS_NAME == "OS/390":
+                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man dnctl"
                 else:
                     answer = "man gzip"
             
             elif method == "test_get_next_action_pds":
                 question = "copy a PDS member?"
-                if OS_NAME == "OS/390":
+                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man tcsh"
                 else:
                     answer = "man cmp"
