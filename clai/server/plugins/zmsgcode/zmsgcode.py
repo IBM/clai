@@ -84,7 +84,6 @@ class MsgCodeAgent(Agent):
             result:CompletedProcess = subprocess.run(["bpxmtext", reason_code], stdout=subprocess.PIPE)
             if result.returncode == 0:
                 messageText = result.stdout.decode('UTF8')
-                logger.info(f"==> Found: '{messageText}'")
                 
                 # If bpmxtext's response is actually something useful, use it
                 if self.__search(messageText, REGEX_BPX_BADANSWER) is None:
