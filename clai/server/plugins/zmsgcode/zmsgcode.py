@@ -27,8 +27,8 @@ REGEX_BPX:List[str] = [
     "^[.\s\S]*0x([0-9A-Z]{8})[.\s\S]*$"
 ]
 REGEX_BPX_BADANSWER:List[str] = [
-    "^BPXMTEXT does not support reason code qualifier [0-9A-Z]{1,8}\\n$",
-    "^[0-9]{1,8}\([0-9A-F]{1,8}x\) \\n$"
+    "^BPXMTEXT does not support reason code qualifier [0-9A-Z]{4}\s$",
+    "^[0-9A-F]{1,8}\([0-9A-F]{1,4}x\)\s$"
 ]
 
 class MsgCodeAgent(Agent):
@@ -66,7 +66,7 @@ class MsgCodeAgent(Agent):
         # If if the contents of stderr don't include a Z message code, move along
         matches = re.compile(REGEX_ZMSG).match(stderr)
         if matches is None:
-            logger.info(f"No Z msgid found in '{stderr}'")
+            logger.info(f"No Z message ID found in '{stderr}'")
             return Action(suggested_command=state.command)
         
         logger.info(f"Analyzing error message '{matches[0]}'")
@@ -84,10 +84,10 @@ class MsgCodeAgent(Agent):
             result:CompletedProcess = subprocess.run(["bpxmtext", reason_code], stdout=subprocess.PIPE)
             if result.returncode == 0:
                 messageText = result.stdout.decode('UTF8')
+                logger.info(f"==> Found: '{messageText}'")
                 
                 # If bpmxtext's response is actually something useful, use it
                 if self.__search(messageText, REGEX_BPX_BADANSWER) is None:
-                    logger.info(f"==> Success!!! Found bpxmtext info for code {reason_code}")
                     suggested_command=state.command
                     description=Colorize() \
                         .emoji(Colorize.EMOJI_ROBOT) \
@@ -109,7 +109,8 @@ class MsgCodeAgent(Agent):
                     suggested_command=state.command
                     description=Colorize() \
                         .emoji(Colorize.EMOJI_ROBOT) \
-                        .append(f"I looked up {msgid} in the IBM KnowledgeCenter for you:\n") \
+                        .append(
+                            f"I looked up {msgid} in the IBM KnowledgeCenter for you:\n") \
                         .info() \
                         .append(kc_api.getPrintableOutput(data)) \
                         .warning() \
@@ -121,9 +122,10 @@ class MsgCodeAgent(Agent):
             logger.info("============================================================================")
             
             suggested_command=NOOP_COMMAND
-            description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
+            description=Colorize() \
+                .emoji(Colorize.EMOJI_ROBOT) \
                 .append(
-                    f"Unable to find help for message code '{msgid}'\n") \
+                    f"I couldn't find any help for message code '{msgid}'\n") \
                 .info() \
                 .to_console()
                 
