@@ -37,12 +37,6 @@ class MsgCodeAgent(Agent):
         inifile_path = os.path.join(str(Path(__file__).parent.absolute()), 'config.ini')
         self.store = Datastore(inifile_path)
 
-    def compute_simple_token_similarity(self, src_sequence, tgt_sequence):
-        src_tokens = set([x.lower().strip() for x in src_sequence.split()])
-        tgt_tokens = set([x.lower().strip() for x in tgt_sequence.split()])
-
-        return len(src_tokens & tgt_tokens) / len(src_tokens)
-
     def get_next_action(self, state: State) -> Action:
         return Action(suggested_command=state.command)
 
