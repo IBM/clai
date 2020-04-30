@@ -41,15 +41,21 @@ class Linuss(Agent):
         actions = []
         for option in options:
             if re.search(r'{}'.format(option), command):
+                suggestion = re.sub(
+                    r'{}'.format(option),
+                    self.equivalencies[cmd_key][option]["equivalent"], 
+                    command
+                )
+
+                # for the case of full command replacement
+                if not option:
+                    suggestion = self.equivalencies[cmd_key][option]["equivalent"]
+
                 # The confidence is high because these 
                 # are pre-determined and we know these are correct
                 actions.append(
                     Action(
-                        suggested_command=re.sub(
-                            r'{}'.format(option),
-                            self.equivalencies[cmd_key][option]["equivalent"], 
-                            command
-                        ),
+                        suggested_command=suggestion,
                         confidence=1, 
                         description=self.equivalencies[cmd_key][option]["explanation"]
                     )

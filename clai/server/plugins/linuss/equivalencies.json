@@ -135,7 +135,7 @@
         }
     },
     "lsof": {
-        " ": {
+        "": {
             "equivalent": "zlsof",
             "explanation": "Try the equivalant for uss: zlsof"
         }
@@ -147,13 +147,13 @@
         }
     },
     "ping": {
-        " ": {
+        "": {
             "equivalent": "oping",
             "explanation": "Try the equivalant for uss: oping"
         }
     },
     "traceroute": {
-        " ": {
+        "": {
             "equivalent": "otracert",
             "explanation": "Try the equivalant for uss: otracert"
         }
