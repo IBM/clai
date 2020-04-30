@@ -64,7 +64,8 @@ if [ ! $(uname) == 'OS/390' ]; then
     die "\n Another process is running on port $CLAI_PORT."
   fi
 else
-  if [ -z `bash --version | grep 4.3` ]; then
+  bash_version=`bash --version | grep 4.3`
+  if [ -z "$bash_version" ]; then
     die "\n Please use bash 4.3"
   fi
 
