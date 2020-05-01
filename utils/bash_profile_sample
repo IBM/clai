@@ -1,6 +1,7 @@
 # Respect file tags for ASCII/EBCDIC stuff.
 export _BPXK_AUTOCVT=ON
 export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
+export _BPXK_SETIBMOPT_TRANSPORT=TCP342
 
 # Set up for Python and Anaconda
 export RELEASE_PREFIX=
