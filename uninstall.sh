@@ -50,7 +50,8 @@ if ps -o args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
     pkill -f "${running_process}"
   else
     clai_pid=$(ps -e -o pid,args -u `whoami` | grep "[c]lai-run" | head -1 | awk '{print $1}')
-    kill -9 $clai_pid
+    clai_subpids=$(ps -e -o pid,ppid -u `whoami` | awk '$2=='"$clai_pid"'' | awk '{printf "%s ",$1}')
+    kill -9 $clai_pid $clai_subpids
   fi
 fi
 
