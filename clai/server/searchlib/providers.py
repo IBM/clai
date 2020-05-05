@@ -129,12 +129,20 @@ class Provider:
         return self.__send_request__(method='POST', uri=uri, **kwargs)
     
     def getExcludes(self) -> list:
+        """Returns a list of operating systems that the search provider cannot
+          be run from
+        """
         return self.excludes
     
     def hasVariants(self) -> bool:
+        """Returns `True` if this search provider has more than one search
+          variant
+        """
         return (len(self.variants) > 0)
     
     def getVariants(self) -> list:
+        """Returns a list of search variants supported by this search provider
+        """
         return self.variants
     
     def canRunOnThisOS(self) -> bool:
@@ -156,10 +164,12 @@ class Provider:
     
     @abc.abstractclassmethod
     def getPrintableOutput(self, data:List[Dict]) -> str:
-        """Return an informative string that can be displayed to the user
+        """Extract the result string from the data returned by an API search
         """
         pass
     
     @abc.abstractclassmethod
     def call(self, query: str, limit: int = 1, **kwargs):
+        """Perform a query on the API
+        """
         pass
