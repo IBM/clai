@@ -18,7 +18,8 @@
 #
 #     Options:
 #         -f
-#               Ignore any "@unittest.skip" statements in testcases
+#               Ignore any "@unittest.skip()" statements in testcases;
+#               does not affect any "@unittest.skipIf()" statements
 #
 #         -h
 #               Display a usage message and exit
@@ -58,7 +59,7 @@ OPSYS=`uname -s`
 if [ "$OPSYS" == "OS/390" ]; then
     PYTEST='pytest'
 else
-    PYTEST='pytest-3'
+    PYTEST='python3 -m pytest'
 fi
 PIP3='python3 -m pip'
 
@@ -68,7 +69,8 @@ function displayUsage {
     echo ""
     echo "Options:"
     echo "  -f"
-    echo "     Ignore any \"@unittest.skip\" statements in testcases"
+    echo "     Ignore any \"@unittest.skip()\" statements in testcases;"
+    echo "     does not affect any \"@unittest.skipIf()\" statements."
     echo "  -n NAME"
     echo "     Perform a test named \"test_NAME.py\" or (if -p is specified) \"test_clai_plugins_NAME.py\""
     echo "  -p"
