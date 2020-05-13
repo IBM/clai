@@ -13,7 +13,7 @@ Find more examples usages here: [http://tellina.rocks/](http://tellina.rocks/).
 The translator is based on [Seq2Seq](https://arxiv.org/abs/1409.0473) and [CopyNet](https://arxiv.org/abs/1603.06393) models.
 This will be used as the baseline for the [`NLC2CMD Challenge`](https://ibm.biz/nlc2cmd) @ Neurips 2020.
 
-> NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System. Xi Victoria Lin, Chenglong Wang, Luke Zettlemoyer, Michael D. Ernst. The 11th International Conference on Language Resources and Evaluation, 2018.
+>* NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System. Xi Victoria Lin, Chenglong Wang, Luke Zettlemoyer, Michael D. Ernst. The 11th International Conference on Language Resources and Evaluation, 2018.
 
 ## [xkcd](https://uni.xkcd.com/)
 
