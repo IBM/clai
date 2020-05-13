@@ -1,6 +1,3 @@
-:link: Check out the [`NLC2CMD Challenge`](https://ibm.biz/nlc2cmd) @ Neurips 2020
-
-
 ![CLAI Logo](https://www.dropbox.com/s/nbkfa59khtlcs79/clai-logo.png?raw=1)
 
 Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to bring the power of AI to the command line. Using CLAI, users of Bash can access a wide range of skills that will enhance their command line experience. This repository contains the source code and documentation to get you started.
@@ -36,7 +33,9 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 1. Open a Bash emulator or console.
 2. In the console navigate to the location of the CLAI project source code.
-3. Execute the following:
+3. Execute the necessary commands found in the preferred option below
+
+#### System Wide
 
 ```
 $ sudo ./install.sh
@@ -48,9 +47,23 @@ $ sudo ./install.sh
 $ sudo env "HOME=$HOME" ./install.sh
 ```
 
+#### User Install
+
+```
+$ ./install.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to install with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./install.sh --user
+```
+
 After the installation is complete, you will be prompted to restart the shell before CLAI becomes active.
 
-#### Uninstalling CLAI
+### Uninstalling CLAI Natively
+
+#### System Wide
 
 To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
 
@@ -61,6 +74,20 @@ $ sudo ./uninstall.sh
 
 ```
 $ sudo env "HOME=$HOME" ./uninstall.sh
+```
+
+#### User Install
+
+To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
+
+```
+$ ./uninstall.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to uninstall with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./uninstall.sh --user
 ```
 
 As before, during installation, you will have to restart the shell for the changes to take effect.
@@ -75,12 +102,9 @@ $ ./BuildDockerImage.sh
 ```
 
 **Fedora and Ubuntu**
-
 ```
 $ sudo ./BuildDockerImage.sh
 ```
-
-> Control flags: Note that you may have to run `BuildDockerImage.sh` without the --no-cache flag for kernel version below 4.4.0-173-generic (Trusty Tahr/ Ubuntu 14.04 LTS).
 
 The end of a successful build process (this can take a while) should resemble the following output:
 

@@ -106,6 +106,14 @@ def parse_args():
         help='set destination to DIR',
     )
 
+    parser.add_argument(
+        '--user',
+        help="Installs clai in the users own bin directory",
+        dest='user_install',
+        action='store_true',
+        default=False
+    )
+
     args = parser.parse_args()
 
     if not valid_python_version():
@@ -113,8 +121,17 @@ def parse_args():
         sys.exit(1)
 
     if not is_root_user(args):
-        print_error('You need root privileges for complete the installation process.')
-        sys.exit(1)
+        if not args.user_install:
+            print_error('You need root privileges for the system wide installation process.')
+            sys.exit(1)
+
+    if args.user_install:
+        # overwrite the global default path with the local default path
+        if args.destdir == default_user_destdir:
+            args.destdir = os.path.join(
+                os.path.expanduser('~/.bin'),
+                'clai',
+            )
 
     if is_windows():
         print_error("CLAI is not supported on Windows.")
@@ -165,14 +182,14 @@ def remove(path):
 
 def install_plugins_dependencies(path, plugin):
     print(f'installing dependencies of plugin {plugin}')
-    result = os.system(f'{path}/fileExist.sh {plugin}')
+    result = os.system(f'{path}/fileExist.sh {plugin} {path}')
 
     return result == 0
 
 
 def install_orchestration_dependencies(path, orchestrator_name):
     print(f'install dependencies of orchestrator {orchestrator_name}')
-    result = os.system(f'{path}/installOrchestrator.sh {orchestrator_name}')
+    result = os.system(f'{path}/installOrchestrator.sh {orchestrator_name} {path}')
 
     return result == 0
 
@@ -251,7 +268,9 @@ def execute(args):
     unassisted = args.unassisted
     no_skills = args.no_skills
     demo_mode = args.demo_mode
+    user_install = args.user_install
     bin_path = os.path.join(args.destdir, 'bin')
+
     code_path = os.path.join(bin_path, 'clai')
     cli_path = os.path.join(bin_path, 'bin')
     temp_path = '~/tmp'
@@ -309,7 +328,8 @@ def execute(args):
 
     remove(f"{temp_path}/")
 
-    os.system(f'chmod -R 777 /var/tmp')
+    if not user_install:
+        os.system(f'chmod -R 777 /var/tmp')
 
     print_complete("CLAI has been installed correctly, you need restart your shell.")
 

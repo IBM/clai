@@ -1,12 +1,19 @@
 FROM bashell/alpine-bash:latest
 ADD . .
 
-RUN touch ~/.bashrc
-RUN apk add --no-cache --update python3-dev gcc build-base libffi-dev openssl-dev
-RUN apk add linux-headers
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-RUN python3 ./install.py --unassisted --shell bash
+RUN touch ~/.bashrc \
+    && apk add --no-cache --update \
+                    python3-dev \
+                    gcc \
+                    build-base \
+                    libffi-dev \
+                    openssl-dev \
+    && apk add linux-headers
+
+RUN pip3 install --upgrade pip \
+    && pip3 install -r requirements.txt \
+    && python3 ./install.py --unassisted --shell bash
+
 ENV CLAI_PATH /opt/local/share/clai/bin
 ENV PYTHONPATH /opt/local/share/clai/bin
 

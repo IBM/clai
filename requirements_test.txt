@@ -1,0 +1,8 @@
+elasticsearch==7.0.5
+spacy==2.2.0.dev18
+beautifulsoup4
+pytest==4.6.1
+# pyetest "Add ons"
+astroid==2.2.5
+pytest-docker-tools==0.2.0
+pytest-mock==1.10.4
