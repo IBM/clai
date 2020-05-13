@@ -1,10 +1,10 @@
 #!/bin/bash
 
-################################################################
+#################################################################
 # Licensed Materials - Property of IBM
 # “Restricted Materials of IBM”
 #  Copyright IBM Corp. 2019 ALL RIGHTS RESERVED
-################################################################
+#################################################################
 
 # Looks for an environment var named DOCKER_BUILD_FLAGS. If not
 # defined, uses the default flag value '--no-cache' for the docker build.
