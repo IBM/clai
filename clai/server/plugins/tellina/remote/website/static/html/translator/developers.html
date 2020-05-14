@@ -1,0 +1,64 @@
+{% extends "translator/base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="static/css/developers.css">
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="project-description" style="text-align: left">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-xs-12">
+                <h2>About Tellina</h2>
+                    <div style="text-align: left;">
+                        <a class="github-button" href="https://github.com/TellinaTool/tellina" data-icon="octicon-star" data-show-count="true" aria-label="Star uwdb/cosette on GitHub">Star</a>
+                        <a class="github-button" href="https://github.com/TellinaTool/tellina/fork" data-icon="octicon-repo-forked" aria-label="Fork uwdb/cosette on GitHub">Fork</a>
+                        <a class="github-button" href="https://github.com/TellinaTool/tellina/issues" data-icon="octicon-issue-opened" aria-label="Issue uwdb/cosette on GitHub">Issue</a>
+                    </div>
+                <p>Tellina automatically translates the natural language commands of end-user programmers into a programming language. Currently Tellina supports <a href="https://linux.die.net/man/1/bash">Bash</a> as its target language.</p>
+                <h3>Source Code & Data</h3>
+                <p>The source code for this <a href="https://github.com/TellinaTool/tellina">website</a> and the <a href="https://github.com/TellinaTool/awesome_nmt">machine learning model & data</a> is available on <a href="https://github.com/TellinaTool">Github</a>.</p>               
+                
+                <h3>Publications</h3>
+                <p>The following papers describe the research work and technical details of Tellina.</p>
+                <p>If you use Tellina in your work, please cite the relevant paper(s) accordingly.</p>
+                <div>
+                    <div class="paper">
+                        <a href="http://victorialin.net/pubs/tellina_tr170510.pdf">Program Synthesis from Natural Language
+Using Recurrent Neural Networks. UW-CSE-TR. 2017</a>
+                        <br>
+                        <span style="font-size: 14px">Keywords: <code>stage-wise nl-to-command synthesis</code>, <code>user study</code></span>
+                        <pre class="bibtex">@techreport{LinWPVZE2017:TR, 
+  author = {Xi Victoria Lin and Chenglong Wang and Deric Pang and Kevin Vu and Luke Zettlemoyer and Michael D. Ernst}, 
+  title = {Program synthesis from natural language using recurrent neural networks}, 
+  institution = {University of Washington Department of Computer Science and Engineering}, 
+  number = {UW-CSE-17-03-01}, 
+  address = {Seattle, WA, USA}, 
+  month = mar, 
+  year = {2017} 
+}</pre>
+                    </div>
+
+                    <div class="paper">
+                        <a href="http://victorialin.net/pubs/nl2bash.pdf">NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System. LREC 2018.</a>
+                        <br>
+                        <span style="font-size: 14px">Keywords: <code>end-to-end nl-to-command synthesis</code>, <code>sub-token-CopyNet</code>, <code>100 Bash utilities</code>, <code>dataset</code></span>
+                        <pre class="bibtex">@inproceedings{LinWZE2018:NL2Bash, 
+  author = {Xi Victoria Lin and Chenglong Wang and Luke Zettlemoyer and Michael D. Ernst}, 
+  title = {NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System}, 
+  booktitle = {Proceedings of the Eleventh International Conference on Language Resources
+               and Evaluation {LREC} 2018, Miyazaki (Japan), 7-12 May, 2018.},
+  year = {2018} 
+}</pre>
+
+                    </div>
+                </div>
+                <h3>Team</h3>
+                Tellina is written by <a href="http://victorialin.net/">Victoria Lin</a>, with help from <a href="http://chenglongwang.org/">Chenglong Wang</a> and <a href="https://homes.cs.washington.edu/~dericp/">Deric Pang</a>. Research advisors: <a href="https://homes.cs.washington.edu/~mernst/">Michael D. Ernst</a> and <a href="https://www.cs.washington.edu/people/faculty/lsz">Luke Zettlemoyer</a>.                
+            </div>
+        </div>
+    
+</div>
+{% endblock %}
+
+{% block other-js %}{% endblock %}

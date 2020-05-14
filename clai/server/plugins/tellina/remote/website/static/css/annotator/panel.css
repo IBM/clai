@@ -1,0 +1,96 @@
+.body-panel {
+    padding-top: 90px;
+}
+
+.url-content-panel {
+    overflow: hidden;
+}
+
+.url-content-data {
+    width: 100%;
+}
+
+.url-panel > h1 {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.collect-panel {
+    overflow: show;
+}
+
+.collect-panel > h1 {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 300;
+    overflow: hidden;
+}
+
+.collect-box {
+    padding-top: 20px;
+}
+
+.annotation-box {
+    padding-top: 20px;
+}
+
+.command-submission {
+    background: #F0F0F0;
+}
+
+.annotate-utility-self-completed {
+    background-color: #73C6B6;
+    border: 1px;
+    /* border-style: dotted;
+    box-shadow: 6px 6px 3px #888888; */
+}
+
+.annotate-utility-completed {
+    background-color: #73C6B6;
+}
+
+.annotate-utility-self-in-progress {
+    background-color: #D0ECE7;
+    border: 1px;
+    /* border-style: dotted;
+    box-shadow: 6px 6px 3px #888888; */
+}
+
+.annotate-utility-in-progress {
+    background-color: #D0ECE7;
+}
+
+.url-num-notifications {
+    color: #4B0082;
+    background-color: #E6E6FA;
+}
+
+/* --- Facebook style notification badge --- */
+
+/* Make the badge float in the top right corner of the button */
+.missing_command_badge {
+  background-color: #FFA500;
+  border-radius: 2px;
+  color: white;
+
+  padding: 1px 3px;
+  font-size: 10px;
+
+  position: absolute; /* Position the badge within the relatively positioned button */
+  top: 0px;
+  left: 0px;
+}
+
+.notification_badge {
+  background-color: #fa3e3e;
+  border-radius: 2px;
+  color: white;
+
+  padding: 1px 3px;
+  font-size: 10px;
+
+  position: absolute; /* Position the badge within the relatively positioned button */
+  top: 0;
+  right: 0px;
+}

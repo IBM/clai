@@ -1,0 +1,51 @@
+.translate-panel {
+	text-align: left;
+	padding: 72px 12px 0 12px; 
+}
+
+.btn-copy{
+    border:0px solid transparent;
+}
+
+.btn-expl{
+    border:0px solid transparent;
+}
+
+.btn-copy:hover,
+.btn-copy:focus,
+.btn-copy:active {
+    background-color: rgb(255, 255, 255);
+    color: #f48e5c
+}
+
+.btn-expl:hover,
+.btn-expl:focus,
+.btn-expl:active {
+    background-color: rgb(255, 255, 255);
+    color: #f48e5c
+}
+
+.cmd-result {
+	table-layout:fixed;
+	width: 100%;
+}
+
+.tooltip-inner  {
+  max-width: 100%; 
+}
+
+.tooltip-inner > .cmd-expl {
+	font-family: "Lucida Console", Monaco, monospace;
+ 	text-align: left;
+ 	white-space: pre
+}
+
+.code {
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+@media (max-width: 980px) {
+    .translate-panel {
+      padding-top: 140px;
+    }
+} 

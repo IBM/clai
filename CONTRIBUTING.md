@@ -19,10 +19,10 @@ git commit -s -m 'Informative commit message'
 
 ### Unit tests
 
-Whether you are contributing a new skill or updating the code elsewhere, you need to ensure that the unit tests pass. 
+Whether you are contributing a new skill or updating the code elsewhere, you need to ensure that the unit tests pass.
 
-If you are developing a new skill, you can check in sample inputs and outputs in 
-[here](./test_integration/) to make sure your skill runs as intended. 
-See [here](./test_integration/test_skill_nlc2cmd.py) for an example test with the [`nlc2cmd`](clai/server/plugins/nlc2cmd) skill. 
+If you are developing a new skill, you can check in sample inputs and outputs in
+[here](./test_integration/) to make sure your skill runs as intended.
+See [here](./test_integration/test_skill_nlc2cmd.py) for an example test with the [`nlc2cmd`](clai/server/plugins/nlc2cmd) skill.
 
 Once all the tests have passed, and you are satisfied with your contribution, open a pull request into the `master` branch from **your fork of the repository** to request adding your contributions into the main code base.

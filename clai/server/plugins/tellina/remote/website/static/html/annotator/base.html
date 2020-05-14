@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Collecting Command - NL Pairs</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="(program, natural language) data collection tool">
+
+        <!-- Fonts -->
+
+        <!-- CSS -->
+        <link href="/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/static/css/main.css" rel="stylesheet" media="screen">
+
+        <!-- Web Resources -->
+        <link rel="shortcut icon" href="/static/img/tellina.svg"/>
+
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <header>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 col-xs-12">
+                        <span class="logo"><a href="/login">Command2NL</a></span>
+                    </div>
+                    {% block navbar %}{% endblock %}
+                </div>
+            </div>
+        </header>
+
+        {% block body %}{% endblock %}
+
+        <div class="modal"><!-- Place at bottom of page --></div>
+
+        <!-- JS -->
+        <script src="/static/js/jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/lib/bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+        {% block other-js %}{% endblock %}
+    </body>
+</html>

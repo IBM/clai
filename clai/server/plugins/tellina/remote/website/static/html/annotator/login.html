@@ -1,0 +1,161 @@
+{% extends "annotator/base.html" %}
+    {% block head %}
+        <link rel="stylesheet" href="/static/css/annotator/login.css">
+    {% endblock %}
+
+    {% block body %}
+    <div class="container body-panel">
+    	<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-6">
+								<a href="#" class="active" id="login-form-link">Login</a>
+							</div>
+							<div class="col-xs-6">
+								<a href="#" id="register-form-link">Register</a>
+							</div>
+						</div>
+						<hr>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-lg-12">
+								<div id="login-form" style="display: block;">
+									{% csrf_token %}
+									<div class="form-group">
+										<input type="text" id="access-code" tabindex="1" class="form-control" placeholder="Access code" value="">
+									</div>
+									<!-- <div class="form-group text-center">
+										<input type="checkbox" tabindex="3" class="" name="remember" id="remember">
+										<label for="remember"> Remember Me</label>
+									</div> -->
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-6 col-sm-offset-3">
+												<input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-lg-12">
+												<div class="text-center">
+													<a href="/login" tabindex="5" class="forgot-password">Forgot Access Code?</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="register-form" style="display: none;">
+									<div class="form-group">
+										<input type="text" id="firstname" tabindex="1" class="form-control" placeholder="First Name" value="">
+									</div>
+									<div class="form-group">
+										<input type="text" id="lastname" tabindex="1" class="form-control" placeholder="Last Name" value="">
+									</div>
+									<div class="form-group">
+										<div class="row">
+											<div class="col-sm-6 col-sm-offset-3">
+												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    {% endblock %}
+
+    {% block other-js %}
+		<script src="/static/lib/bootstrap/js/bootstrap-modal.js"> </script>
+        <script src="/static/lib/bootstrap/js/bootstrap-dialog.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#login-form-link').click(function(e) {
+                    $("#login-form").delay(100).fadeIn(100);
+                    $("#register-form").fadeOut(100);
+                    $('#register-form-link').removeClass('active');
+                    $(this).addClass('active');
+                    e.preventDefault();
+                });
+                $('#register-form-link').click(function(e) {
+                    $("#register-form").delay(100).fadeIn(100);
+                    $("#login-form").fadeOut(100);
+                    $('#login-form-link').removeClass('active');
+                    $(this).addClass('active');
+                    e.preventDefault();
+                });
+
+                $('#login-submit').click(function() {
+                	var access_code = $('#access-code').val();
+                	if (access_code != '') {
+						$.get(`user_login`, {access_code: access_code}, function(data) {
+							if (data.status == 'LOGIN_SUCCESS') {
+								window.location.replace(`utility_panel?access_code=${data.access_code}`);
+							} else if (data.status == 'USER_DOES_NOT_EXIST') {
+								BootstrapDialog.show({
+									message: "User <strong>" + access_code + "</strong> does not exist. Please make sure the access code is correct.",
+									buttons: [{
+										label: "Okay",
+										cssClass: "btn-primary",
+										action: function(dialogItself) {
+											dialogItself.close();
+										}
+									}]
+								});
+							}
+						})
+					}
+                });
+
+                $('#register-submit').click(function() {
+                	// get user's ip address as a global variable
+					var ip_address = '';
+					$.get("http://ipinfo.io", function(response) {
+						ip_address = response.ip;
+						$.get(`/remember_ip_address`, {ip_address: ip_address});
+						console.log('IP Address for study session logged: ' + ip_address);
+					}, "jsonp");
+
+                	var firstname = $('#firstname').val();
+                	var lastname = $('#lastname').val();
+                	$.get(`register_user`, {firstname: firstname, lastname: lastname,
+                							ip_address: ip_address, roles: 'annotator'},
+             			  function(data) {
+                		if (data.status == 'REGISTRATION_SUCCESS') {
+							BootstrapDialog.show({
+								message: "Your access code is <strong>" + data.access_code + "</strong>.",
+								buttons: [{
+									label: "Okay",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+						} else if (data.status == 'USER_EXISTS') {
+							BootstrapDialog.show({
+								title: "Registration Error",
+								message: "User " + data.firstname + " " + data.lastname + " already exists. Did you forget your access code?",
+								buttons: [{
+									label: "Got it",
+									cssClass: "btn-primary",
+									action: function(dialogItself) {
+										dialogItself.close();
+									}
+								}]
+							});
+						}
+                	})
+                });
+
+            });
+        </script>
+    {% endblock %}

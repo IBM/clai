@@ -1,0 +1,100 @@
+{% extends "annotator/base.html" %}
+    {% block head %}
+        <link rel="stylesheet" href="/static/css/annotator/panel.css">
+    {% endblock %}
+
+    {% block body %}
+        {% block navbar %}
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="logout">Logout ({{access_code}})</a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        {% endblock %}
+        <div class="container" style="padding-top: 60px">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-0 col-xs-12 col-xs-offset-0 utility-button-group" style="text-align:left">
+                    {% if annotator_list %}
+                        {% for annotator in annotator_list %}
+                            <h3>{{annotator.name}}</h3>
+                            <p>Time logged: <select id="{{annotator.access_code}}-hour-select"></select> h <select id="{{annotator.access_code}}-minute-select"></select> m</p>
+                            <span style="color: green">{{annotator.num_annotations}} annotations, <span id="{{annotator.access_code}}-speed">{{annotator.num_annotations_per_hour}}</span> pairs/hr</span>
+                            <p style="float: right"><a href="/user_profile?access_code={{annotator.access_code}}">More details...</a></p>
+                            <hr>
+                        {% endfor %}
+                    {% endif %}
+                    {% if total_num_annotations %}
+                        <span style="color: green">{{total_num_annotations}} annotations in total</span>
+                        <p style="float: right">More details...</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block other-js %}
+    <script src="/static/js/annotator/main.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var annotator_list = {{annotator_list|safe}};
+            for (var i = 0; i < annotator_list.length; i ++) {
+                var access_code = annotator_list[i].access_code;
+                var hour_select = $(`#${access_code}-hour-select`);
+                var minute_select = $(`#${access_code}-minute-select`);
+
+                // set up values of select forms
+                for (var j = 0; j <= 100; j ++) {
+                    if (j == parseInt(annotator_list[i].num_hours_logged)) {
+                        hour_select.append(`<option selected="selected">${j}</option>`);
+                    } else {
+                        hour_select.append(`<option>${j}</option>`);
+                    }
+                }
+                for (var j = 0; j < 60; j ++) {
+                    if (j == parseInt(annotator_list[i].num_minutes_logged)) {
+                        minute_select.append(`<option selected="selected">${j}</option>`);
+                    } else {
+                        minute_select.append(`<option>${j}</option>`);
+                    }
+                }
+
+                hour_select.change(function() {
+                    var hour_select_id = $(this).attr('id');
+                    var ac_code = hour_select_id.substring(0, hour_select_id.length - 12);
+                    var time_logged = parseInt($(this).find(":selected").text()) * 3600 +
+                                      parseInt($(`#${ac_code}-minute-select`).find(":selected").text()) * 60;
+                    $.get(`update_user_time_logged`, {ac_code: ac_code, time_logged: time_logged}, function(data) {
+                        if (data.status == 'UPDATE_USER_TIME_LOGGED_SUCCESS')
+                            $(`#${ac_code}-speed`).text(data.num_annotations_per_hour);
+                    });
+                });
+
+                minute_select.change(function() {
+                    var minute_select_id = $(this).attr('id');
+                    var ac_code = minute_select_id.substring(0, minute_select_id.length - 14);
+                    var time_logged = parseInt($(`#${ac_code}-hour-select`).find(":selected").text()) * 3600 +
+                                      parseInt($(this).find(":selected").text()) * 60;
+                    $.get(`update_user_time_logged`, {ac_code: ac_code, time_logged: time_logged}, function(data) {
+                        if (data.status == 'UPDATE_USER_TIME_LOGGED_SUCCESS')
+                            $(`#${ac_code}-speed`).text(data.num_annotations_per_hour);
+                    });
+                });
+            }
+        });
+    </script>
+    {% endblock %}

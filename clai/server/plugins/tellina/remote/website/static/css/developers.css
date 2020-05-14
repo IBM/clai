@@ -1,0 +1,25 @@
+.project-description {
+    font:18px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight:300;
+    color:#333;
+    font-size: 18px;
+    padding-top: 64px
+}
+
+.project-description h3 {
+    margin-top: 30px;
+}
+
+.project-description h4 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-style: bold;
+    font-weight: 600;
+    color:#777;
+}
+
+@media (max-width: 980px) {
+    .project-description {
+      padding-top: 100px;
+    }
+}

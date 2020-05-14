@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tellina - a natural language to command translation tool</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="natural language to bash command translation tool">
+
+        <!-- Fonts -->
+
+        <!-- CSS -->
+        <link href="/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="/static/css/main.css" rel="stylesheet" media="screen">
+        <link rel="stylesheet" href="/static/lib/font-awesome-4.7.0 2/css/font-awesome.min.css">
+
+        <!-- Web Resources -->
+        <link rel="shortcut icon" href="/static/img/tellina_avatar.svg"/>
+        <link rel="canonical" href="http://tellina.rocks">
+        {% block head %}{% endblock %}
+        
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108707366-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-108707366-1');
+        </script>
+    </head>
+
+    <body>
+        <div class="container-fluid" style="margin-bottom: 12px; padding-left: 0; padding-right: 0">
+            <header class="main-website-header">
+                <div class="row">
+                    <div class="col-md-8 col-xs-12">
+                        <div class="col-md-2 col-xs-12">
+                            <a href="/"><img src="/static/img/tellina.svg" alt="Project Logo" style="height:50px;"></a>
+                        </div>
+                        <div class="col-md-10 col-xs-12 top-search-container">
+                            <div class="input-group nl-request">
+                                <span class="input-group-btn">
+                                    <button id="submit-to-google" class="btn btn-default btn-search" data-toggle="tooltip" data-placement="bottom" title='Search with Google' type="button">
+                                        <i class="fa fa-globe fa-lg"></i>
+                                    </button>
+                                </span>
+                                <input type="text" id="top-search" class="form-control nl-request-input" placeholder="Type a natural language command...">
+                                <span class="input-group-btn">
+                                    <button id="submit-to-tellina" class="btn btn-default btn-search" data-toggle="tooltip" data-placement="bottom" title='Ask Tellina' type="button">
+                                        <img src="/static/img/tellina_avatar.svg" style="height:18px;">
+                                    </button>
+                                </span>
+                            </div>
+                        </div> 
+                    </div>
+                    {% block navbar %}{% endblock %}
+                </div>
+            </header>
+        </div>
+
+        {% block body %}{% endblock %}
+        <div class="modal"><!-- Place at bottom of page --></div>
+
+        <!-- JS -->
+        <script src="/static/js/jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/js/underscore.js"></script>
+        <script src="/static/lib/bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/js/tellina.js"></script>
+        <script>
+            $(document).ready(function () {
+                // get user's ip address as a global variable
+                var ip_address = '';
+                $.get("http://ipinfo.io", function(response) {
+                    ip_address = response.ip;
+                    $.get(`/remember_ip_address`, {ip_address: ip_address});
+                    console.log('IP Address for study session logged: ' + ip_address);
+                }, "jsonp");
+
+                // fix header during scroll
+                $(window).scroll(function(){
+                  if ($(this).scrollTop() > 0) {
+                    $('.main-website-header').addClass('fixed-in-scroll');
+                  } else {
+                    $('.main-website-header').removeClass('fixed-in-scroll');
+                  }
+                });
+
+                // trigger button click on enter
+                $(".nl-request-input").keyup(function(event){
+                    if(event.keyCode == 13){
+                        $("#submit-to-tellina").click();
+                    }
+                });
+
+                $("#submit-to-google").click(function() {
+                    var nl_request_str = $(".nl-request-input").val();
+                    window.open("https://www.google.com/search?q=" + nl_request_str);
+                });
+
+                $("#submit-to-tellina").click(function() {
+                     // show waiting icon
+                     $("body").addClass("loading");
+                     var nl_request_str = $(".nl-request-input").val();
+                     window.location.replace(`translate?request_str=${nl_request_str}&ip_address=${ip_address}`);
+                });
+            });
+        </script>
+        {% block other-js %}{% endblock %}
+    </body>
+</html>

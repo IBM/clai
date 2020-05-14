@@ -1,0 +1,248 @@
+{% extends "translator/base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="/static/lib/hljs.themes/tomorrow.css">
+    <link rel='stylesheet' href='/static/css/perfect-scrollbar.css'>
+    <link href="/static/lib/jquery.upvote/jquery.upvote.css" rel="stylesheet" media="screen">
+
+    <link rel="stylesheet" href="/static/css/translate.css">
+    <link rel="stylesheet" href="/static/css/introjs.min.css">
+{% endblock %}
+{% block body %}
+<div class="container-fluid translate-panel">
+    <div class="row">
+        <div class="col-md-9">
+            {% if trans_list %}
+            {% for translation, upvoted, downvoted, starred, to_expl_cmd, annotated_cmd in trans_list %}
+                <div class="well" style="border:0px; box-shadow: none;">
+                    <table class="cmd-result">
+                        <tr>
+                            <!-- <td style="width: 30px">
+                                <div style="vertical-align: top;" id="pred-cmd-vote-{{forloop.counter}}" data-id="{{translation.id}}"
+                                     class="upvote upvote-serverfault">
+                                    <a class="upvote">{{upvoted}}</a>
+                                    <span class="count" style="margin-left: 12px">{{translation.num_votes}}</span>
+                                    <a class="downvote">{{downvoted}}</a>
+                                    <a class="star" style="margin-left:4px">{{starred}}</a>
+                                </div>
+                            </td>-->
+                            <td>
+                                <div style="background-color:#f8f8f8;" class="span7" id="oneliner-{{forloop.counter}}">
+                                    <code id="pred-cmd-{{forloop.counter}}" class="command bash hljs">
+                                        {{annotated_cmd | safe}}
+                                    </code>
+                                </div>
+                                <div align="right">
+                                    <button type="button" class="btn btn-default btn-copy"
+                                        data-clipboard-target="#pred-cmd-{{forloop.counter}}"
+                                        id="copy-btn-{{forloop.counter}}">
+                                        <i class="glyphicon glyphicon-copy"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-expl"
+                                        id="expl-btn-{{forloop.counter}}"
+                                        onclick="window.open('http://explainshell.com/explain?cmd={{to_expl_cmd}}')">
+                                        <i class="fa fa-question-circle-o fa-lg"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr>
+                </div>
+            {% endfor %}
+            {% else %}
+            <div class="translation-error">
+                <p>I'm very sorry, I don't know how to translate this command at the moment.</p>
+
+                <p>Please rephrase your query or try Google Search instead.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block other-js %}
+<script src="/static/lib/jquery.upvote/jquery.upvote.js"></script>
+<script src='/static/js/clipboard.min.js'></script>
+<script src='/static/js/perfect-scrollbar.js'></script>
+<script src='/static/js/perfect-scrollbar.jquery.js'></script>
+<script src="/static/js/intro.min.js"></script>
+<script src="/static/lib/hljs.themes/hljs-9.8.0.min.js"></script>
+<script src="/static/lib/hljs.themes/bash.js"></script>
+<script>
+    $(document).ready(function() {
+        // We don't need to use the following function call anymore:
+        // our tool renders highlights automatically in backend.
+        /*
+        $('div code').each(
+          function(i, block) {
+          hljs.highlightBlock(block);
+          }
+          );
+        */
+
+        // set tooltip for each span inside command
+        $('.command span').tooltip({
+            placement: 'bottom',
+            html: true,
+            // Hover over the tooltip will trigger the code to access the code
+            title: function () {
+
+                var local_data = "error";
+
+                $.ajax({
+                    type: 'get',
+                    async: false,
+                    url: '/explain_cmd',
+                    data: {
+                        cmd_head : $(this).attr("dominate_cmd"),
+                        flag_name : $(this).attr("dominate_flag"),
+                        node_kind : $(this).attr("node_kind")
+                    },
+                    success: function (data) {
+                        local_data = data;
+                    }
+                });
+
+                if (local_data == "") {
+                    return "";
+                }
+
+                return  "<div class='cmd-expl'>"
+                    + htmlForTextWithEmbeddedNewlines(local_data)
+                    + "</div>";
+            }
+        });
+
+        var num_suggestions = 20;
+        for (var i=1; i<=num_suggestions; i++) {
+            $('#copy-btn-' + i).height($('#oneliner-' + i).height() + 4);
+            $('#expl-btn-' + i).height($('#oneliner-' + i).height() + 4);
+            $('#copy-btn-' + i).attr({
+                'data-original-title': 'Copy to clipboard'
+            });
+            $('#expl-btn-' + i).attr({
+                'data-original-title': 'Explain the command'
+            });
+        }
+    });
+</script>
+<script>
+    var clipboard = new Clipboard('.btn-copy');
+
+    function setTooltip(btn, message) {
+        $(btn).tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+    }
+
+    function hideTooltip(btn) {
+        i = btn.id.split('-').slice(-1)[0];
+        if (i == '1') {
+            setTimeout(function() {
+                $(btn).tooltip('hide')
+                    .attr('data-original-title', 'Copy to clipboard');
+            }, 1000);
+        } else {
+            setTimeout(function() {
+                $(btn).tooltip('hide')
+                    .attr('data-original-title', '');
+            }, 1000);
+        }
+    }
+
+    clipboard.on('success', function(e) {
+        // console.info('Action:', e.action);
+        // console.info('Text:', e.text);
+        e.clearSelection();
+        setTooltip(e.trigger, 'Copied!');
+        hideTooltip(e.trigger);
+    });
+
+    clipboard.on('error', function(e) {
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn-copy').tooltip({
+            placement: 'top'
+        });
+        $('.btn-expl').tooltip({
+            placement: 'bottom'
+        });
+
+        $(".nl-request-input").val("{{nl_request.nl.str}}");
+
+        var num_suggestions = 20;
+        for (var i=1; i<=num_suggestions; i++) {
+            var vote_elem_id = '#pred-cmd-vote-' + i;
+            // console.log($(vote_elem_id).children("a[class*='upvote']"));
+            // console.log($(vote_elem_id).children("a[class*='downvote']"));
+            var upvoted= 1;
+            var downvoted = 1;
+            var starred = 1;
+            if ($(vote_elem_id).children("a[class*='upvote']").text() == '')
+                upvoted = 0;
+            if ($(vote_elem_id).children("a[class*='downvote']").text() == '')
+                downvoted = 0;
+            if ($(vote_elem_id).children("a[class*='star']").text() == '')
+                starred = 0;
+            $(vote_elem_id).upvote({count: parseInt($(vote_elem_id).children('span').text()),
+                                             upvoted: upvoted,
+                                             downvoted: downvoted,
+                                             starred: starred,
+                                             callback: function(data) {
+                                                console.log(data.id);
+                                                console.log(data.upvoted);
+                                                console.log(data.downvoted);
+                                                console.log(data.starred);
+                                                $.get('/vote', {id: data.id,
+                                                                upvoted: data.upvoted,
+                                                                downvoted: data.downvoted,
+                                                                starred:data.starred,
+                                                                ip_address: ip_address});
+                                             }
+                                            });
+        }
+    });
+
+    function startIntro(){
+        var intro = introJs();
+        intro.setOptions({
+            steps: [
+            {
+                element: '#pred-cmd-1',
+                intro: "This is a bash one-liner. Hover over any part of the command for more information.",
+                position: 'right'
+            },
+            {
+                element: '#oneliner-1',
+                intro: "Bash commands are <span style=\"color:#f5871f\">orange</span>"
+            },
+            {
+                element: '#oneliner-1',
+                intro: "Command flags are <span style=\"color:#8959a8\">purple</span>."
+            },
+            {
+                element: '#oneliner-1',
+                intro: "<p>Arguments to commands and flags are <span style=\"text-decoration:underline\">underlined</span>.</p> <p>Tellina guesses a value, but <b>you might have to correct them manually</b>.</p> <p>Sometimes Tellina swapped the values in two different slots and you need to reorder them.</p>"
+            },
+            {
+                element: '#copy-btn-1',
+                intro: "Click here to copy the command to your clipboard."
+            },
+            {
+                element: '#expl-btn-1',
+                intro: "Click here to get an explanation of the command."
+            },
+            {
+                element: '#google-command',
+                intro: "If Tellina isn't helping you, try Google."
+            }
+            ]
+        });
+        intro.start();
+    }
+</script>
+{% endblock %}

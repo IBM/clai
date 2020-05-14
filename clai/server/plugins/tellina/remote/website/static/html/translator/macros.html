@@ -1,0 +1,46 @@
+{% macro outputcommand(mp, suggestions) -%}
+    {% if suggestions|length == 0 %}
+    <a href="http://manpages.ubuntu.com/manpages/precise/en/man{{ mp.section }}/{{ mp.source }}.html">{{ mp.program|e }}</a>
+    {% else %}
+        <span class="dropdown">
+            <b class="caret" data-toggle="dropdown"></b>
+            <a href="http://manpages.ubuntu.com/manpages/precise/en/man{{ mp.section }}/{{ mp.source }}.html">{{ mp.program|e }}</a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+              <li>other manpages</li>
+              <li class="divider"></li>
+            {% for d in suggestions %}
+              <li><a tabindex="-1" href="/explain/{{ d.link }}">{{ d.text|e }}</a></li>
+            {% endfor %}
+            </ul>
+        </span>
+    {% endif %}
+    {% if mp.synopsis %}- {{ mp.synopsis|e }}{% endif %}
+{%- endmacro %}
+
+{%- macro outputcommandexplain(d) -%}
+    {% if d.suggestions|length == 0 -%}
+    <span {{ spanclasses(d) }} style="word-spacing: 0px;"><a href="/explain/{{ d.section }}/{{ d.source }}">{{ d.match|safe }}</a></span>
+    {%- else -%}
+                <span class="dropdown">
+                    <span style="word-spacing: 0px;">
+                    <b class="caret" data-toggle="dropdown"></b>
+                    <span {{ spanclasses(d) }}><a href="/explain/{{ d.section }}/{{ d.source }}">{{ d.match|safe }}</a></span>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                      <li>other manpages</li>
+                      <li class="divider"></li>
+                      {% for dd in d.suggestions -%}
+                      <li><a tabindex="-1" href="/explain?cmd={{ dd.cmd|urlencode }}">{{ dd.text|e }}</a></li>
+                      {%- endfor %}
+                    </ul>
+                    </span>
+                </span>
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro spanclasses(d) -%}
+class="{{ d.commandclass }}"{% if d.helpclass %} helpref="{{ d.helpclass }}"{% endif %}
+{%- endmacro %}
+
+{%- macro examplebullet(cmd) -%}
+<li><a href='/explain?cmd={{ cmd|urlencode }}'>{{ cmd|e }}</a></li>
+{%- endmacro %}

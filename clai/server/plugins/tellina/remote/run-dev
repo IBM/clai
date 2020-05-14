@@ -1,0 +1,6 @@
+#!/bin/bash
+# Simple shell script to run application in dev mode
+#export PYTHONPATH=`pwd`
+python3 hello.py
+#python3 manage.py runserver 0.0.0.0:8000 --insecure 
+#python manage.py runserver --settings=pythondjangoapp.settings.development

@@ -1,0 +1,215 @@
+{% extends "translator/base.html" %}
+    {% block head %}
+        <link rel="stylesheet" href="/static/css/index.css">
+        <link rel="stylesheet" href="/static/css/responsive-mp.css">
+        <link rel="stylesheet" href="/static/css/animate.css">
+        <link rel="stylesheet" href="/static/css/introjs.min.css">
+
+        <link rel="stylesheet" href="/static/lib/google-plus.themes/google-plus.css">
+        <link rel="stylesheet" href="/static/lib/hljs.themes/tomorrow.css">
+    {% endblock %}
+        
+
+    {% block navbar %}
+            <div class="col-md-4 col-xs-12">
+                <nav class="navbar navbar-default" role="navigation">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li class="example-or-recently-asked"><a class="example-or-recently-asked-text-display">Sample TODOs</a></li>
+                                <li><a href="developers">Developers</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+    {% endblock %}
+
+    {% block body %}
+        <div class="container-fluid pt-sm pt-xs body-panel">
+            <div class="row">
+                <div class="col-md-5 col-xs-12 col-sm-12 hidden-xs">
+                    <div class="well instruction-panel">
+                        <h1>Commanding your terminal with natural language</h1>
+
+                        <h2>Tellina automatically translates the input into executable bash commands using deep learning.
+                        </h2>
+
+                        <div class="tiny-push"></div>
+
+                        <ul>
+                            <li>Type an imperative English sentence (not a question) stating your goal. For example,
+                                <ul>
+                                    <li><i>"split &lsquo;/usr/bin/gcc&rsquo; into 1000 files of about equal size";</i></li>
+                                    <li><i>"print top 10 largest files and directories";</i></li>
+                                    <li><a class="example-or-recently-asked">more examples...</a></li>
+                                </ul>
+                            </li>
+                            <li>Tellina works best for specific inputs. For example,
+                                <ul>
+                                    <li>instead of "some files", use "pdf files";</li>
+                                    <li>instead of "sometime ago", use "5 days ago".</li>
+                                </ul>
+                            </li>
+                            <li>Quoting <code>""</code> names, strings and regular expressions often improves the translation.</li>
+                            <li>Put <code>/</code> at the end of a directory name such that Tellina interprets it as a folder.</li>
+                        </ul>
+                    </div>
+                    <footer class="hidden-xs hidden-sm">
+                        <div class="footer"><small>&copy; Tellina Tools 2018. This website is under active construction. <a href="mailto:xilin@cs.washington.edu?Subject=Tellina%20Website" target="_top">Email us</a> if you have any suggestion.</small></div>
+                    </footer>
+                </div>
+                <div class="col-md-7 col-xs-12 col-sm-12">
+                    <div class="example-panel animated fadeInUp" style="display:none;"></div>
+                    <div class="recently-asked-panel animated fadeInUp"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="hidden-md hidden-lg hidden-xl" style="text-align: center">
+            <div class="footer"><small>&copy; Tellina Tools 2018. This website is under active construction. <a href="mailto:xilin@cs.washington.edu?Subject=Tellina%20Website" target="_top">Email us</a> if you have any suggestion.</small></div>
+        </footer>
+    {% endblock %}
+    
+    {% block other-js %}
+        <script type="text/javascript" src="/static/js/intro.min.js"></script>
+        <script src="/static/lib/hljs.themes/hljs-9.8.0.min.js"></script>
+        <script src="/static/lib/hljs.themes/bash.js"></script>
+        <script>
+            // get user's ip address as a global variable
+            var ip_address = '';
+            $.get("http://ipinfo.io", function(response) {
+                ip_address = response.ip;
+                $.get(`/remember_ip_address`, {ip_address: ip_address});
+                console.log('IP Address for study session logged: ' + ip_address);
+            }, "jsonp");
+
+            $(document).ready(function () {
+                console.log(window.location.hash);
+
+                $(".nl-request-input").focus()
+
+                // load recently asked
+                $.get("load_latest_requests_with_translations", function(data) {
+                    display_pairs($('.recently-asked-panel'), data.latest_requests_with_translations,
+                                  true); 
+                });
+
+                // fix instruction panel during scroll
+                // fix header during scroll
+                /* $(window).scroll(function(){
+                  if ($(this).scrollTop() > 0) {
+                    $('.instruction-col').addClass('fixed-in-scroll');
+                  } else {
+                    $('.instruction-col').removeClass('fixed-in-scroll');
+                  }
+                }); */
+
+                // switch between "recently asked" and "sample questions"
+                var recently_asked = true;
+                $(".example-or-recently-asked").click(function() {
+                    if (recently_asked) {
+                        $('.recently-asked-panel').hide();
+                        $.get("load_example_requests_with_translations", function(data) {
+                            display_pairs($('.example-panel'), data.example_requests_with_translations,
+                                          false);
+                        });
+                        $('.example-panel').show();
+                        $('.example-or-recently-asked-text-display').text('Recently Issued');
+                        recently_asked = false;
+                    } else {
+                        $('.example-panel').hide();
+                        $.get("load_latest_requests_with_translations", function(data) {    
+                            display_pairs($('.recently-asked-panel'), data.latest_requests_with_translations,
+                                          true);
+                        });
+                        $('.recently-asked-panel').show();
+                        $('.example-or-recently-asked-text-display').text('Sample TODOs');
+                        recently_asked = true;
+                    }
+                });
+            });
+
+            function display_pairs(panel_obj, data_points, show_user_credentials) {
+                panel_obj.html('');
+                for (var i = 0; i < data_points.length; i ++) {
+                    var data_point = data_points[i];
+                    var panel_request = '';
+                    if (show_user_credentials) {
+                        panel_request =
+                            `<div class="panel-request">
+                                <i class="fa fa-desktop"></i>&nbsp;
+                                <span class="nl-request">${data_point.nl}</span><br>
+                                <span class="post-time"><i class="glyphicon glyphicon-time"></i>&nbsp;${data_point.submission_time}</span>&nbsp;
+                                <span class="post-location"><i class="glyphicon glyphicon-map-marker"></i>&nbsp;
+                                    ${data_point.user_city}, ${data_point.user_region}, ${data_point.user_country}</span>
+                            </div>`;
+                    } else {
+                        panel_request =
+                            `<div class="panel-request">
+                                    <i class="fa fa-hand-o-right"></i>&nbsp;
+                                    <span class="nl-request">${data_point.nl}</span><br>
+                            </div>`;
+                    };
+                    panel_tags = '<div style="padding: 0 0 0 20px; text-align: left">';
+                    for (var j = 0; j < data_point.tags.length; j ++) {
+                        panel_tags = panel_tags + 
+                            '<button type="button" class="btn btn-tag btn-xs">' + 
+                                data_point.tags[j] + 
+                            '</button>&nbsp;'; 
+                    }
+                    panel_tags = panel_tags + '</div>'
+                    panel_obj.append(
+                        `<div class='row'>
+                            <div class="[ panel panel-default ] panel-google-plus">
+                        ` + panel_request +
+                        `       <div class='panel-body'>
+                                    <div style='margin: 16px 20px 0px 20px'>
+                                        <code class='panel-command command bash hljs'>
+                                            ${data_point.top_translation}
+                                        </code>
+                                    </div>
+                                </div>
+                        ` + panel_tags +
+                        `   <div class='panel-footer'>
+                                    <button type='button' class="[ btn btn-default expand-translation-instance ]">
+                                        <span class="[ fa fa-plus-square-o ]"></span>
+                                    </button>
+                                    <button type='button' class="[ btn btn-default copy-current-command ]">
+                                        <span class="[ glyphicon glyphicon-copy ]"></span>
+                                    </button>
+                                    <button type='button' class="[ btn btn-default ]">-1</button>
+                                    <button type='button' class="[ btn btn-default ]">+1</button>
+                                    <!-- <div class='input-placeholder'>Add a comment...</div> -->
+                                </div>
+                                <div class='panel-google-plus-comment'>
+                                    <img class='img-circle' src='https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s46' alt='User Image' />
+                                    <div class='panel-google-plus-textarea'>
+                                        <textarea rows='4'></textarea>
+                                        <button type='submit' class="[ btn btn-success disabled ]">Post comment</button>
+                                        <button type='reset' class="[ btn btn-default ]">Cancel</button>
+                                    </div>
+                                    <div class='clearfix'></div>
+                                </div>
+                            </div>
+                        </div>`
+                    );
+                    panel_obj.find(".row").find(".panel-footer").find(".expand-translation-instance").click(function() {
+                        var nl_request_str = $(this).parent().parent().find('.panel-request').find('.nl-request').text();
+                        console.log(nl_request_str);
+                        window.location.replace(`translate?request_str=${nl_request_str}&ip_address=${ip_address}`);
+                    });
+                }
+            }
+        </script>
+    {% endblock %}

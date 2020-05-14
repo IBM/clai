@@ -8,9 +8,9 @@ using `tar` and looking for strings in files using `grep`.
 
 ## Implementation
 
-Currently the command typed in by the user is passed through a natural language classifier on 
-[Watson Assistant](https://www.ibm.com/cloud/watson-assistant/). 
-If there is a significant match with known patterns of `tar` and `grep`, 
+Currently the command typed in by the user is passed through a natural language classifier on
+[Watson Assistant](https://www.ibm.com/cloud/watson-assistant/).
+If there is a significant match with known patterns of `tar` and `grep`,
 the user command is translated into the corresponding command line syntax [here](./wa_skills/).
 The confidence of the skill is the same as the confidence of the underlying NLC layer.
 
@@ -38,6 +38,6 @@ See [here](./wa_skills/) for some more examples on the [IBM Cloud CLI](https://w
 
 ## [xkcd](https://uni.xkcd.com/)
 
-I don't know what's worse--the fact that after 15 years of using tar I still can't keep the flags straight, or that after 15 years of technological advancement I'm still mucking with tar flags that were 15 years old when I started.  
+I don't know what's worse--the fact that after 15 years of using tar I still can't keep the flags straight, or that after 15 years of technological advancement I'm still mucking with tar flags that were 15 years old when I started.
 
 ![alt text](https://imgs.xkcd.com/comics/tar.png "I don't know what's worse--the fact that after 15 years of using tar I still can't keep the flags straight, or that after 15 years of technological advancement I'm still mucking with tar flags that were 15 years old when I started.")
