@@ -38,11 +38,8 @@ def wa_skill_processor_tarbot(msg):
     # Identify entities in the user message
     entities = {}
     for item in response["entities"]:
-
-        if item['entity'] in entities:
-            entities[item['entity']].append(item['value'])
-        else:
-            entities[item['entity']] = [item['value']]
+        if item['entity'] in entities: entities[item['entity']].append(item['value'])
+        else: entities[item['entity']] = [item['value']]
 
     # Identify file and directory name if present
     filename = "<archive-file>"

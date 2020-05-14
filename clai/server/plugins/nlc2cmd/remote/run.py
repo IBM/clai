@@ -21,7 +21,7 @@ config = json.loads( open('config.json').read() )
 
 authenticator = IAMAuthenticator(config["i_am_id"])
 assistant = AssistantV2(
-    version='2019-12-03',
+    version='2020-13-05',
     authenticator=authenticator
 )
 

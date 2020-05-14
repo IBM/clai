@@ -31,4 +31,42 @@ def wa_skill_processor_zosbot(msg):
     except IndexError or KeyError:
         pass
 
+    # Identify entities in the user message
+    entities = {}
+    for item in response["entities"]:
+        if item['entity'] in entities: entities[item['entity']].append(item['value'])
+        else: entities[item['entity']] = [item['value']]
+
+    if intent == "bpxmtext":
+        data = {"text" : "bpxmtext <reasoncode>"}
+
+    elif intent == "compile-c-code":
+        data = {"text" : "xlc"}
+    
+    elif intent == "extattr":
+        data = {"text" : "extattr [+alps] [-alps] [-Fformat] file ..."}
+    
+    elif intent == "obrowse":
+        data = {"text" : "obrowse -r xx [file]"}
+    
+    elif intent == "oedit":
+        data = {"text" : "oedit [–r xx] [file]"}
+    
+    elif intent == "oget":
+        data = {"text" : "OGET 'pathname' mvs_data_set_name(member_name)"}
+    
+    elif intent == "oput":
+        data = {"text" : "OPUT mvs_data_set_name(member_name) 'pathname'"}
+    
+    elif intent == "oeconsol":
+
+        if 'iplinfo' in entities: data = {"text" : "oeconsol 'd iplinfo'"}
+        elif 'command' in entities: data = {"text" : "oeconsol '<command>'"}
+        else: data = {"text" : "oeconsol 'd parmlib'"}
+
+    elif intent == "tso":
+        data = {"text" : "tso [–o] [–t] TSO_command"}
+    
+    else: pass
     return data, confidence
+
