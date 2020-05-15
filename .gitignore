@@ -112,6 +112,6 @@ data
 
 nohup.out
 
-# hide kube bot config
-*/kube_agent/config/*
-*/kube_agent/bb-survey-server/*
+# hide wa config
+*nlc2cmd/remote/config.json
+
