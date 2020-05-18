@@ -2,7 +2,7 @@
 
 `Retrieval` &nbsp; `Support`
 
-IBM Z error messages can seem daunting to an end user.  The `zmsgcode` skill
+IBM Z error messages can seem daunting to an end-user.  The `zmsgcode` skill
 tries to make them a little friendlier by automatically displaying a descriptive
 help message whenever the console detects any IBM Z style message codes.
 
@@ -22,4 +22,4 @@ website, returning the first result encountered.
 
 ![zmsgcode](zmsgcode.gif?raw=1)
 
-The skill will respond on `stderr` if it finds a reasonable solution.
+The skill will respond to `stderr` if it finds a reasonable solution.
