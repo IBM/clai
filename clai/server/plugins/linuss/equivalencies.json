@@ -157,5 +157,11 @@
             "equivalent": "otracert",
             "explanation": "Try the equivalant for uss: otracert"
         }
+    },
+    "which": {
+        "": {
+            "equivalent": "type",
+            "explanation": "Try the equivalant for uss: type"
+        }
     }
 }
