@@ -147,6 +147,3 @@ def wa_skill_processor_tarbot(msg):
 
     return data, confidence
 
-
-
-

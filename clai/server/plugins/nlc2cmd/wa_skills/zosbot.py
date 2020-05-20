@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-''' tar command handler '''
+''' z/OS command handler '''
 
 ''' imports '''
 from clai.server.plugins.nlc2cmd.wa_skills.utils import call_wa_skill, get_own_name

@@ -36,9 +36,6 @@ __intents = { 'add_tag_resource'                 : "resource tag-attach --tag-na
 
 def wa_skill_processor_cloudbot(msg):
 
-    # Confidence remains at 0 unless an intent has been detected
-    confidence = 0.0 
-
     # Make sure we are not intercepting real IBM Cloud CLI commands
     if msg.startswith('ibmcloud'):
         return None, 0.0
@@ -53,13 +50,10 @@ def wa_skill_processor_cloudbot(msg):
         confidence = response["intents"][0]["confidence"]
 
     except IndexError or KeyError:
-        intent = "ibmcloud help"
 
         intent = "generic"
         confidence = 0.0
 
     data = { "text" : "Try >> ibmcloud " + __intents[intent] } 
     return data, confidence
-
-
 
