@@ -43,8 +43,9 @@ def create_error_install(name: str) -> Action:
 def create_error_select(selected_plugin: str) -> Action:
     text = Colorize() \
         .warning() \
-        .append(f"{selected_plugin} is not a valid skill name. Write >> clai skills to check available skills.") \
-        .append("Example: >> clai activate nlc2cmd") \
+        .append(f"\'{selected_plugin}\' is not a valid skill name. ") \
+        .append("To check available skills, issue:\n >> clai skills\n") \
+        .append("Example:\n >> clai activate nlc2cmd") \
         .to_console()
 
     return Action(
