@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-''' tar command handler '''
+''' z/OS command handler '''
 
 ''' imports '''
 from clai.server.plugins.nlc2cmd.wa_skills.utils import call_wa_skill, get_own_name
@@ -50,7 +50,7 @@ def wa_skill_processor_zosbot(msg):
         data = {"text" : "Try >> obrowse -r xx [file]"}
     
     elif intent == "oedit":
-        data = {"text" : "Try >> oedit [–r xx] [file]"}
+        data = {"text" : "Try >> oedit [-r xx] [file]"}
     
     elif intent == "oget":
         data = {"text" : "Try >> OGET 'pathname' mvs_data_set_name(member_name)"}
@@ -65,8 +65,7 @@ def wa_skill_processor_zosbot(msg):
         else: data = {"text" : "Try >> oeconsol 'd parmlib'"}
 
     elif intent == "tso":
-        data = {"text" : "Try >> tso [–o] [–t] TSO_command"}
+        data = {"text" : "Try >> tso [-o] [-t] TSO_command"}
     
     else: pass
     return data, confidence
-
