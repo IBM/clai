@@ -82,24 +82,28 @@ class Linuss(Agent):
                 # Case 1: We're processing a long option or a single short option
                 if opt[0] == '-' or len(opt) == 1:
                     equivalency = self.__get_equavalency(opt, options, cmd_key)
-                    if equivalency['equivalent'] != "":
+                    if equivalency['equivalent']:
                         suggestion = f"{suggestion} {equivalency['equivalent']}"
-                    if 'explanation' in equivalency:
-                        explanations.append(equivalency['explanation'])
+                        if 'explanation' in equivalency:
+                            explanations.append(equivalency['explanation'])
+                    else:
+                        explanations.append(f"The -{opt} flag is not available on USS")
                 
                 # Case 2: We're processing multiple short options strung together
                 else:
                     for char in opt:
                         equivalency = self.__get_equavalency(char, options, cmd_key)
-                        if equivalency['equivalent'] != "":
+                        if equivalency['equivalent']:
                             suggestion = f"{suggestion} {equivalency['equivalent']}"
-                        if 'explanation' in equivalency:
-                            explanations.append(equivalency['explanation'])
+                            if 'explanation' in equivalency:
+                                explanations.append(equivalency['explanation'])
+                        else:
+                            explanations.append(f"The -{char} flag is not available on USS")
             
             # If we have another non-option parameter to add to the suggested
             # command, do so now
             if arg is not None:
-                    suggestion = f"{suggestion} {arg}"
+                suggestion = f"{suggestion} {arg}"
         
         if suggestion is not None:
             return Action(
