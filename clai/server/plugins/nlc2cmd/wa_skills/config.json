@@ -1,0 +1,6 @@
+{
+	"cloudbot" : "https://ibmcloud-helper.mybluemix.net/message",
+	"tarbot"   : "http://nlc2cmd.mybluemix.net/tarbot",
+	"grepbot"  : "http://nlc2cmd.mybluemix.net/grepbot",
+	"zosbot"   : "http://nlc2cmd.mybluemix.net/zosbot"
+}

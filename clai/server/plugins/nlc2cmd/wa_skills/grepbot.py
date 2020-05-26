@@ -8,11 +8,11 @@
 ''' grep command handler '''
 
 ''' imports '''
-import requests, re
+from clai.server.plugins.nlc2cmd.wa_skills.utils import call_wa_skill, get_own_name
+import re
 
 ''' globals '''
-wa_endpoint = 'http://nlc2cmd-chipper-impala.us-east.mybluemix.net/grepbot'
-
+__self = get_own_name(__file__) 
 __flags = { "line-number" : 'n',
             "match-case"  : 'i',
             "count"       : 'c',
@@ -32,16 +32,8 @@ def wa_skill_processor_grepbot(msg):
     except:
         match_string = "<string>"
 
-    try:
-        response = requests.put(wa_endpoint, json={'text': msg}).json()
-
-        if response['result'] == 'success':
-            response = response['response']['output']
-        else:
-            return [ { "text" : response['result'] }, confidence ]
-
-    except Exception as ex:
-        return [ { "text" : "Method failed with status " + str(ex) }, confidence ]
+    response, success = call_wa_skill(msg, __self)
+    if not success: return {"text" : response}, 0.0
 
     if msg.startswith('grep for'): confidence = 1.0
     else: confidence = max([item['confidence'] for item in response['intents']])
