@@ -24,7 +24,7 @@ class TestSkillNlc2cmd(ContractSkills):
     def get_commands_expected(self):
         return ['Try >> resource tag-attach --tag-names TAG --resource-name NAME',
                 'Try >> billing account-usage [-d YYYY-MM]',
-                'Try >> OGET 'pathname' mvs_data_set_name(member_name)',
+                'Try >> OGET [pathname] mvs_data_set_name(member_name)',
                 'Try >> obrowse -r xx [file]',
                 'Try >> tar -cjf <archive-file> <directory>',
                 'Try >> tar -xf <archive-file>',

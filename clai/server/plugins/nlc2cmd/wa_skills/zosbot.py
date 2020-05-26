@@ -38,34 +38,35 @@ def wa_skill_processor_zosbot(msg):
         else: entities[item['entity']] = [item['value']]
 
     if intent == "bpxmtext":
-        data = {"text" : "Try >> bpxmtext <reasoncode>"}
+        data = {"text" : "Try >> bpxmtext [reasoncode]"}
 
     elif intent == "compile-c-code":
         data = {"text" : "Try >> xlc"}
     
     elif intent == "extattr":
-        data = {"text" : "Try >> extattr [+alps] [-alps] [-Fformat] file ..."}
+        data = {"text" : "Try >> extattr [+alps] [-alps] [-Fformat] [file] ..."}
     
     elif intent == "obrowse":
         data = {"text" : "Try >> obrowse -r xx [file]"}
     
     elif intent == "oedit":
-        data = {"text" : "Try >> oedit [-r xx] [file]"}
+        data = {"text" : "Try >> oedit -r xx [file]"}
     
     elif intent == "oget":
-        data = {"text" : "Try >> OGET 'pathname' mvs_data_set_name(member_name)"}
+        data = {"text" : "Try >> OGET [pathname] mvs_data_set_name(member_name)"}
     
     elif intent == "oput":
-        data = {"text" : "Try >> OPUT mvs_data_set_name(member_name) 'pathname'"}
+        data = {"text" : "Try >> OPUT mvs_data_set_name(member_name) [pathname]"}
     
     elif intent == "oeconsol":
 
-        if 'iplinfo' in entities: data = {"text" : "Try >> oeconsol 'd iplinfo'"}
-        elif 'command' in entities: data = {"text" : "Try >> oeconsol '<command>'"}
-        else: data = {"text" : "Try >> oeconsol 'd parmlib'"}
+        if 'iplinfo' in entities: data = {"text" : "Try >> oeconsol [d iplinfo]"}
+        elif 'command' in entities: data = {"text" : "Try >> oeconsol [command]"}
+        else: data = {"text" : "Try >> oeconsol [d parmlib]"}
 
     elif intent == "tso":
         data = {"text" : "Try >> tso [-o] [-t] TSO_command"}
     
     else: pass
     return data, confidence
+
