@@ -12,6 +12,7 @@ import os
 import re
 import json
 from pathlib import Path
+from typing import Tuple
 
 from clai.server.logger import current_logger as logger
 
@@ -38,38 +39,87 @@ class Linuss(Agent):
         return equivalencies
 
     def __build_suggestion(self, command, options, cmd_key) -> any:
-        actions = []
-        for option in options:
-            if re.search(r'{}'.format(option), command):
-                replacement_value = None
-                if not option:
-                    # Case 1: Full command replacement
-                    replacement_value = cmd_key
+        params:list[Tuple(str)] = []
+        suggestion:str = None
+        explanations:list[str] = []
+        
+        # Tokenize the command string
+        tokens:list[str] = command.split()
+        idx = 0
+        max_idx = len(tokens)-1
+        while (idx <= max_idx):
+            token:str = tokens[idx]
+            
+            # Case 1: Token is an option flag
+            if re.match(r'-([\w_-]+)', token):
+                
+                # Case 1a: Token is followed by a non-option parameter
+                if idx < max_idx and not re.match(r'-([\w_-]+)', tokens[idx+1]):
+                    next_token = tokens[idx+1]
+                    params.append((token[1:],next_token))
+                    idx = idx + 1   # Don't double-process next token
+                
+                # Case 1b: Token is not followed by a non-option parameter
                 else:
-                    # Case 2: We're replacing an option flag
-                    replacement_value = option
-                    
-                suggestion = re.sub(
-                    r'{}'.format(replacement_value),
-                    self.equivalencies[cmd_key][option]["equivalent"], 
-                    command
-                )
-
-                # The confidence is high because these 
-                # are pre-determined and we know these are correct
-                actions.append(
-                    Action(
-                        suggested_command=suggestion,
-                        confidence=1, 
-                        description=self.equivalencies[cmd_key][option]["explanation"]
-                    )
-                )
-
-        if not actions:
-            actions.append(Action(suggested_command=NOOP_COMMAND, description=None))
-
-        return actions
-
+                    params.append((token[1:],None))
+            
+            # Case 2: Token is a non-option parameter
+            elif token != cmd_key:
+                params.append((None,token))
+            
+            idx = idx + 1 # Move on to the next token
+            
+        # If this command requires full command replacement, start the new
+        # command string off with that
+        if "" in options:
+            suggestion = self.equivalencies[cmd_key][""]["equivalent"]
+        else:
+            suggestion = cmd_key
+        
+        # Traverse the command from start to end
+        for opt, arg in params:
+            if opt is not None:
+                # Case 1: We're processing a long option or a single short option
+                if opt[0] == '-' or len(opt) == 1:
+                    equivalency = self.__get_equavalency(opt, options, cmd_key)
+                    if equivalency['equivalent'] != "":
+                        suggestion = f"{suggestion} {equivalency['equivalent']}"
+                    if 'explanation' in equivalency:
+                        explanations.append(equivalency['explanation'])
+                
+                # Case 2: We're processing multiple short options strung together
+                else:
+                    for char in opt:
+                        equivalency = self.__get_equavalency(char, options, cmd_key)
+                        if equivalency['equivalent'] != "":
+                            suggestion = f"{suggestion} {equivalency['equivalent']}"
+                        if 'explanation' in equivalency:
+                            explanations.append(equivalency['explanation'])
+            
+            # If we have another non-option parameter to add to the suggested
+            # command, do so now
+            if arg is not None:
+                    suggestion = f"{suggestion} {arg}"
+        
+        if suggestion is not None:
+            return Action(
+                suggested_command=suggestion,
+                confidence=1,
+                description='\n'.join(explanations)
+            )
+        else:
+            return Action(suggested_command=NOOP_COMMAND, description=None)
+    
+    def __get_equavalency(self, target, options, cmd_key) -> dict:
+        target = f"-{target}"
+        for option in options:
+            if option == "":
+                pass    # Ignore full-command replacement options
+            elif re.search(r'{}'.format(option), target):
+                return self.equivalencies[cmd_key][option]
+        
+        return {"equivalent": target}
+        
     def get_next_action(self, state: State) -> Action:
         command = state.command
 
