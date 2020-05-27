@@ -29,4 +29,3 @@ class TestSkillNlc2cmd(ContractSkills):
                 'Try >> tar -cjf <archive-file> <directory>',
                 'Try >> tar -xf <archive-file>',
                 'Try >> grep -rnv "clai" <directory>']
-    
