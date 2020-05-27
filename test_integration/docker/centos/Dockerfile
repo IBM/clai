@@ -47,8 +47,7 @@ EXPOSE 22
 RUN yum install -y sudo
 RUN yum install -y which
 
-# CentOS legacy rpm links deprecated
-# See https://github.com/iusrepo/announce/issues/18
+# CentOS legacy rpm links deprecated: https://github.com/iusrepo/announce/issues/18
 # RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
 RUN yum install -y https://repo.ius.io/ius-release-el7.rpm
 

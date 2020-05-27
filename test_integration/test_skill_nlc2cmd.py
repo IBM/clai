@@ -22,10 +22,9 @@ class TestSkillNlc2cmd(ContractSkills):
                 'grep for all files with "clai" in this directory, show me details and line numbers']
 
     def get_commands_expected(self):
-        return ['Try >> resource tag-attach --tag-names TAG --resource-name NAME',
-                'Try >> billing account-usage [-d YYYY-MM]',
+        return ['Try >> ibmcloud resource tag-attach --tag-names TAG --resource-name NAME',
+                'Try >> ibmcloud billing account-usage [-d YYYY-MM]',
                 'Try >> OGET [pathname] mvs_data_set_name(member_name)',
                 'Try >> obrowse -r xx [file]',
-                'Try >> tar -cjf <archive-file> <directory>',
                 'Try >> tar -xf <archive-file>',
                 'Try >> grep -rnv "clai" <directory>']
