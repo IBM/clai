@@ -7,7 +7,7 @@
 This skill provides an example of automation and support for the deployment pipeline of applications to cloud platforms such as IBM Cloud. The skills maintains state and calls an external planner to generate the pipeline on the fly.
 
 + A toy domain for deploying a dockerized application to the IBM cloud is available [here](planning-files). The task is modeled as a planning problem and needs to be specified by a domain expert.
-+ An [external service](modeled as a planning problem ) uses the [`FAST-DOWNWARD`](http://www.fast-downward.org/) planner to compute a
++ An [external service](planners.py#L49) uses the [`FAST-DOWNWARD`](http://www.fast-downward.org/) planner to compute a
 solution to the specified task, based on the current state of the system and the user command.
 
 ![ibmcloud-s2](https://www.dropbox.com/s/dk1fuiulzwymqs1/ss2.png?raw=1)
@@ -20,7 +20,7 @@ While this skill illustrates an integration of automated planning technologies i
 
 ## Example Usage
 
-![ibmcloud-gif](https://www.dropbox.com/s/jhjw7l9a7bjvo6k/ibmcloud.gif?raw=1)
+![ibmcloud-gif](https://www.dropbox.com/s/zkhqldf35xvih4t/ibmcloud.gif?raw=1)
 
 Try this out (folllow instructions as they show up):
 

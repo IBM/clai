@@ -57,7 +57,6 @@ class SocketServerConnector(ServerConnector):
         self.sel.register(connection, events, data=data)
 
     def __service_connection(self, key, mask, process_message):
-        logger.info(f"service connection")
         fileobj = key.fileobj
         data = key.data
         if mask & selectors.EVENT_READ:

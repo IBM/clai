@@ -1,10 +1,29 @@
+:link: Check out the [`NLC2CMD Challenge`](https://ibm.biz/nlc2cmd) @ Neurips 2020
+
+
 ![CLAI Logo](https://www.dropbox.com/s/nbkfa59khtlcs79/clai-logo.png?raw=1)
 
-Comman Line Artificial Intelligence `CLAI` is an open-sourced project aimed to bring the power of AI to the command line. Using CLAI, users of Bash can access a wide range of skills that will enhance their command line experience. This repository contains the source code and documentation to get you started.
+Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to bring the power of AI to the command line. Using CLAI, users of Bash can access a wide range of skills that will enhance their command line experience. This repository contains the source code and documentation to get you started.
 
 ## Getting Started
 
-[`More`](docs/Overview.md) [`API`](clai/server/plugins/) [`Community`](http://ibm.biz/clai-slack) [`FAQs`](docs/FAQ.md) 
+[`Home`](https://clai-home.mybluemix.net/) See some examples of CLAI in action without installing locally. A great way to try out CLAI as a first step!
+
+[`More`](docs/Overview.md) A quick overview about the project.
+
+[`Blog`](https://www.ibm.com/blogs/research/2020/02/bringing-ai-to-the-command-line/) The public release about this project.
+
+[`CLAI API`](clai/server/plugins/) Developer API for CLAI skills.
+
+[`Community`](http://ibm.biz/clai-slack) Join our online Slack community by clicking here!
+
+[`FAQs`](docs/FAQ.md) Frequently Asked Questions (including those about security, contributing, and other common topics).
+
+[`Feedback`](http://ibm.biz/clai-survey) Link to a survey to help us improve our project going forward.
+
+[`Whitepaper`](https://arxiv.org/abs/2002.00762) A paper describing how this all works.
+
+[`News`](https://github.com/IBM/clai/wiki) Latest news about the project.
 
 ### Prerequisites
 
@@ -56,9 +75,12 @@ $ ./BuildDockerImage.sh
 ```
 
 **Fedora and Ubuntu**
+
 ```
 $ sudo ./BuildDockerImage.sh
 ```
+
+> Control flags: Note that you may have to run `BuildDockerImage.sh` without the --no-cache flag for kernel version below 4.4.0-173-generic (Trusty Tahr/ Ubuntu 14.04 LTS).
 
 The end of a successful build process (this can take a while) should resemble the following output:
 
@@ -198,7 +220,7 @@ As before, CLAI skill will not execute without your permission unless `auto` mod
 
 ## :robot: Want to build your own skills?
 
-[`fixit`](clai/server/plugins/fix_bot)  [`nlc2cmd`](clai/server/plugins/nlc2cmd)  [`helpme`](clai/server/plugins/retrieval_agent)  [`howdoi`](clai/server/plugins/search_agent)  [`man page explorer`](clai/server/plugins/manpage_agent)  [`ibmcloud`](clai/server/plugins/ibmcloud)  
+[`fixit`](clai/server/plugins/fix_bot) &nbsp; [`nlc2cmd`](clai/server/plugins/nlc2cmd) &nbsp; [`helpme`](clai/server/plugins/helpme) &nbsp; [`howdoi`](clai/server/plugins/howdoi) &nbsp; [`man page explorer`](clai/server/plugins/manpage_agent) &nbsp; [`ibmcloud`](clai/server/plugins/ibmcloud)  
 
 Project CLAI is intended to rekindle the spirit of AI softbots by providing a plug-and-play framework and simple interface abstractions to the Bash and its underlying operating system. Developers can access the command line through a simple `sense-act` API for rapid prototyping of newer and more complex AI capabilities.
 

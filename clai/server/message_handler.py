@@ -9,13 +9,13 @@ import traceback
 from typing import List, Optional
 
 from clai.datasource.server_status_datasource import ServerStatusDatasource
+from clai.server.agent_datasource import AgentDatasource
 from clai.server.logger import current_logger as logger
 from clai.datasource.config_storage import config_storage
 from clai.datasource.server_pending_actions_datasource import ServerPendingActionsDatasource
 from clai.server.agent_runner import AgentRunner
 from clai.server.command_message import State, Action
 from clai.server.command_runner.command_runner_factory import CommandRunnerFactory
-from clai.server.orchestration.orchestrator import Orchestrator
 from clai.tools.file_util import read_history
 from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 
@@ -26,17 +26,17 @@ class MessageHandler:
 
     def __init__(self,
                  server_status_datasource: ServerStatusDatasource,
-                 agent_datasource,
-                 orchestrator: Orchestrator = OrchestratorProvider.get_orchestrator_instance('max_orchestrator')
-                 ):
+                 agent_datasource: AgentDatasource):
         self.agent_datasource = agent_datasource
-        self.agent_runner = AgentRunner(self.agent_datasource, orchestrator)
+        orchestrator_provider = OrchestratorProvider(agent_datasource)
+        self.agent_runner = AgentRunner(self.agent_datasource, orchestrator_provider)
         self.server_status_datasource = server_status_datasource
         self.server_pending_actions_datasource = ServerPendingActionsDatasource()
         self.command_runner_factory = CommandRunnerFactory(
             self.agent_datasource,
             config_storage,
-            self.server_status_datasource
+            self.server_status_datasource,
+            orchestrator_provider
         )
 
     def init_server(self):
@@ -66,7 +66,7 @@ class MessageHandler:
 
         return action
 
-    def __process_command(self, message) -> Action:
+    def __process_command(self, message: State) -> Action:
         if not message.is_already_processed():
             message.previous_execution = self.server_status_datasource.get_last_message(message.user_name)
             actions = self.__process_command_ai(message)
@@ -89,7 +89,10 @@ class MessageHandler:
             )
 
         action.origin_command = message.command
-        message.action_suggested = action
+        if message.is_post_process():
+            message.action_post_suggested = action
+        else:
+            message.action_suggested = action
         self.server_status_datasource.store_info(message)
         action.execute = action.execute or self.server_status_datasource.is_power()
 

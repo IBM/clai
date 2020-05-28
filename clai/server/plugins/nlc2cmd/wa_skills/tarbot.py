@@ -8,29 +8,23 @@
 ''' tar command handler '''
 
 ''' imports '''
-import requests
+from clai.server.plugins.nlc2cmd.wa_skills.utils import call_wa_skill, get_own_name
 
 ''' globals '''
-wa_endpoint = 'http://nlc2cmd-chipper-impala.us-east.mybluemix.net/tarbot'
+__self = get_own_name(__file__) 
 
 def wa_skill_processor_tarbot(msg):
 
-    # Confidence remains at 0 unless an intent has been detected
-    confidence = 0.0 
+    # Confidence remains at 0 and data is None unless an intent has been detected
+    confidence = 0.0
+    data = None
 
+    # Make sure we are not intercepting real tar commands
     if msg.startswith('tar'):
         return None, 0.0
 
-    try:
-        response = requests.put(wa_endpoint, json={'text': msg}).json()
-
-        if response['result'] == 'success':
-            response = response['response']['output']
-        else:
-            return [ { "text" : response['result'] }, confidence ]
-
-    except Exception as ex:
-        return [ { "text" : "Method failed with status " + str(ex) }, confidence ]
+    response, success = call_wa_skill(msg, __self)
+    if not success: return {"text" : response}, 0.0
 
     # Identify the intent in the user message
     try:
@@ -39,16 +33,13 @@ def wa_skill_processor_tarbot(msg):
         confidence = response["intents"][0]["confidence"]
 
     except IndexError or KeyError:
-        intent = "xkcd"
+        pass
 
     # Identify entities in the user message
     entities = {}
     for item in response["entities"]:
-
-        if item['entity'] in entities:
-            entities[item['entity']].append(item['value'])
-        else:
-            entities[item['entity']] = [item['value']]
+        if item['entity'] in entities: entities[item['entity']].append(item['value'])
+        else: entities[item['entity']] = [item['value']]
 
     # Identify file and directory name if present
     filename = "<archive-file>"
@@ -155,7 +146,4 @@ def wa_skill_processor_tarbot(msg):
     else: pass
 
     return data, confidence
-
-
-
 

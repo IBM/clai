@@ -8,7 +8,7 @@
 # pylint: disable=no-self-use
 import pytest
 
-from test_integration.integration_test_base import execute_cmd
+from clai.tools.docker_utils import execute_cmd
 
 
 class ContractSkills:

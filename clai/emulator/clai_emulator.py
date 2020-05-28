@@ -6,32 +6,51 @@
 #
 
 import os
+import re
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkinter.font import Font
 from typing import List
 
+from PIL import Image, ImageTk
+
+from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
+from clai.emulator.log_window import LogWindow
 from clai.emulator.toggled_frame import ToggledFrame
 from clai.emulator.emulator_presenter import EmulatorPresenter
-from clai.server.command_message import Action
-
 
 # pylint: disable=too-many-instance-attributes,protected-access,attribute-defined-outside-init,too-many-public-methods
+from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
+
+
 class ClaiEmulator:
 
-    def __init__(self):
-        self.presenter = EmulatorPresenter(self.on_skills_ready, self.on_server_running, self.on_server_stopped)
+    def __init__(self, emulator_docker_bridge: EmulatorDockerBridge):
+        self.presenter = EmulatorPresenter(emulator_docker_bridge,
+                                           self.on_skills_ready,
+                                           self.on_server_running,
+                                           self.on_server_stopped)
+        self.log_window = None
 
     def launch(self):
-        root = tk.Tk()
-        root.geometry("900x600")
-        self.add_toolbar(root)
-        self.add_send_command_box(root)
-        self.add_list_commands(root)
+        self.root = tk.Tk()
+        self.root.wait_visibility(self.root)
+        self.title_font = Font(size=16, weight='bold')
+        self.bold_font = Font(weight='bold')
 
-        root.protocol("WM_DELETE_WINDOW", lambda root=root: self.on_closing(root))
-        root.createcommand('exit', lambda root=root: self.on_closing(root))
+        self.root.geometry("900x600")
 
-        root.mainloop()
+        style = ttk.Style(self.root)
+        style.configure("TLable", bg="black")
+
+        self.add_toolbar(self.root)
+        self.add_send_command_box(self.root)
+        self.add_list_commands(self.root)
+
+        self.root.protocol("WM_DELETE_WINDOW", lambda root=self.root: self.on_closing(root))
+        self.root.createcommand('exit', lambda root=self.root: self.on_closing(root))
+
+        self.root.mainloop()
 
     def on_closing(self, root):
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
@@ -54,47 +73,87 @@ class ClaiEmulator:
 
     def on_server_running(self):
         self.run_button.configure(image=self.stop_image)
+        self.loading_text.set("Starting CLAI. It will take a while")
+        self.__listen_messages()
 
     def on_server_stopped(self):
         self.run_button.configure(image=self.run_image)
 
     # pylint: disable=unused-argument
     def on_skill_selected(self, *args):
+        self.loading_text.set("")
         print(f"new skills {self.selected_skills.get()}")
-        skill_name, installed = self.extract_skill_name(self.selected_skills.get())
-        self.presenter.select_skill(skill_name, installed)
+        skill_name = self.extract_skill_name(self.selected_skills.get())[0]
+        self.presenter.select_skill(skill_name)
 
-    def add_row(self, response: Action, response_post: Action):
-        command_executed = response.suggested_command
-        if not command_executed:
-            command_executed = f"{response.origin_command} (executed origin)"
-        toggled_frame = ToggledFrame(self.frame, text=command_executed, relief=tk.RAISED, borderwidth=1)
+
+    def add_detail_label(self, parent: ttk.Frame, title: str, text_value: str, side: str):
+        row = ttk.Frame(parent)
+        title_label = ttk.Label(parent, text=title, font=self.bold_font, anchor='n', padding=(10, 0, 0, 0))
+        title_label.pack(side=side, fill=tk.BOTH)
+        row_value = ttk.Label(parent, text=text_value, wraplength=250, anchor='nw')
+
+        if side == tk.LEFT:
+            row_value.pack(side=side, fill=tk.BOTH, expand=True)
+        else:
+            row_value.pack(side=side, fill=tk.BOTH, before=title_label)
+
+        row.pack(side=side, fill=tk.BOTH, expand=True)
+
+    def add_row(self, response: str, info: InfoDebug):
+        response = self.clean_message(response)
+        toggled_frame = ToggledFrame(self.frame, text=response, relief=tk.RAISED, borderwidth=1)
         toggled_frame.pack(fill="x", expand=1, pady=2, padx=2, anchor="n")
 
         first_row = ttk.Frame(toggled_frame.sub_frame)
         first_row.pack(fill="x", expand=True)
-        ttk.Label(first_row, text=f"Original: {response.origin_command}").pack(side=tk.LEFT, padx=10)
-        ttk.Label(first_row, text=f"Id: {self.presenter.command_id - 1}").pack(side=tk.RIGHT, padx=10)
+        self.add_detail_label(first_row, "Original:", info.command, side=tk.LEFT)
+        self.add_detail_label(first_row, "Id:", info.command_id, side=tk.RIGHT)
 
         second_row = ttk.Frame(toggled_frame.sub_frame)
         second_row.pack(fill="x", expand=True)
-        ttk.Label(second_row, text=f'Description: {self.remove_emoji(response.description)}') \
-            .pack(side=tk.LEFT, padx=10)
-        ttk.Label(second_row, text=f"Confidence:{response.confidence} Force: {response.execute}") \
-            .pack(side=tk.RIGHT, padx=10)
-
-        ttk.Label(toggled_frame.sub_frame, text=f'Post execution:').pack(side=tk.LEFT, padx=10)
+        self.add_detail_label(second_row, 'Description:', self.remove_emoji(info.action_suggested.description), tk.LEFT)
+        self.add_detail_label(second_row, 'Confidence:', f'{info.action_suggested.confidence}', tk.RIGHT)
+        self.add_detail_label(second_row, 'Force:', f'{info.action_suggested.execute}', tk.RIGHT)
 
         third_row = ttk.Frame(toggled_frame.sub_frame)
         third_row.pack(fill="x", expand=True)
-        ttk.Label(third_row, text=f'Description: {self.remove_emoji(response_post.description)}') \
-            .pack(side=tk.LEFT, padx=10)
-        ttk.Label(third_row, text=f"Confidence:{response_post.confidence}") \
-            .pack(side=tk.RIGHT, padx=10)
+        self.add_detail_label(third_row, 'Agent:', text_value=info.action_suggested.agent_owner, side=tk.LEFT)
+        self.add_detail_label(third_row, 'Sugestion:', text_value=info.action_suggested.suggested_command,
+                              side=tk.RIGHT)
+        self.add_detail_label(third_row, 'Applied:', text_value=f'{info.already_processed}', side=tk.RIGHT)
+
+        fourth_row = ttk.Frame(toggled_frame.sub_frame)
+        fourth_row.pack(fill="x", expand=True)
+        process_text = ','.join(list(map(lambda process: process.name, info.processes.last_processes)))
+        self.add_detail_label(fourth_row, 'Processes:', text_value=f'{process_text}', side=tk.LEFT)
+
+        post_title_frame = ttk.Frame(toggled_frame.sub_frame)
+        post_title_frame.pack(fill='x', expand=True)
+        ttk.Label(post_title_frame, text=f'Post execution', anchor='center', font=self.title_font). \
+            pack(side=tk.LEFT, padx=10, fill='x', expand=True)
+
+        fifth_row = ttk.Frame(toggled_frame.sub_frame)
+        fifth_row.pack(fill="x", expand=True)
+
+        post_description = ""
+        post_confidence = 0
+        if info.action_post_suggested:
+            post_description = info.action_post_suggested.description
+            post_confidence = info.action_post_suggested.confidence
+
+        self.add_detail_label(fifth_row, 'Description:', text_value=f'{self.remove_emoji(post_description)}',
+                              side=tk.LEFT)
+        self.add_detail_label(fifth_row, 'Confidence:', text_value=f'{post_confidence}', side=tk.RIGHT)
+
+        self.root.after(100, self.__scroll_down_after_create)
+
+    def __scroll_down_after_create(self):
+        self.canvas.yview_moveto(1.0)
 
     def add_send_command_box(self, root):
         button_bar_frame = tk.Frame(root, bd=1, relief=tk.RAISED)
-        send_button = tk.Button(button_bar_frame, padx=10, text='Send', command=self.on_send_click)
+        send_button = tk.Button(button_bar_frame, padx=10, text=u"\u2713", command=self.on_send_click)
         send_button.pack(side=tk.RIGHT, padx=5)
         self.text_input = tk.StringVar()
         send_edit_text = tk.Entry(button_bar_frame, textvariable=self.text_input)
@@ -104,12 +163,16 @@ class ClaiEmulator:
 
     def add_toolbar(self, root):
         toolbar = tk.Frame(root, bd=1, relief=tk.RAISED)
-        self.add_button(toolbar)
+        self.add_play_button(toolbar)
+        self.add_refresh_button(toolbar)
+        self.add_log_button(toolbar)
         self.add_skills_selector(root, toolbar)
+        self.add_loading_progress(toolbar)
+
         toolbar.pack(side=tk.TOP, fill=tk.X)
 
     def add_skills_selector(self, root, toolbar):
-        label = ttk.Label(toolbar, text="Skills")
+        label = ttk.Label(toolbar, text=u'Skills')
         label.pack(side=tk.LEFT, padx=2)
 
         self.selected_skills = tk.StringVar(root)
@@ -119,12 +182,41 @@ class ClaiEmulator:
         self.selected_skills_dropmenu.configure(state="disabled")
         self.selected_skills_dropmenu.pack(side=tk.LEFT, padx=2)
 
-    def add_button(self, toolbar):
+    def add_play_button(self, toolbar):
         path = os.path.dirname(os.path.abspath(__file__))
         self.run_image = tk.PhotoImage(file=f"{path}/run.gif")
         self.stop_image = tk.PhotoImage(file=f"{path}/stop.gif")
         self.run_button = ttk.Button(toolbar, image=self.run_image, command=self.on_run_click)
         self.run_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_refresh_button(self, toolbar):
+        path = os.path.dirname(os.path.abspath(__file__))
+
+        # self.refresh_image = tk.PhotoImage(file=f"{path}/refresh.png")
+        temp_image = Image.open(f"{path}/refresh.png")
+        self.refresh_image = ImageTk.PhotoImage(temp_image)
+
+        refresh_button = ttk.Button(toolbar, image=self.refresh_image, command=self.on_refresh_click)
+        refresh_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_log_button(self, toolbar):
+        path = os.path.dirname(os.path.abspath(__file__))
+
+        # self.log_image = tk.PhotoImage(file=f"{path}/log.png")
+        temp_image = Image.open(f"{path}/log.png")
+        self.log_image = ImageTk.PhotoImage(temp_image)
+
+        log_button = ttk.Button(toolbar, image=self.log_image, command=self.open_log_window)
+        log_button.pack(side=tk.LEFT, padx=2, pady=2)
+
+    def add_loading_progress(self, toolbar):
+        self.loading_text = tk.StringVar()
+        loading_label = ttk.Label(toolbar, textvariable=self.loading_text)
+        loading_label.pack(side=tk.LEFT, padx=2)
+
+    def open_log_window(self):
+        if not self.log_window:
+            self.log_window = LogWindow(self.root, self.presenter)
 
     # pylint: disable=unused-argument
     def on_enter(self, event):
@@ -133,9 +225,14 @@ class ClaiEmulator:
     def on_send_click(self):
         self.send_command(self.text_input.get())
 
+    @staticmethod
+    def clean_message(text: str):
+        text = text[text.find('\n'):]
+        text = re.sub('[[0-9;]*m', '', text)
+        return text[:text.find(']0;') - 3]
+
     def send_command(self, command):
-        response, response_post = self.presenter.send_message(command)
-        self.add_row(response, response_post)
+        self.presenter.send_message(command)
         self.text_input.set("")
 
     def on_run_click(self):
@@ -143,6 +240,9 @@ class ClaiEmulator:
             self.presenter.run_server()
         else:
             self.presenter.stop_server()
+
+    def on_refresh_click(self):
+        self.presenter.refresh_files()
 
     @staticmethod
     def on_configure(canvas):
@@ -188,3 +288,7 @@ class ClaiEmulator:
         for char in char_list:
             description = description + char
         return description
+
+    def __listen_messages(self):
+        self.presenter.retrieve_messages(self.add_row)
+        self.root.after(100, self.__listen_messages)

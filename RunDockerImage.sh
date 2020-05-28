@@ -34,4 +34,6 @@ docker run --privileged							  	 \
            --name CLAIBotPlayground					  \
 	   claiplayground
 
-echo 'User for ssh is root and the default pass Bashpass'
+COL_GREEN="\x1b[32;01m"
+COL_RESET="\x1b[39;49;00m"
+echo -e $COL_GREEN"User for ssh is root and the default pass Bashpass"$COL_RESET

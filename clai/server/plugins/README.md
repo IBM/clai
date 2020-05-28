@@ -114,7 +114,7 @@ We support utf8 text and Unix color codes in the suggested_command, description,
  + **normal** to come back to the normal color code.
  + **to_console** to get the text formatted and ready for printing and return the console to the original state.
 
-See an example [here](search_agent/search_agent.py#L72).
+See an example [here](howdoi/howdoi.py#L51).
 
 ## Interaction Patterns
 
@@ -138,6 +138,11 @@ The API intercepts any user input (e.g. a command in natural language or a regul
 using the `get_next_action(self, state: State) -> Action` method: it receives the State object 
 from the terminal as the percept and returns an Action object to the terminal as the directive
 on how to respond.
+
+> Note that the `get_next_action` method can be overloaded to return a **List[Action]** instead 
+of a single Action object. This is to handle cases where the user invocation can trigger a series
+of commands to be executed according to a skill, as done [here](ibmcloud/ibmcloud.py#L54) for the 
+**ibmcloud** skill. 
 
 ### Follow-up on execution of command
 

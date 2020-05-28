@@ -111,3 +111,6 @@ ENV/
 data
 
 nohup.out
+
+# hide wa config
+*nlc2cmd/remote/config.json

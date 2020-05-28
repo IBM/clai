@@ -75,7 +75,7 @@ clai: command p
 >> command q
 ```
 
-+ **Proactive Troubleshootin:** Support can also be proactive if the skills are given more power. In such cases, the end user does not even feel the error that would have occured in the absense of the skills in the background.
++ **Proactive Troubleshooting:** Support can also be proactive if the skills are given more power. In such cases, the end user does not even feel the error that would have occured in the absence of the skills in the background.
 
 > previously 
 
@@ -95,11 +95,11 @@ clai: command p
 clai: command q
 ```
 
-The [`man page explorer`](../clai/server/plugins/manpage_agent) [`fixit`](../clai/server/plugins/fix_bot) [`helpme`](../clai/server/plugins/retrieval_agent) [`howdoi`](../clai/server/plugins/search_agent) skills are examples of on-remise immediate support in action.
+The [`man page explorer`](../clai/server/plugins/manpage_agent) [`fixit`](../clai/server/plugins/fix_bot) [`helpme`](../clai/server/plugins/helpme) [`howdoi`](../clai/server/plugins/howdoi) skills are examples of on-remise immediate support in action.
 
 ### Natural Language Support
 
-With natural language support (for now, English only), it may be possible to significantly bring down the expertize needed to work on the command line, while keeping developers in context who no longer have to go looking for [frequently used commands
+With natural language support (for now, English only), it may be possible to significantly bring down the expertise needed to work on the command line, while keeping developers in context who no longer have to go looking for [frequently used commands
 that no one can remember the parameters of!](https://imgs.xkcd.com/comics/tar.png)
 
 > previously 
@@ -182,4 +182,5 @@ post and suggest a fix when the user encounters and error).
 
 -----
 
-**Get started!** &nbsp; [`CLAI API`](../clai/server/plugins/) &nbsp; [`Community on Slack`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md)
+**Get started!** &nbsp; [`Home`](https://clai-home.mybluemix.net/) &nbsp; [`API`](../clai/server/plugins/) &nbsp; [`Community`](http://ibm.biz/clai-slack) &nbsp; [`FAQs`](FAQ.md) &nbsp; [`Whitepaper`](https://arxiv.org/abs/2002.00762) &nbsp; [`Blog`](https://www.ibm.com/blogs/research/2020/02/bringing-ai-to-the-command-line/) &nbsp; [`Feedback`](http://ibm.biz/clai-survey)
+

@@ -14,11 +14,17 @@ class TestSkillNlc2cmd(ContractSkills):
         return 'nlc2cmd'
 
     def get_commands_to_execute(self):
-        return ['compress this directory into a bz2 file',
+        return ['show me how to add tags for ibmcloud',
+                'show billing costs',
+                'copy file to PDS member',
+                'view mvs file',
                 'extract files from an archive',
                 'grep for all files with "clai" in this directory, show me details and line numbers']
 
     def get_commands_expected(self):
-        return ['Try >> tar -cjf <archive-file> <directory>',
+        return ['Try >> ibmcloud resource tag-attach --tag-names TAG --resource-name NAME',
+                'Try >> ibmcloud billing account-usage [-d YYYY-MM]',
+                'Try >> OGET [pathname] mvs_data_set_name(member_name)',
+                'Try >> obrowse -r xx [file]',
                 'Try >> tar -xf <archive-file>',
                 'Try >> grep -rnv "clai" <directory>']

@@ -1,1 +1,1 @@
-{"threshold": "0.7", "selected": {}, "default": ["nlc2cmd"], "installed": []}
+{"selected": {"user": ["nlc2cmd"]}, "default": ["nlc2cmd"], "default_orchestrator": "max_orchestrator", "installed": [], "report_enable": false}

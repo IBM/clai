@@ -72,6 +72,10 @@ class HelpMeAgent(Agent):
 
                     command = manpages['commands'][-1]
                     confidence = manpages['dists'][-1]
+
+                    # FIXME: Artificially boosted confidence
+                    confidence = 1.0
+
                     logger.info("Command: {} \t Confidence:{}".format(command, confidence))
 
                     return Action(suggested_command="man {}".format(command),
@@ -93,7 +97,7 @@ class HelpMeAgent(Agent):
                     return Action(suggested_command=NOOP_COMMAND,
                                   description=Colorize().emoji(Colorize.EMOJI_ROBOT)
                                   .append(
-                                      f"Sorry. It looks like you have stumbled across a problem that even internet has not answer to.\n")
+                                      f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
                                   .info()
                                   .append(f"Have you tried turning it OFF and ON again. ;)")
                                   .to_console(),
@@ -105,7 +109,7 @@ class HelpMeAgent(Agent):
                 return Action(suggested_command=NOOP_COMMAND,
                               description=Colorize().emoji(Colorize.EMOJI_ROBOT)
                               .append(
-                                  f"Sorry. It looks like you have stumbled across a problem that even internet has not answer to.\n")
+                                  f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
                               .warning()
                               .append(f"Have you tried turning it OFF and ON again. ;)")
                               .to_console(),
