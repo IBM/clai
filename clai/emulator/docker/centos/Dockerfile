@@ -46,7 +46,11 @@ EXPOSE 22
 #############################################################################
 RUN yum install -y sudo
 RUN yum install -y which
-RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+
+# CentOS legacy rpm links deprecated: https://github.com/iusrepo/announce/issues/18
+# RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+RUN yum install -y https://repo.ius.io/ius-release-el7.rpm
+
 RUN yum -y update
 RUN yum install -y python36u python36u-libs gcc python36u-devel python36u-pip
 
