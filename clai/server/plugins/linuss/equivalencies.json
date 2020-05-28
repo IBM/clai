@@ -150,6 +150,30 @@
         "": {
             "equivalent": "oping",
             "explanation": "Try the equivalant for uss: oping"
+        },
+        "(-4)": {
+            "equivalent": "-A ipv4",
+            "explanation": "The equivalant on uss is: -A ipv4"
+        },
+        "(-6)": {
+            "equivalent": "-A ipv6",
+            "explanation": "The equivalant on uss is: -A ipv6"
+        },
+        "(-I)": {
+            "equivalent": "-i",
+            "explanation": "The equivalant on uss is: -i"
+        },
+        "(-s)": {
+            "equivalent": "-l",
+            "explanation": "The equivalant on uss is: -l"
+        },
+        "(-W)": {
+            "equivalent": "-t",
+            "explanation": "The equivalant on uss is: -t"
+        },
+        "(-[aAbBdDFfhilLmMNnOpQqrRStTUVw])": {
+            "equivalent": "",
+            "explanation": "This flag is not available on uss"
         }
     },
     "traceroute": {
