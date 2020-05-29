@@ -11,25 +11,15 @@ from clai.tools.colorize_console import Colorize
 
 from clai.server.logger import current_logger as logger
 
-
-# from clai.server.plugins.tellina.service import Service
-
 import requests
 
 ''' globals '''
-# tellina_endpoint = 'https://tellina-server.mybluemix.net/message'
-# tellina_endpoint = 'http://184.172.250.6:30320/api/translate'
 tellina_endpoint = 'http://nlc2cmd.sl.res.ibm.com:8000/api/translate'
 
-# dummy_output = {
-# "confidence": "0.0",
-# "response": "du -a . | sort -n -r | head"
-# }
 
 class TELLINA(Agent):
     def __init__(self):
         super(TELLINA, self).__init__()
-        # self.service = Service()
 
     def get_next_action(self, state: State) -> Action:
 
@@ -38,29 +28,14 @@ class TELLINA(Agent):
 
         try:
 
-            # logger.info("#### In Tellina skill, prior to call to endpoint #####")
-            # logger.info("Command passed in: " + command)
-
-            # TODO: ADD A TRY HERE BEFORE THE POST TO CATCH BROKENPIPEEXCEPTION
-
             ## Needs to be a post request since service/endpoint is configured for post
             endpoint_comeback = requests.post(tellina_endpoint, json={'command': command}).json()
-            # endpoint_comeback = dummy_output
-
             ## tellina endpoint must return a json with
-            ## keys "response" and "confidence"
 
-            # dummy_high_confidence = 0.9
-
-            # logger.info("##### In Tellina skill, after call, logging contents of callback from kube deployed tellina post #####")
-            # logger.info(endpoint_comeback)
-            # logger.info("Response: " + endpoint_comeback['response'])
-            # logger.info("Confidence: " + endpoint_comeback['confidence'])
-            # logger.info("Dummy High Confidence: " + str(dummy_high_confidence))
-
+            # tellina response, the cmd for the user NL utterance
             response = endpoint_comeback['response']
+            # the confidence; the tellina endpoint currently returns 0.0
             confidence = float(endpoint_comeback['confidence'])
-            # confidence = dummy_high_confidence  # sending a dummy high confidence for test
 
             return Action(
                 suggested_command=NOOP_COMMAND,
