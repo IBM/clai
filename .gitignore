@@ -114,4 +114,5 @@ nohup.out
 
 # hide wa config
 *nlc2cmd/remote/config.json
+*gitbot/config.json
 

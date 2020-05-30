@@ -7,15 +7,19 @@
 
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
+
+from clai.server.plugins.nlc2cmd.service import Service
 from clai.tools.colorize_console import Colorize
+
 
 class GITBOT(Agent):
     def __init__(self):
         super(GITBOT, self).__init__()
+        self.service = Service()
 
     def get_next_action(self, state: State) -> Action:
         command = state.command
-        response, confidence = ["ls", 0.0]
+        response, confidence = self.service(command)
 
         return Action(
             suggested_command=NOOP_COMMAND,
