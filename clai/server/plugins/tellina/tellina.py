@@ -33,7 +33,7 @@ class TELLINA(Agent):
             ## tellina endpoint must return a json with
 
             # tellina response, the cmd for the user NL utterance
-            response = endpoint_comeback['response']
+            response = 'Try >> ' + endpoint_comeback['response']
             # the confidence; the tellina endpoint currently returns 0.0
             confidence = float(endpoint_comeback['confidence'])
 
