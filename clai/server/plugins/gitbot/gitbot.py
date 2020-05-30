@@ -21,8 +21,22 @@ class GITBOT(Agent):
         command = state.command
         response, confidence = self.service(command)
 
-        return Action(
-            suggested_command=NOOP_COMMAND,
+        action1 = Action(
+            suggested_command="git branch | tee {}".format("/Users/tathagata/tmp.log"),
             execute=True,
-            description=Colorize().info().append(response).to_console(),
-            confidence=confidence)
+            description="log: action1",
+            confidence=1.0)
+
+        action2 = Action(
+            suggested_command="cat /Users/tathagata/tmp.log",
+            execute=True,
+            description="log: action2",
+            confidence=1.0)
+
+        return [action1, action2]
+
+        # return Action(
+        #     suggested_command=NOOP_COMMAND,
+        #     execute=True,
+        #     description=Colorize().info().append(response).to_console(),
+        #     confidence=confidence)
