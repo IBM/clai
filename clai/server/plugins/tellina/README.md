@@ -13,9 +13,7 @@ translation engine. `NL2Bash` uses [`TensorFlow`](https://www.tensorflow.org/) t
 
 ### Scoring & Confidence
 
-Currently, the `tellina` skill returns a default confidence of `0.0`. We are working on 
-<!-- an implementation of  -->
-a confidence scoring function that retrieves the prediction probabilities from TensorFlow and converts them into a confidence score for use with `CLAI`. 
+Currently, the `tellina` skill returns a default confidence of `0.0`. We are working on a confidence scoring function that retrieves the prediction probabilities from TensorFlow and converts them into a confidence score for use with `CLAI`. 
 
 ## Example Usage
 
