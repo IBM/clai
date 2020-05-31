@@ -19,7 +19,7 @@ a confidence scoring function that retrieves the prediction probabilities from T
 
 ## Example Usage
 
-![clai-tellina-gif](https://ibm.box.com/v/clai-tellina-gif)
+![clai-tellina-gif](https://www.dropbox.com/s/063tmajzchskvws/tellina.gif?raw=1)
 
 ### Sample Invocations
 
