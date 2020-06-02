@@ -16,24 +16,26 @@ from pathlib import Path
 import os
 import numpy as np
 
-from rltk import instantiate_from_file
-from . import warm_start_datagen
+from rltk import instantiate_from_file      # pylint: disable=import-error
 
 from clai.server.orchestration.orchestrator import Orchestrator
 from clai.server.command_message import State, Action
 from clai.server.command_message import TerminalReplayMemory, TerminalReplayMemoryComplete
 
+from . import warm_start_datagen
 
+
+# pylint: disable=too-many-arguments,unused-argument
 class RLTKBandit(Orchestrator):
 
     def __init__(self):
         super(RLTKBandit, self).__init__()
 
         self._config_filepath = os.path.join(Path(__file__).parent.absolute(), 'config.yml')
-        self._NOOP_ACTION = 'NOOP'
-        self._NOOP_CONFIDENCE = 0.25
+        self._noop_action = 'NOOP'
+        self._noop_confidence = 0.25
         self._agent = None
-        self._N_ACTIONS = None
+        self._n_actions = None
         self._action_order = None
         self._warm_start = None
 
@@ -52,7 +54,7 @@ class RLTKBandit(Orchestrator):
     def load_state(self):
 
         state = self.load()
-        default_action_order = {self._NOOP_ACTION: 0}
+        default_action_order = {self._noop_action: 0}
 
         self._agent = state.get('agent', None)
         if self._agent is None:
@@ -62,7 +64,7 @@ class RLTKBandit(Orchestrator):
         if self._action_order is None:
             self._action_order = default_action_order
 
-        self._N_ACTIONS = self._agent.num_actions
+        self._n_actions = self._agent.num_actions
         self._warm_start = state.get('warm_start', True)
 
     def warm_start_orchestrator(self):
@@ -75,7 +77,7 @@ class RLTKBandit(Orchestrator):
             profile = 'noop-always'
             kwargs = {
                 'n_points': 1000,
-                'context_size': self._N_ACTIONS,
+                'context_size': self._n_actions,
                 'noop_position': 0
             }
             return profile, kwargs
@@ -85,7 +87,7 @@ class RLTKBandit(Orchestrator):
             profile = 'ignore-skill'
             kwargs = {
                 'n_points': 1000,
-                'context_size': self._N_ACTIONS,
+                'context_size': self._n_actions,
                 'skill_idx': self._action_order[skill_name]
             }
             return profile, kwargs
@@ -94,7 +96,7 @@ class RLTKBandit(Orchestrator):
             profile = 'max-orchestrator'
             kwargs = {
                 'n_points': 1000,
-                'context_size': self._N_ACTIONS
+                'context_size': self._n_actions
             }
             return profile, kwargs
 
@@ -154,10 +156,10 @@ class RLTKBandit(Orchestrator):
                           candidate_actions: Optional[List[Union[Action, List[Action]]]]
                           ) -> np.array:
 
-        context = [0.0] * self._N_ACTIONS
+        context = [0.0] * self._n_actions
 
-        noop_pos = self._action_order[self._NOOP_ACTION]
-        context[noop_pos] = self._NOOP_CONFIDENCE
+        noop_pos = self._action_order[self._noop_action]
+        context[noop_pos] = self._noop_confidence
 
         for action in candidate_actions:
 
@@ -187,18 +189,20 @@ class RLTKBandit(Orchestrator):
                 suggested_agent = agent_name
                 break
 
-        if suggested_agent == self._NOOP_ACTION or suggested_agent is None:
+        if suggested_agent == self._noop_action or suggested_agent is None:
             return None
 
         for action in candidate_actions:
             if action.agent_owner == suggested_agent:
                 return action
 
+    # pylint: disable=no-self-use
     def __compute_pre_transition_reward__(self,
                                           prev_state: TerminalReplayMemory,
                                           post_state: TerminalReplayMemory):
         return 0
 
+    # pylint: disable=no-self-use
     def __compute_post_transition_reward__(self,
                                            prev_state: TerminalReplayMemory,
                                            post_state: TerminalReplayMemory):
