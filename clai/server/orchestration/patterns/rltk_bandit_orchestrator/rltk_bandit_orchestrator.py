@@ -17,6 +17,7 @@ import os
 import numpy as np
 
 from rltk import instantiate_from_file
+from . import warm_start_datagen
 
 from clai.server.orchestration.orchestrator import Orchestrator
 from clai.server.command_message import State, Action
@@ -30,18 +31,21 @@ class RLTKBandit(Orchestrator):
 
         self._config_filepath = os.path.join(Path(__file__).parent.absolute(), 'config.yml')
         self._NOOP_ACTION = 'NOOP'
-        self._NOOP_CONFIDENCE = 0.5
+        self._NOOP_CONFIDENCE = 0.25
         self._agent = None
         self._N_ACTIONS = None
         self._action_order = None
+        self._warm_start = None
 
         self.load_state()
+        self.warm_start_orchestrator()
 
     def get_orchestrator_state(self):
 
         state = {
             'agent': self._agent,
-            'action_order': self._action_order
+            'action_order': self._action_order,
+            'warm_start': self._warm_start
         }
         return state
 
@@ -50,13 +54,40 @@ class RLTKBandit(Orchestrator):
         state = self.load()
         default_action_order = {self._NOOP_ACTION: 0}
 
-        self._agent = state.get('agent', instantiate_from_file(self._config_filepath))
-        self._N_ACTIONS = self._agent.num_actions
-        self._action_order = state.get('action_order', default_action_order)
+        self._agent = state.get('agent', None)
+        if self._agent is None:
+            self._agent = instantiate_from_file(self._config_filepath)
 
-    def choose_action(self, command: State, agent_names: List[str],
+        self._action_order = state.get('action_order', None)
+        if self._action_order is None:
+            self._action_order = default_action_order
+
+        self._N_ACTIONS = self._agent.num_actions
+        self._warm_start = state.get('warm_start', True)
+
+    def warm_start_orchestrator(self):
+        """
+        Warm starts the orchestrator (pre-trains the weights) to suit a
+        particular profile
+        """
+
+        profile = 'noop-always'
+        kwargs = {'n_points': 500, 'context_size': self._N_ACTIONS, 'noop_position': 0}
+
+        tids, contexts, arm_rewards = warm_start_datagen.get_warmstart_data(
+            profile, **kwargs
+        )
+
+        self._agent.warm_start(tids, arm_rewards, contexts=contexts)
+        self._warm_start = False
+
+        self.save()
+
+    def choose_action(self,
+                      command: State, agent_names: List[str],
                       candidate_actions: Optional[List[Union[Action, List[Action]]]],
-                      force_response: bool, pre_post_state: str):
+                      force_response: bool,
+                      pre_post_state: str):
 
         if not candidate_actions:
             return None
@@ -68,7 +99,11 @@ class RLTKBandit(Orchestrator):
         action_idx = self._agent.choose(t_id=command.command_id,
                                         context=context,
                                         num_arms=1)
-        suggested_action = self.__choose_action__(action_idx, candidate_actions)
+        suggested_action = self.__choose_action__(action_idx[0], candidate_actions)
+
+        if suggested_action is None:
+            suggested_action = Action(suggested_command=command.command)
+
         return suggested_action
 
     def record_transition(self,
@@ -93,7 +128,7 @@ class RLTKBandit(Orchestrator):
                           candidate_actions: Optional[List[Union[Action, List[Action]]]]
                           ) -> np.array:
 
-        context = np.array([0.0] * self._N_ACTIONS)
+        context = [0.0] * self._N_ACTIONS
 
         noop_pos = self._action_order[self._NOOP_ACTION]
         context[noop_pos] = self._NOOP_CONFIDENCE
@@ -103,9 +138,10 @@ class RLTKBandit(Orchestrator):
             self.__add_to_action_order__(action.agent_owner)
 
             pos = self._action_order[action.agent_owner]
-            context[pos] = self.__calculate_confidence__(action)
+            conf = self.__calculate_confidence__(action)
+            context[pos] = conf
 
-        return context
+        return np.array(context, dtype=np.float)
 
     def __add_to_action_order__(self, agent_name):
 

@@ -2,9 +2,9 @@
 # This configuration causes the bandit to do no logging of its activity
 
 pattern: contextual/thompson
-num_actions: 15
-context_size: 15
+num_actions: 5
+context_size: 5
 
-# Number of actions is set to a maximum of 15. This means a maximum of 15 installed skills
+# Number of actions is set to a maximum of 5. This means a maximum of 5 installed skills
 # (including a NOOP action) are supported.
 # Context size should be equal to the number of actions
