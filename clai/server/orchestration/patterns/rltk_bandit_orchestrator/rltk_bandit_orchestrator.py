@@ -71,9 +71,35 @@ class RLTKBandit(Orchestrator):
         particular profile
         """
 
-        profile = 'noop-always'
-        kwargs = {'n_points': 500, 'context_size': self._N_ACTIONS, 'noop_position': 0}
+        def noop_setup():
+            profile = 'noop-always'
+            kwargs = {
+                'n_points': 1000,
+                'context_size': self._N_ACTIONS,
+                'noop_position': 0
+            }
+            return profile, kwargs
 
+        def ignore_skill_setup(skill_name):
+            self.__add_to_action_order__(skill_name)
+            profile = 'ignore-skill'
+            kwargs = {
+                'n_points': 1000,
+                'context_size': self._N_ACTIONS,
+                'skill_idx': self._action_order[skill_name]
+            }
+            return profile, kwargs
+
+        def max_orchestrator_setup():
+            profile = 'max-orchestrator'
+            kwargs = {
+                'n_points': 1000,
+                'context_size': self._N_ACTIONS
+            }
+            return profile, kwargs
+
+        # profile, kwargs = ignore_skill_setup(skill_name=self._NOOP_ACTION)
+        profile, kwargs = max_orchestrator_setup()
         tids, contexts, arm_rewards = warm_start_datagen.get_warmstart_data(
             profile, **kwargs
         )
