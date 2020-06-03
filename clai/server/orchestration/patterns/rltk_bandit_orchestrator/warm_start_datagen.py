@@ -98,6 +98,7 @@ def get_max_skill_warmstart_data(n_points, context_size):
     return data_tids, np.array(data_contexts), data_arm_rewards
 
 
+#pylint: disable=too-many-locals
 def get_preferred_skill_warmstart_data(n_points, context_size, advantage_skillidx, disadvantage_skillidx):
     """ generates warm start data to prefer one skill over another behavior """
 
