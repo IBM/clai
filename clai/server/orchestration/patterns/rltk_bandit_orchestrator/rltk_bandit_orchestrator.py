@@ -21,6 +21,7 @@ from rltk import instantiate_from_file      # pylint: disable=import-error
 from clai.server.orchestration.orchestrator import Orchestrator
 from clai.server.command_message import State, Action
 from clai.server.command_message import TerminalReplayMemory, TerminalReplayMemoryComplete
+from clai.server.logger import current_logger as logger
 
 from . import warm_start_datagen
 
@@ -33,7 +34,7 @@ class RLTKBandit(Orchestrator):
 
         self._config_filepath = os.path.join(Path(__file__).parent.absolute(), 'config.yml')
         self._noop_action = 'NOOP'
-        self._noop_confidence = 0.25
+        self._noop_confidence = 0.2
         self._agent = None
         self._n_actions = None
         self._action_order = None
@@ -73,6 +74,7 @@ class RLTKBandit(Orchestrator):
         particular profile
         """
 
+        #pylint: disable=unused-variable
         def noop_setup():
             profile = 'noop-always'
             kwargs = {
@@ -82,6 +84,7 @@ class RLTKBandit(Orchestrator):
             }
             return profile, kwargs
 
+        # pylint: disable=unused-variable
         def ignore_skill_setup(skill_name):
             self.__add_to_action_order__(skill_name)
             profile = 'ignore-skill'
@@ -92,6 +95,7 @@ class RLTKBandit(Orchestrator):
             }
             return profile, kwargs
 
+        # pylint: disable=unused-variable
         def max_orchestrator_setup():
             profile = 'max-orchestrator'
             kwargs = {
@@ -100,16 +104,34 @@ class RLTKBandit(Orchestrator):
             }
             return profile, kwargs
 
-        # profile, kwargs = ignore_skill_setup(skill_name=self._NOOP_ACTION)
-        profile, kwargs = max_orchestrator_setup()
-        tids, contexts, arm_rewards = warm_start_datagen.get_warmstart_data(
-            profile, **kwargs
-        )
+        #pylint: disable=unused-variable
+        def preferred_skill_orchestrator_setup(advantage_skill, disadvantage_skill):
+            self.__add_to_action_order__(advantage_skill)
+            self.__add_to_action_order__(disadvantage_skill)
+            profile = 'preferred-skill'
+            kwargs = {
+                'n_points': 1000,
+                'context_size': self._n_actions,
+                'advantage_skillidx': self._action_order[advantage_skill],
+                'disadvantage_skillidx': self._action_order[disadvantage_skill]
+            }
+            return profile, kwargs
 
-        self._agent.warm_start(tids, arm_rewards, contexts=contexts)
-        self._warm_start = False
+        try:
+            # profile, kwargs = ignore_skill_setup(skill_name=self._NOOP_ACTION)
+            profile, kwargs = max_orchestrator_setup()
+            # profile, kwargs = preferred_skill_orchestrator_setup('HowDoIAgent', 'NLC2CMD')
+            tids, contexts, arm_rewards = warm_start_datagen.get_warmstart_data(
+                profile, **kwargs
+            )
 
-        self.save()
+            self._agent.warm_start(tids, arm_rewards, contexts=contexts)
+            self._warm_start = False
+
+            self.save()
+        except Exception as err:
+            logger.warning('Exception in warm starting orchestrator. Error: ' + str(err))
+            raise err
 
     def choose_action(self,
                       command: State, agent_names: List[str],
@@ -146,11 +168,15 @@ class RLTKBandit(Orchestrator):
             prev_state.post_replay, current_state_pre
         )
 
-        self._agent.observe(prev_state.pre_replay.command.command_id,
-                            pre_transition_reward)
+        try:
 
-        self._agent.observe(prev_state.post_replay.command.command_id,
-                            post_transition_reward)
+            self._agent.observe(prev_state.pre_replay.command.command_id,
+                                pre_transition_reward)
+
+            self._agent.observe(prev_state.post_replay.command.command_id,
+                                post_transition_reward)
+        except Exception as err:
+            logger.warning(f'Error in record_transition of bandit orchestrator. Error: {err}')
 
     def __build_context__(self,
                           candidate_actions: Optional[List[Union[Action, List[Action]]]]
@@ -195,6 +221,8 @@ class RLTKBandit(Orchestrator):
         for action in candidate_actions:
             if action.agent_owner == suggested_agent:
                 return action
+
+        return None
 
     # pylint: disable=no-self-use
     def __compute_pre_transition_reward__(self,
