@@ -175,7 +175,8 @@ class RLTKBandit(Orchestrator):
 
             self._agent.observe(prev_state.post_replay.command.command_id,
                                 post_transition_reward)
-        except Exception as err:
+
+        except Exception as err:    # pylint: disable=broad-except
             logger.warning(f'Error in record_transition of bandit orchestrator. Error: {err}')
 
     def __build_context__(self,
