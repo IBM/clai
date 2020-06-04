@@ -34,7 +34,7 @@ class RLTKBandit(Orchestrator):
 
         self._config_filepath = os.path.join(Path(__file__).parent.absolute(), 'config.yml')
         self._noop_action = 'NOOP'
-        self._noop_confidence = 0.2
+        self._noop_confidence = 0.1
         self._agent = None
         self._n_actions = None
         self._action_order = None
@@ -118,9 +118,11 @@ class RLTKBandit(Orchestrator):
             return profile, kwargs
 
         try:
-            # profile, kwargs = ignore_skill_setup(skill_name=self._NOOP_ACTION)
+            # profile, kwargs = noop_setup()
+            # profile, kwargs = ignore_skill_setup(skill_name='NLC2CMD')
             profile, kwargs = max_orchestrator_setup()
-            # profile, kwargs = preferred_skill_orchestrator_setup('HowDoIAgent', 'NLC2CMD')
+            # profile, kwargs = preferred_skill_orchestrator_setup('NLC2CMD', 'ManPageAgent')
+
             tids, contexts, arm_rewards = warm_start_datagen.get_warmstart_data(
                 profile, **kwargs
             )
