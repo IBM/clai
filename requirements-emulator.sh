@@ -1,1 +1,0 @@
-pytest-docker-tools==0.2.0
