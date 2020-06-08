@@ -16,7 +16,7 @@ e.g.
 ![figure2](https://github.com/madhavanpallan/clai/blob/master/clai/server/plugins/dataxplore/figures/dx_summarize_plot_airQuality.png)
 
 *** Both dataset are courtesy from the [pandas](http://pandas.pydata.org/) website.
-## [xkcd](https://uni.xkcd.com/
+## [xkcd](https://uni.xkcd.com/)
 The contents of any one panel are dependent on the contents of every panel including itself. The graph of panel dependencies is complete and bidirectional, and each node has a loop. The mouseover text has two hundred and forty-two characters.
 
 ![alt text](https://imgs.xkcd.com/comics/self_description.png "The contents of any one panel are dependent on the contents of every panel including itself. The graph of panel dependencies is complete and bidirectional, and each node has a loop. The mouseover text has two hundred and forty-two characters.")
