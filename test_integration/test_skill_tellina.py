@@ -18,6 +18,6 @@ class TestSkillTellina(ContractSkills):
                 'show all files']
 
     def get_commands_expected(self):
-    	# TODO: Fix workaround to the tellina 0.0 confidence issue
         return ['Try >> OGET [pathname] mvs_data_set_name(member_name)',
                 'Try >> tar -xf <archive-file>']
+ 
