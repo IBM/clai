@@ -1,21 +1,35 @@
-# DataXplore
+# dataXplore
 
-`Data-Analytics` `NLP` `Support` `Plots`
+`Analytics` `NLP` `Support`
 
-Data Exploration is one of the well versed topics in the course of Data Analyst/ Scientist and Researcher. For a given data based modeling, one needs to know a) What are the attribute one is looking b) how the attribute can be used for top level analysis. DataXplore Plugin in Project (CLAI) Command Line AI implements few primary tasks on the command line including visualization on a certain terminal. A goto plugin like dataxplore comes handy for myriad of data analysis task for the above effort. 
+Data science has become one of the most popular real-world applications of ML. This skills is targeted specifically 
+toward making the CLI easier to adopt and navigate for data scientists.
 
 ## Implementation
 
-Command usage:- clai dataxplore function csvfilelocation
-e.g. 
-1) `>> clai dataxplore summarize air_quality.csv`, when this command is executed one can view the summary of the give data file. 
-2) `>> clai dataxplore plot air_quality.csv`, when this command is executed one can view the plot of the given data file. 
-#### Execution on test dataset.
-![figure1](https://github.com/madhavanpallan/clai/blob/master/clai/server/plugins/dataxplore/figures/dx_summarize_plot_test.png) 
-#### Execution on air quality dataset.
-![figure2](https://github.com/madhavanpallan/clai/blob/master/clai/server/plugins/dataxplore/figures/dx_summarize_plot_airQuality.png)
+The current version of the skill provides two functionalities: **summarize** and **plot**. 
+"Summarize" utilizes the [describe function](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.describe.html) of the popular 
+[Pandas library](https://pandas.pydata.org/pandas-docs/stable/index.html) to 
+generate a human-readable summary of a specified CSV file; this functionality is intended to allow data scientists
+to quickly examine any data file right from the command line. "Plot" builds on the plot function provided by 
+[MatPlotLib](https://ieeexplore.ieee.org/document/4160265), 
+and the Pillow library [[link](https://pillow.readthedocs.io/en/stable/index.html)] 
+[[link](https://www.pythonware.com/products/pil/)] 
+to generate a plot of a given CSV file. Such functionalities illustrate basic use cases
+of how CLAI can be used as a CLI assistant for data science.
 
-*** Both dataset are courtesy from the [pandas](http://pandas.pydata.org/) website.
+## Example Usage
+
+`>> summarize air_quality.csv` to view the summary of the give data file. 
+
+`>> plot air_quality.csv` to view a plot of the given data file. 
+
+![figure1](https://www.dropbox.com/s/lin379uw2nc0ts9/dx_summarize_plot_test.png?raw=1) 
+
+![figure2](https://www.dropbox.com/s/j4xxme9eaj92mh5/dx_summarize_plot_airQuality.png?raw=1)
+
+Both dataset are courtesy of [pandas](http://pandas.pydata.org/).
+
 ## [xkcd](https://uni.xkcd.com/)
 The contents of any one panel are dependent on the contents of every panel including itself. The graph of panel dependencies is complete and bidirectional, and each node has a loop. The mouseover text has two hundred and forty-two characters.
 
