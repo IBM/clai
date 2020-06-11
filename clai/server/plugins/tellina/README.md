@@ -1,4 +1,4 @@
-# Tellina
+# tellina
 
 `NLP` `Support`
 
@@ -14,6 +14,12 @@ translation engine. `NL2Bash` uses [`TensorFlow`](https://www.tensorflow.org/) t
 ### Scoring & Confidence
 
 Currently, the `tellina` skill returns a default confidence of `0.0`. We are working on a confidence scoring function that retrieves the prediction probabilities from TensorFlow and converts them into a confidence score for use with `CLAI`. 
+
+Use direct invocation to use `tellina` even with zero confidence.
+
+```
+>> clai "tellina" [command]
+```
 
 ## Example Usage
 
@@ -34,36 +40,9 @@ Try out the invocations below for a quick start!
 
 The [NL2Bash data](https://github.com/TellinaTool/nl2bash/blob/master/data/bash/all.nl) features an extensive list of natural language invocations that can be used with the Tellina system. 
 
+## :star: NeurIPS 2020 NLC2CMD Competition
 
-
-<!-- ## :star: :star: :star: :star: :star: nlc2cmd Challenge -->
-## :star: :star: NeurIPS 2020 NLC2CMD Competition
-
-We are excited to announce the [`NeurIPS 2020 NLC2CMD competition`](http://ibm.biz/nlc2cmd), which builds on Tellina and the NL2Bash data. To sign-up for the competition, [click here](http://nlc2cmd.us-east.mybluemix.net/#/participate)! 
-
-<!-- No one remembers arcane flags to commands we use every day.
-The ability to turn natural language instructions to bash commands has been a pipe 
-dream for the research community for a while. 
-After all, there is a lot of data already out there in public forums and in documentation
-that can be readily leveraged. 
-Especially with recent advances in natural language processing, 
-this problem has received renewed interest.
-
-> **NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System.**
-Xi Victoria Lin, Chenglong Wang, Luke Zettlemoyer, Michael D. Ernst. 
-The 11th International Conference on Language Resources and Evaluation, 2018.
-Check out [NL2Bash](https://github.com/TellinaTool/nl2bash).
-
-> Check out [Betty](https://github.com/pickhardt/betty), a ''friendly English-like interface for your command line''.
-
-Most recent attempts (including the ones above) are either heavily rule based or 
-do not scale beyond the examples that can be mined reliably from forums. 
-As such, it remains an open challenge today.
-
-As part of Project CLAI, we intend to curate and release an open dataset around this 
-challenge and host a leaderboard of competing solutions. 
-Contribute [here](https://forms.gle/MXWfGYCtiVDNfNdU8). -->
-
+We are excited to announce the [`NeurIPS 2020 NLC2CMD competition`](http://ibm.biz/nlc2cmd), which builds on Tellina and the NL2Bash data. To sign-up for the competition, click [here](http://nlc2cmd.us-east.mybluemix.net/#/participate)! 
 
 ## [xkcd](https://uni.xkcd.com/)
 
