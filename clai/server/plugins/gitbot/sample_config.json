@@ -4,5 +4,5 @@
     "github_repo"                  : ["org-name or user-name", "repo-name"],
     "path_to_log_file"             : "absolute/path/to/log/file/with/write/permissions",
     "path_to_rasa_saved_model"     : "relative/path/to/rasa/models/rasa-saved-nlu-model.tar.gz",
-    "rasa_port_number"             : port-number
+    "rasa_port_number"             : "port-number"
 }
