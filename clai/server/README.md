@@ -30,7 +30,7 @@ CLAI comes with a set of orchestrators to help you get the best out of the Orche
 
 > [`threshold_orchestrator`](orchestration/patterns/threshold_orchestrator) This is similar to the `max_orchestrator` but it maintains thresholds specific to each skill, and updates them according to how the end user reacts to them.
 
-> [`bandit_orchestrator`](orchestration/patterns/bandit_orchestrator) This learns user preferences using contextual bandits. 
+> [`bandit_orchestrator`](orchestration/patterns/rltk_bandit_orchestrator) This learns user preferences using contextual bandits. 
 
 These are housed in the [orchestration/patterns/](orchestration/patterns) folder under packages with the same name. Follow them as examples to build your own favorite orchestration pattern. 
 
@@ -197,7 +197,7 @@ current_state_pre.command.suggested_command = clear
 
 > **Note:** The feedback is recorded in the next action since once way want to look at the follow-up to see whether the user is using a suggestion, i.e. the feedback may not always be directly tied to the user response on `y/n/e` during the current pre-process stage. This is especially the case when skills -- such as the [`nlc2cmd skill`](plugins/nlc2cmd) -- do not suggest a command that can be used directly. 
 
-Check out the `bandit_orchestrator` for an [example](orchestration/patterns/bandit_orchestrator/bandit_orchestrator.py#L82). 
+Check out the `bandit_orchestrator` for an [example](orchestration/patterns/rltk_bandit_orchestrator/rltk_bandit_orchestrator.py). 
 
 ### Save and Load
 
@@ -218,6 +218,10 @@ Check out the `threshold_orchestrator` for an example of [maintaining state](orc
 
 ## Related Publications and Links
 
-> Upadhyay, S., Agarwal, M., Bounneffouf, D., & Khazaeni, Y. (2019). 
-A Bandit Approach to Posterior Dialog Orchestration Under a Budget. 
+> A Bandit Approach to Posterior Dialog Orchestration Under a Budget. 
+Sohini Upadhyay, Mayank Agarwal, Djallel Bounneffouf, Yasaman Khazaeni.
 NeurIPS 2018 Conversational AI Workshop.
+
+> A Unified Conversational Assistant Framework for Business Process Automation. 
+Yara Rizk, Abhisekh Bhandwalder, Scott Boag, Tathagata Chakraborti, Vatche Isahagian, Yasaman Khazaeni, 
+Falk Pollock, and Merve Unuvar. AAAI 2020 Workshop on Intelligent Process Automation. 
