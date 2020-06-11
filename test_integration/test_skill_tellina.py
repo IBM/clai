@@ -22,4 +22,3 @@ class TestSkillTellina(ContractSkills):
         return ['/opt/IBM/clai',
                 'exit',
                 'find .']
- 
