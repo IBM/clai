@@ -21,17 +21,18 @@ echo "==============================================================="
 
 cd "${FRAMEWORK_DIR}"
 
-git clone -q -b master --depth 5 https://github.ibm.com/AI-Engineering/rltk.git
+# Download and install RLTK library into the rltk folder and uncomment the
+# bottom two lines
 
 
 echo "  >> Installing RLTK library"
 echo "==============================================================="
 
-cd "${FRAMEWORK_DIR}/rltk"
-pip3 install -q --user .
+# cd "${FRAMEWORK_DIR}/rltk"
+# python3 -m pip install -q --user .
 
 
 echo "  >> Installing python dependencies"
 echo "==============================================================="
 
-pip3 install -r requirements.txt
+python3 -m pip install -r requirements.txt
