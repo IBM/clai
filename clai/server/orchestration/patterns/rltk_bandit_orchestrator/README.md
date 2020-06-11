@@ -31,9 +31,9 @@ behavior for the rest, and
 - `prefer-skill`: Prefers one skill over another and is useful in scenarios where a user
 prefers one skill from a pool of skills with overlapping domains.
 
-|       |       |
+|  Warm-start behavior     |   Preview    |
 | ----- | ----- |
-| `max-orchestrator` | <img src="https://www.dropbox.com/s/t0s9l066ntfd5v4/max-orchestrator.png?raw=1" height="40%" width="40%" />  |
-| `ignore-clai` | <img src="https://www.dropbox.com/s/ji8t8mraav9xszh/noop.png?raw=1" height="40%" width="40%"/>  |
-| `ignore-nlc2cmd` | <img src="https://www.dropbox.com/s/a28s965vit3fshj/ignore-nlc2cmd.png?raw=1" width="40%" height="40%" />  |
-| `prefer-manpage-over-nlc2cmd`   | <img src="https://www.dropbox.com/s/meho56ix1srfe9j/manpage-over-nlc2cmd.png?raw=1" height="40%" width="40%" />  |
+| `max-orchestrator` | <img src="https://www.dropbox.com/s/t0s9l066ntfd5v4/max-orchestrator.png?raw=1" />  |
+| `ignore-clai` | <img src="https://www.dropbox.com/s/ji8t8mraav9xszh/noop.png?raw=1" />  |
+| `ignore-nlc2cmd` | <img src="https://www.dropbox.com/s/a28s965vit3fshj/ignore-nlc2cmd.png?raw=1" />  |
+| `prefer-manpage-over-nlc2cmd`   | <img src="https://www.dropbox.com/s/meho56ix1srfe9j/manpage-over-nlc2cmd.png?raw=1" />  |

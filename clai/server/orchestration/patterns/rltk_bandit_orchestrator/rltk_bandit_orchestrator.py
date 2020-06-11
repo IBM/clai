@@ -14,8 +14,8 @@ from typing import Optional, List, Union
 from pathlib import Path
 
 import os
-import numpy as np
 import json
+import numpy as np
 
 from rltk import instantiate_from_file      # pylint: disable=import-error
 
@@ -27,7 +27,7 @@ from clai.server.logger import current_logger as logger
 from . import warm_start_datagen
 
 
-# pylint: disable=too-many-arguments,unused-argument
+# pylint: disable=too-many-arguments,unused-argument,too-many-instance-attributes
 class RLTKBandit(Orchestrator):
 
     def __init__(self):
@@ -51,8 +51,8 @@ class RLTKBandit(Orchestrator):
 
     def load_bandit_state(self):
 
-        with open(self._bandit_config_filepath, 'r') as f:
-            bandit_config = json.load(f)
+        with open(self._bandit_config_filepath, 'r') as conf_file:
+            bandit_config = json.load(conf_file)
 
         self._noop_confidence = bandit_config['noop_confidence']
         self._warm_start = bandit_config['warm_start']
@@ -248,7 +248,7 @@ class RLTKBandit(Orchestrator):
 
             # check how much of the current commands is contained in the stuff from last time
             match_score = len(base & reference) / len(base)
-            reward += float(match_score > self._match_threshold)
+            reward += float(match_score > self._reward_match_threshold)
 
             self._agent.observe(prev_state.post_replay.command.command_id, reward)
         except Exception as err:    # pylint: disable=broad-except
