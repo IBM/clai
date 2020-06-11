@@ -30,7 +30,7 @@ CLAI comes with a set of orchestrators to help you get the best out of the Orche
 
 > [`threshold_orchestrator`](orchestration/patterns/threshold_orchestrator) This is similar to the `max_orchestrator` but it maintains thresholds specific to each skill, and updates them according to how the end user reacts to them.
 
-> [`bandit_orchestrator`](orchestration/patterns/bandit_orchestrator) This learns user preferences using contextual bandits. 
+> [`bandit_orchestrator`](orchestration/patterns/rltk_bandit_orchestrator) This learns user preferences using contextual bandits. 
 
 These are housed in the [orchestration/patterns/](orchestration/patterns) folder under packages with the same name. Follow them as examples to build your own favorite orchestration pattern. 
 
