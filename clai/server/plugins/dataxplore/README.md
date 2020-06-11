@@ -20,9 +20,9 @@ of how CLAI can be used as a CLI assistant for data science.
 
 ## Example Usage
 
-`>> summarize air_quality.csv` to view the summary of the give data file. 
+`>> clai "dataxplore" summarize air_quality.csv` to view the summary of the give data file. 
 
-`>> plot air_quality.csv` to view a plot of the given data file. 
+`>> clai "dataxplore" plot air_quality.csv` to view a plot of the given data file. 
 
 ![figure1](https://www.dropbox.com/s/lin379uw2nc0ts9/dx_summarize_plot_test.png?raw=1) 
 
