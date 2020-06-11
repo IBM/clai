@@ -14,10 +14,9 @@ class TestSkillTellina(ContractSkills):
         return 'tellina'
 
     def get_commands_to_execute(self):
-        skill_name = self.get_skill_name()
         return ['pwd',
-                f'clai "{skill_name}" exit terminal',
-                f'clai "{skill_name}" show me all files']
+                'clai "tellina" exit terminal',
+                'clai "tellina" show me all files']
 
     def get_commands_expected(self):
         return ['/opt/IBM/clai',
