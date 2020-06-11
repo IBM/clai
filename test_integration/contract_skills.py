@@ -37,5 +37,6 @@ class ContractSkills:
 
     @pytest.mark.dependency(depends=['test_install'])
     def test_skill_values(self, my_clai_module, command, command_expected):
-        command_executed = execute_cmd(my_clai_module, command)
+        command_explicit_invocation = f'clai "{self.get_skill_name()}" {command}'
+        command_executed = execute_cmd(my_clai_module, command_explicit_invocation)
         assert command_expected in command_executed
