@@ -34,13 +34,13 @@ class DATAXPLORE(Agent):
             logger.info("Command passed in dataxplore: " + command)
             commandStr = str(command)
             commandTokenized = commandStr.split(" ")
-            if len(commandTokenized) == 3:
-                if commandTokenized[1] == 'summarize':
-                    fileName = commandTokenized[2]
+            if len(commandTokenized) == 2:
+                if commandTokenized[0] == 'summarize':
+                    fileName = commandTokenized[1]
                     csvFile = fileName.split(".")
                     if len(csvFile) == 2:
                         if csvFile[1] == 'csv':
-                            path = os.path.abspath(commandTokenized[2])
+                            path = os.path.abspath(fileName)
                             data = pd.read_csv(path)
                             df = pd.DataFrame(data)
                             response = df.describe().to_string()
@@ -48,13 +48,13 @@ class DATAXPLORE(Agent):
                             response = "We currently support only csv files. Please, Try >> clai dataxplore summarize csvFileLocation "
                     else:
                         response = "Not a supported file format. Please, Try >> clai dataxplore summarize csvFileLocation "
-                elif commandTokenized[1] == 'plot':
-                    fileName = commandTokenized[2]
+                elif commandTokenized[0] == 'plot':
+                    fileName = commandTokenized[1]
                     csvFile = fileName.split(".")
                     if len(csvFile) == 2:
                         if csvFile[1] == 'csv':
                             plt.close('all')
-                            path = os.path.abspath(commandTokenized[2])
+                            path = os.path.abspath(fileName)
                             data = pd.read_csv(path,index_col=0, parse_dates=True)
                             data.plot()
                             plt.savefig('/tmp/claifigure.png')
