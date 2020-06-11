@@ -24,21 +24,7 @@ the breadth of the use cases covered for workflow automation, or new features!
 
 ## Example Usage
 
-TODO
-
-<!-- ![nlc2cmd](https://www.dropbox.com/s/ybuwyixqobjo8za/nlc2cmd.gif?raw=1) -->
-
-<!-- Right now this skills only supports `grep` and `tar` commands. Try these out!
-
-1. `>> list all files in this archive`
-2. `>> extract all images from the archive into this directory`
-3. `>> compress the directory`
-4. `>> compress the directory into a bz2 file and print details`
-5. `>> what is the size of this archive`
-6. `>> grep for all files with "clai" in this directory, show me the line numbers`
-7. `>> grep for the number of files with "clai" in this directory`
- -->
-
+![gitbot](https://www.dropbox.com/s/7snw9sg3ab15rvr/gitbot.png?raw=1)
 
 ## [xkcd](https://uni.xkcd.com/)
 
