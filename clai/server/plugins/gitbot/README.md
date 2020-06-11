@@ -22,6 +22,12 @@ of integration of natural language and automation in code management through Git
 Contributions are welcome to improve the accuracy of the natural language interpretation,
 the breadth of the use cases covered for workflow automation, or new features!
 
+Before trying it out:
+
+> Fill out `sample_config.json` and rename it to `config.json`
+
+> run `./run_rasa.sh 5556`
+
 ## Example Usage
 
 ![gitbot](https://www.dropbox.com/s/7snw9sg3ab15rvr/gitbot.png?raw=1)
