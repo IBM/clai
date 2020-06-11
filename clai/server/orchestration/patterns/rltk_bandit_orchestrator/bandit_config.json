@@ -1,0 +1,9 @@
+{
+  "noop_confidence": 0.1,
+  "warm_start": true,
+  "warm_start_config": {
+    "type": "max-orchestrator",
+    "kwargs": {}
+  },
+  "reward_match_threshold": 0.7
+}

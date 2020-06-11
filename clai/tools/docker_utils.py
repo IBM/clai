@@ -56,6 +56,4 @@ def execute_cmd(container, command):
 
     sleep(1)
     socket.output._sock.send(b"exit\n")
-
-    print(f'the output is: {data}')
     return str(data)

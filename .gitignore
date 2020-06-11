@@ -113,5 +113,8 @@ data
 nohup.out
 
 # hide wa config
-*nlc2cmd/remote/config.json
+clai/server/plugins/nlc2cmd/remote/config.json
 
+# hide local gitbot stuff config
+clai/server/plugins/gitbot/config.json
+!clai/server/plugins/gitbot/rasa/data
