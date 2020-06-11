@@ -14,10 +14,10 @@ class TestSkillTellina(ContractSkills):
         return 'tellina'
 
     def get_commands_to_execute(self):
-        return ['print top 10 lines in a file',
-                'show all files']
+        return ['exit terminal',
+                'show me all files']
 
     def get_commands_expected(self):
-        return ['Try >> OGET [pathname] mvs_data_set_name(member_name)',
-                'Try >> tar -xf <archive-file>']
+        return ['exit',
+                'find .']
  
