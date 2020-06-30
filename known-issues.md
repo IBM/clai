@@ -1,6 +1,6 @@
-#Known Issues
+# Known Issues
 
-##Fedora
+## Fedora
 
 Fedora by default doesn't have Python3 and Pip3 installed. And the install process need install pythondev for install some packages.
 
