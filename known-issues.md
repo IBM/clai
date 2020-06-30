@@ -1,4 +1,4 @@
-#Know Issues
+#Known Issues
 
 ##Fedora
 
