@@ -105,6 +105,18 @@ def get_utility_score(ground_truth_utility, predicted_utility):
     return score
 
 
+def pad_arrays(array1, array2):
+    n_arr1 = len(array1)
+    n_arr2 = len(array2)
+
+    if n_arr1 > n_arr2:
+        array2 = array2 + [None] * (n_arr1 - n_arr2)
+    elif n_arr2 > n_arr1:
+        array1 = array1 + [None] * (n_arr2 - n_arr1)
+
+    return array1, array2
+
+
 def get_flag_score(ground_truth_utility, predicted_utility):
 
     ground_truth_flags = get_utility_flags(ground_truth_utility)
@@ -114,17 +126,15 @@ def get_flag_score(ground_truth_utility, predicted_utility):
         # return a score of 1.0 when there are no flags to predict
         return 1.0
 
-    ground_truth_flagnames = [node.value for node in ground_truth_flags]
-    predicted_flagnames = [node.value for node in predicted_flags]
+    ground_truth_flagnames = set([node.value for node in ground_truth_flags])
+    predicted_flagnames = set([node.value for node in predicted_flags])
 
-    correctly_predicted_flags = [flag in ground_truth_flagnames for flag in predicted_flagnames]
+    intersection_len = len(ground_truth_flagnames.intersection(predicted_flagnames))
+    union_len = len(ground_truth_flagnames.union(predicted_flagnames))
+    Z = max(1, len(predicted_flagnames), len(ground_truth_flagnames))
 
-    num_correctly_predicted = sum(correctly_predicted_flags)
-    num_incorrectly_predicted = len(predicted_flagnames) - num_correctly_predicted
-    Z = len(predicted_flagnames)
-    Z = 1 if Z == 0 else Z
+    score = (2 * intersection_len - union_len) / float(Z)
 
-    score = (num_correctly_predicted - num_incorrectly_predicted) / float(Z)
     return score
 
 
@@ -146,18 +156,21 @@ def compute_metric(predicted_cmd, predicted_confidence, ground_truth_cmd):
     predicted_utilities = get_utility_nodes(predicted_ast)
     ground_truth_utilities = get_utility_nodes(ground_truth_ast)
 
+    ground_truth_utilities, predicted_utilities = pad_arrays(ground_truth_utilities, predicted_utilities)
+
     score = []
     u1 = 1.0
     u2 = 1.0
 
-    for i, ground_truth_utility in enumerate(ground_truth_utilities):
-        predicted_utility = predicted_utilities[i] if i < len(predicted_utilities) else None
-
+    for ground_truth_utility, predicted_utility in zip(ground_truth_utilities, predicted_utilities):
         utility_score = get_utility_score(ground_truth_utility, predicted_utility)
         flag_score = get_flag_score(ground_truth_utility, predicted_utility)
 
         flag_score_normed = (u1 + u2 * flag_score) / (u1 + u2)
-        prediction_score = predicted_confidence * utility_score * flag_score_normed
+        prediction_score = predicted_confidence * (
+            (utility_score * flag_score_normed) -
+            (1 - utility_score)
+        )
         score.append(prediction_score)
 
     score_mean = 0.0 if len(score) == 0 else np.mean(score)
