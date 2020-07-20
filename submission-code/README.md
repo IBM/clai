@@ -20,7 +20,7 @@ This folder contains the starter code for the NLC2CMD challenge that participant
 - Install [Python 3](https://www.python.org/downloads/). 
     - Note: We use `Python3` throughout the competition and the corresponding utilities such as `pip`. We've tested the code on `Python 3.7` specifically.
 - Install [Docker](https://docs.docker.com/engine/install/)
-- Create your team and register to participate on the [EvalAI Challenge page](https://evalai.cloudcv.org/web/challenges/challenge-page/{{CNUM}}/overview)
+- Create your team and register to participate on the [EvalAI Challenge page](https://evalai.cloudcv.org/web/challenges/challenge-page/674/overview)
 - Install [EvalAI CLI](https://evalai-cli.cloudcv.org/) using `pip install evalai`
 - Retrieve your EvalAI token from the EvalAI website and set it using `evalai set_token <token>`
 
