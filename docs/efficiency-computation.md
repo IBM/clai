@@ -6,5 +6,5 @@ energy requirements of their models along with the accuracy metric, and possibly
 efficient models.
 
 We use the [`experiment-impact-tracker`](https://github.com/Breakend/experiment-impact-tracker) library to compute
-the energy usage of the method. The energy consumption computed is the power drawn (mW) by the `predict` function
-for 100 invocations.
+the energy usage of the method. The energy consumption computed is the average power drawn (in milliwatts) by the `predict` function
+for an invocation.
