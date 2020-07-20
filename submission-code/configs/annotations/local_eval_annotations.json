@@ -1,0 +1,82 @@
+{
+	"1": {
+		"invocation": "A no-op on filename with sed",
+		"cmd": ["sed -i \"s/\\\\\n//g\" filename"]
+	},
+	"2": {
+		"invocation": "Abort the shell or script on the first failed command",
+		"cmd": ["set -e"]
+	},
+	"3": {
+		"invocation": "Add \"A new line\" on top of each *.py files under current directory",
+		"cmd": ["perl -pi -e 'BEGIN { print \"A new line\" }' $(find . -name '*.py')"]
+	},
+	"4": {
+		"invocation": "Add \"Line of text here\" on top of each *.py files under current directory",
+		"cmd": ["find . -name \\*.py -print0 | xargs -0 sed -i '1a Line of text here'"]
+	},
+	"5": {
+		"invocation": "Add \"execute\" to the permissions of all directories in the home directory tree",
+		"cmd": ["find ~ -type d -exec chmod +x {} \\;"]
+	},
+	"6": {
+		"invocation": "Add \"new.\" to the beginning of the name of \"original.filename\", renaming it to \"new.original.filename\".",
+		"cmd": ["rename 's/(.*)$/new.$1/' original.filename"]
+	},
+	"7": {
+		"invocation": "Add \"prefix\" to every non-blank line in \"file.txt\"",
+		"cmd": ["nl -s prefix file.txt | cut -c7-"]
+	},
+	"8": {
+		"invocation": "Add '.avi' extension to all files/directories with '.mkv' extension under '/volume1/uploads' directory tree",
+		"cmd": ["find /volume1/uploads -name \"*.mkv\" -exec mv \\{\\} \\{\\}.avi \\;"]
+	},
+	"9": {
+		"invocation": "Add a cron job to existing list, without removing existing ones, ro tun \"scripty.sh\" at 2:01 am, 3rd day of april (4th month), if that day happens to be a friday (5th day of the week starting with sunday=0).",
+		"cmd": ["cat <(crontab -l) <(echo \"1 2 3 4 5 scripty.sh\") | crontab -"]
+	},
+	"10": {
+		"invocation": "Add a date time stamp to every line of output in \"ping google.com\"",
+		"cmd": ["ping google.com | xargs -L 1 -I '{}' date '+%c: {}'"]
+	},
+	"11": {
+		"invocation": "Add a line number to every line in \"infile\"",
+		"cmd": ["nl -ba infile"]
+	},
+	"12": {
+		"invocation": "Add a number prefix followed by ')' to each line in \"$string\"",
+		"cmd": ["echo \"$string\" | nl -ba -s') '"]
+	},
+	"13": {
+		"invocation": "Add content of \"filename\" to the existing cron jobs of user \"user\", without removing the previously existing cron jobs.",
+		"cmd": ["crontab -l -u user | cat - filename | crontab -u user -"]
+	},
+	"14": {
+		"invocation": "Add cron lists from \"file1\" and \"file2\" to list of cron jobs, giving errors for any lines that cannot be parsed by crontab.",
+		"cmd": ["cat file1 file2 | crontab"]
+	},
+	"15": {
+		"invocation": "Add directory \"$HOME/Pictures\" to the directory stack",
+		"cmd": ["pushd \"$HOME/Pictures\""]
+	},
+	"16": {
+		"invocation": "Add executable permission to \"rr.sh\"",
+		"cmd": ["chmod +x rr.sh"]
+	},
+	"17": {
+		"invocation": "Add execute permission to all files ending in \".sh\"",
+		"cmd": ["chmod +x *.sh"]
+	},
+	"18": {
+		"invocation": "Add group write permission to all files and directories in the current directory including hidden files and excluding \"..\"",
+		"cmd": ["chmod g+w $(ls -1a | grep -v '^..$')"]
+	},
+	"19": {
+		"invocation": "Add line numbers to each non-blank line in \"file\" starting with number 1000001",
+		"cmd": ["nl -v1000001 file"]
+	},
+	"20": {
+		"invocation": "Add newline before all 2nd and consequent occurrences of '3d3d' in file 'temp' and write each line from the output to files with prefix 'temp' and numeric suffixes",
+		"cmd": ["sed 's/3d3d/\n&/2g' temp | split -dl1 - temp"]
+	}
+}

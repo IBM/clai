@@ -1,0 +1,14 @@
+Papers for a good read:- 
+a) Program synthesis from natural language using recurrent neural networks
+b) NL2Bash: A Corpus and Semantic Parser for Natural Language Interface to the Linux Operating System
+
+Original Repository:- 
+https://github.com/TellinaTool/tellina.git
+
+Steps for setting up tellina using this version:-
+a) uninstall any TensorFlow and tensorboard version. It would be good to delete the local install folder of tensorboard under the Python version. 
+b) Make a fresh install using the following command:- pip install tensorflow==2.0.0-rc0
+c) make clean
+d) follow procedure in the README provided. 
+
+Link to the folder:- https://drive.google.com/open?id=1s6GUUFk_beMVJq-H2Ft7KSrE4UI7LD11
