@@ -31,7 +31,7 @@ relevant flags and parameters.
 
 ### How to load the dataset
 
-You can use the following code to iteratively load the dataset using Python
+You can use the following code to load the dataset using Python
 
 ```python
 import json
