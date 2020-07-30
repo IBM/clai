@@ -21,21 +21,7 @@ Currently, the `gpt3` skill returns a default confidence of `0.0`. Use direct in
 
 ## Example Usage
 
-<!-- ![clai-tellina-gif](https://www.dropbox.com/s/063tmajzchskvws/tellina.gif?raw=1) -->
-
-### Sample Invocations
-
-Try out the invocations below for a quick start!
-
-<!-- 1. `>> clai show me all files`
-2. `>> clai display files sorted by number of lines`
-3. `>> clai tellina show me all running processes`
-4. `>> clai print largest files`
-5. `>> clai print space separated numbers from 1 to 5`
-6. `>> clai recursively add ".jpg" to all files in the current directory tree`
-7. `>> clai number of lines in "foo.txt"`
-8. `>> clai exit terminal`
- -->
+![clai-gpt3-snapshot](https://user-images.githubusercontent.com/4764242/88866729-89e7ce00-d1d9-11ea-8928-ad63262d1650.png)
 
 
 ## [xkcd](https://uni.xkcd.com/)
