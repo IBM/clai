@@ -21,7 +21,7 @@ Currently, the `gpt3` skill returns a default confidence of `0.0`. Use direct in
 
 ## Example Usage
 
-![clai-gpt3-snapshot](https://user-images.githubusercontent.com/4764242/88866729-89e7ce00-d1d9-11ea-8928-ad63262d1650.png)
+![clai-gpt3-snapshot](https://user-images.githubusercontent.com/4764242/88873573-eef7ef80-d1ea-11ea-94c5-06d65b06bf4e.png)
 
 
 ## [xkcd](https://uni.xkcd.com/)
