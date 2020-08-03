@@ -3,6 +3,8 @@
 This module provides the metric computation used by the nlc2cmd command as a python package 
 that participants can use to import in their code for experimentation.
 
+:arrow_down: Get the code by either cloning this repo or through the link: [https://ibm.box.com/v/metric-computation-code](https://ibm.box.com/v/metric-computation-code)
+
 
 ### Installation:
 ```
