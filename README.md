@@ -10,3 +10,8 @@ The NLC2CMD Competition brings the power of natural language processing to the c
 - [`Submission Starter Kit`](./submission-code) - Starter kit for EvalAI submission
 - [`Tellina baseline`](./tellina-baseline) - Tellina baseline code
 - [`Slack`](http://ibm.biz/clai-slack) - Discussion forum for the challenge
+
+
+## Updates
+
+- **August  3, 2020** - In the `nl2bash` data provided ([Link](./docs/nl2bash-data.md)), we identified some examples which either had syntactic issues or bash parser incompatibility, resulting in an incorrect metric computation. We've fixed this issue and have updated the dataset. Please update your local copy of the `nl2bash` dataset ([Link](./docs/nl2bash-data.md)) and also update your local copy of `submission-code` folder with the one available in this branch.
