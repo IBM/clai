@@ -1,5 +1,7 @@
 # [NLC2CMD Challenge](http://nlc2cmd.us-east.mybluemix.net/) @ [NeurIPS 2020](https://neurips.cc/Conferences/2020/CompetitionTrack)
 
+:arrow_down: *Get the code by either cloning this repo or through the link: [https://ibm.box.com/v/submission-code](https://ibm.box.com/v/submission-code)*
+
 This folder contains the starter code for the NLC2CMD challenge that participants should use to wrap their methods into and submit for evaluation.
 
 
