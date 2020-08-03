@@ -14,4 +14,4 @@ The NLC2CMD Competition brings the power of natural language processing to the c
 
 ## Updates
 
-- **August  3, 2020** - We identified some examples in the original NL2Bash data which had syntactic issues, bash parser incompatibility, etc. resulting in invalid Bash commands for the competition. We've fixed this and updated the dataset [link](./docs/nl2bash-data.md). Please update your local copy of the nl2bash dataset and also update your local copy of submission-code folder with the one available in this branch.
+- **August  3, 2020** - We identified some examples in the original NL2Bash data which had syntactic issues, bash parser incompatibility, etc. resulting in invalid Bash commands for the competition. We've fixed this and updated the dataset [[link](./docs/nl2bash-data.md)]. Please update your local copy of the `NL2Bash dataset` and also update your local copy of `submission-code` folder with the one available in this branch.
