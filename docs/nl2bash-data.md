@@ -2,7 +2,7 @@
 
 Download link: [https://ibm.box.com/v/nl2bash-data](https://ibm.box.com/v/nl2bash-data)
 
-The `NL2Bash` data contains over `10,347` instances of linux shell commands and their 
+The `NL2Bash` data contains over `10,000` instances of linux shell commands and their 
 corresponding natural language descriptions provided by experts, from the 
 [`Tellina`](https://github.com/TellinaTool/nl2bash/tree/master/data) system. 
 The dataset features `100+` commonly used shell utilities.
