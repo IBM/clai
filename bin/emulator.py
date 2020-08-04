@@ -9,8 +9,8 @@
 from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 
 if __name__ == '__main__':
-    EMULATOR_DOCKER_BRIDGE = EmulatorDockerBridge()
+    emulator_docker_bridge = EmulatorDockerBridge()
 
     from clai.emulator.clai_emulator import ClaiEmulator
-    EMULATOR = ClaiEmulator(EMULATOR_DOCKER_BRIDGE)
-    EMULATOR.launch()
+    emulator = ClaiEmulator(emulator_docker_bridge)
+    emulator.launch()

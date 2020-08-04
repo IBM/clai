@@ -71,7 +71,9 @@ RUN yum install -y \
             sudo \
             which
 
-RUN sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
+# CentOS legacy rpm links deprecated: https://github.com/iusrepo/announce/issues/18
+# RUN sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
+RUN sudo yum install -y https://repo.ius.io/ius-release-el7.rpm \
     && sudo yum -y update \
     && sudo yum install -y \
                 python36u \

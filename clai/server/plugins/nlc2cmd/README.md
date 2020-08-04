@@ -14,6 +14,8 @@ If there is a significant match with known patterns of `tar` and `grep`,
 the user command is translated into the corresponding command line syntax [here](./wa_skills/).
 The confidence of the skill is the same as the confidence of the underlying NLC layer.
 
+> An example of the remote router to the Watson Assistant instance is hosted [here](./remote/).
+
 This skill is merely illustrative and can be made as accurate as desired for these
 specific use cases. However, this approach would not scale to Bash commands
 in general and is quite brittle.

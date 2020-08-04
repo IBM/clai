@@ -108,6 +108,8 @@ $ ./BuildDockerImage.sh
 $ sudo ./BuildDockerImage.sh
 ```
 
+> Control flags: Note that you may have to run `BuildDockerImage.sh` without the --no-cache flag for kernel version below 4.4.0-173-generic (Trusty Tahr/ Ubuntu 14.04 LTS).
+
 The end of a successful build process (this can take a while) should resemble the following output:
 
 ```
@@ -252,7 +254,7 @@ As before, CLAI skill will not execute without your permission unless `auto` mod
 
 ## :robot: Want to build your own skills?
 
-[`fixit`](clai/server/plugins/fix_bot) &nbsp; [`nlc2cmd`](clai/server/plugins/nlc2cmd) &nbsp; [`helpme`](clai/server/plugins/helpme) &nbsp; [`howdoi`](clai/server/plugins/howdoi) &nbsp; [`man page explorer`](clai/server/plugins/manpage_agent) &nbsp; [`ibmcloud`](clai/server/plugins/ibmcloud)  
+[`fixit`](clai/server/plugins/fix_bot) &nbsp; [`nlc2cmd`](clai/server/plugins/nlc2cmd) &nbsp; [`helpme`](clai/server/plugins/helpme) &nbsp; [`howdoi`](clai/server/plugins/howdoi) &nbsp; [`man page explorer`](clai/server/plugins/manpage_agent) &nbsp; [`ibmcloud`](clai/server/plugins/ibmcloud) &nbsp; [`tellina`](clai/server/plugins/tellina) &nbsp; [`dataxplore`](clai/server/plugins/dataxplore) &nbsp; [`gitbot`](clai/server/plugins/gitbot) &nbsp; [`voice`](clai/server/plugins/voice) 
 
 Project CLAI is intended to rekindle the spirit of AI softbots by providing a plug-and-play framework and simple interface abstractions to the Bash and its underlying operating system. Developers can access the command line through a simple `sense-act` API for rapid prototyping of newer and more complex AI capabilities.
 

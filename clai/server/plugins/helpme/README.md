@@ -9,6 +9,7 @@ working on the terminal without having to leave your development environment and
 go searching for a solution on the Internet.
 
 ## Implementation
+
 The skill is composed of:
 1. One or more search providers that respond to an error message on the command
 line user query; and 

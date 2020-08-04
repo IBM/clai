@@ -5,13 +5,11 @@
 # of this source tree for licensing information.
 #
 
-import time
-import threading
-
 # itemgetter is faster than lambda functions for sorting
 from operator import itemgetter
 
 import clai.server.plugins.nlc2cmd.wa_skills as wa_skills
+import threading
 
 class Service:
     def __init__(self):

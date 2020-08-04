@@ -1,0 +1,6 @@
+applications:
+- name: nlc2cmd
+  memory: 1G
+  path: .
+  buildpacks: 
+    - python_buildpack
