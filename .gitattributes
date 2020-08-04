@@ -4,3 +4,4 @@
 # encode selected files
 *.gif   git-encoding=utf-8	zos-working-tree-encoding=utf-8
 *.png   git-encoding=utf-8	zos-working-tree-encoding=utf-8
+*.tar.gz git-encoding=utf-8	zos-working-tree-encoding=utf-8
