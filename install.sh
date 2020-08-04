@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 flags=""
 # default
 CLAI_PORT=8010
