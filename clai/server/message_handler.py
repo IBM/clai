@@ -140,6 +140,8 @@ class MessageHandler:
 
     @staticmethod
     def message_executed(command_executed: str, message):
+        if message is None or message.action_suggested is None:
+            return True
         action_suggested = message.action_suggested.suggested_command
         return message.command in command_executed \
                or (action_suggested and action_suggested in command_executed)
