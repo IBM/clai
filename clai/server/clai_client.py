@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-#!/usr/bin/env python3
+#!/bin/env python3
 import os
 import sys
 

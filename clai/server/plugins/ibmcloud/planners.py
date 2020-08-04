@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-#!/usr/bin/env python
+#!/bin/env python
 
 '''
 Implement calls to your favorite planners here.

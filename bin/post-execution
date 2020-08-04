@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/bin/env python3
 import sys
 
 from clai.post_execution_command import post_process_command

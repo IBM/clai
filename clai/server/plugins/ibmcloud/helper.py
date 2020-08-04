@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-#!/usr/bin/env python
+#!/bin/env python
 
 '''
 This is a barebones implementation of what a closed-loop executor for a domain like IBM cloud might look like.

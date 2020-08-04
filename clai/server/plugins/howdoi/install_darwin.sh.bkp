@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/env bash
 
 DIR="data/"
 FORUM_DIR="data/forum"
