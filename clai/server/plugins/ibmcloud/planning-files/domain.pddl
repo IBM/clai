@@ -1,4 +1,4 @@
-﻿(define (domain kube)
+(define (domain kube)
 (:requirements :typing :action-costs)
 
 (:types 
