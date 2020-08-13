@@ -120,7 +120,7 @@ def wa_skill_processor_tarbot(msg):
         if 'tar-type' in entities:
             if "gz" in entities['tar-type'] or "bz2" in entities['tar-type']:
                 data = {
-                    "text": "The tar command don’t have a option to add files or directories to an existing "
+                    "text": "The tar command don't have a option to add files or directories to an existing "
                             "compressed tar.gz and tar.bz2 archive file."}
             else:
                 data = {"text": "Unrecognized option."}
