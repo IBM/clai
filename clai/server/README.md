@@ -84,9 +84,9 @@ At runtime, you can list available orchestrators like so:
 ```
 >> clai orchestrate 
 Available Orchestrators:
-[x] max_orchestrator
-[ ] preference_orchestrator
-[ ] threshold_orchestrator
+☑ max_orchestrator
+◻ preference_orchestrator
+◻ threshold_orchestrator
 ```
 
 You can use the `-v` flag to print out the desriptions in the manifest. You can also switch between orchestration patterns using the orchestrate command. 
@@ -94,9 +94,9 @@ You can use the `-v` flag to print out the desriptions in the manifest. You can 
 ```
 >> clai orchestrate preference_orchestrator
 Available Orchestrators:
-[ ] max_orchestrator
-[x] preference_orchestrator
-[ ] threshold_orchestrator
+◻ max_orchestrator
+☑ preference_orchestrator
+◻ threshold_orchestrator
 ```
 
 ### The Installer

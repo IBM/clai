@@ -33,7 +33,7 @@ class ContractSkills:
 
         command_executed = execute_cmd(my_clai_module, command_select)
 
-        assert f"[x]\x1b[32m {skill_name} (Installed)" in command_executed, \
+        assert f"☑\x1b[32m {skill_name} (Installed)" in command_executed, \
             f'Skill {skill_name} not found installed. Output: {command_executed}'
 
     @pytest.mark.dependency(depends=['test_install'])
