@@ -2,7 +2,7 @@
 
 ###############################################################
 # Licensed Materials - Property of IBM
-# “Restricted Materials of IBM”
+# "Restricted Materials of IBM"
 # (C) Copyright IBM Corp. 2019 ALL RIGHTS RESERVED
 ###############################################################
 
