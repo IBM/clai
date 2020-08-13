@@ -259,8 +259,8 @@ class ClaiEmulator:
 
     @staticmethod
     def clear_text(skill):
-        active = '☑' in skill
-        skill_without_tick = skill.replace('☑\x1b[32m ', '').replace('\x1b[0m', '').replace('◻', '').strip()
+        active = '[x]' in skill
+        skill_without_tick = skill.replace('[x]\x1b[32m ', '').replace('\x1b[0m', '').replace('[ ]', '').strip()
         return skill_without_tick, active
 
     @staticmethod
