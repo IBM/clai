@@ -64,12 +64,12 @@ def wa_skill_processor_tarbot(msg):
 
     intents = {'check-size': {"text": "Try >> tar -czf - {} | wc -c".format(filename)},
                'check-validity': {"text": "Try >> tar tvfW {}".format(filename)},
-               'tar-usage': {"text": "Tar Usage and Options: \nc – create a archive file. "
-                                     "\nx – extract a archive file. \nv – show the progress of archive file. "
-                                     "\nf – filename of archive file. \nt – viewing content of archive file.  "
-                                     "\nj – filter archive through bzip2.  \nz – filter archive through gzip. "
-                                     "\nr – append or update files or directories to existing archive file.  "
-                                     "\nW – Verify a archive file.  wildcards – Specify patterns in unix tar "
+               'tar-usage': {"text": "Tar Usage and Options: \nc - create a archive file. "
+                                     "\nx - extract a archive file. \nv - show the progress of archive file. "
+                                     "\nf - filename of archive file. \nt - viewing content of archive file.  "
+                                     "\nj - filter archive through bzip2.  \nz - filter archive through gzip. "
+                                     "\nr - append or update files or directories to existing archive file.  "
+                                     "\nW - Verify a archive file.  wildcards - Specify patterns in unix tar "
                                      "command."}}
 
     if intent in intents:
