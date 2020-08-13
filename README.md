@@ -165,7 +165,7 @@ Warning: Permanently added '[localhost]:32782' (ECDSA) to the list of known host
 root@localhost's password:
 ...
 Research Docker Build.
-nohup: appending output to ‘nohup.out’
+nohup: appending output to 'nohup.out'
 [root@f61ce8a1c049 ~]#
 ```
 
