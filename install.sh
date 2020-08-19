@@ -42,5 +42,6 @@ fi
 
 
 python3 -m pip install -r requirements.txt --ignore-installed
+python3 -m pip install -r requirements-utilities.txt --ignore-installed
 python3 -m pip install --upgrade keyrings.alt
 python3 install.py $1 --shell bash
