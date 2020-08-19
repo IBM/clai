@@ -22,11 +22,9 @@
   },
   {
     "input": "find: `./root` : Permission denied",
-    "output": ""
-  },{
-    "input": "permission denied to find command for directory root",
-    "output": ""
-  },{
+    "output": "permission denied to find command for directory root"
+  },
+  {
     "input": "ls: Messages: Operation not permitted",
     "output": "permission denied to ls command for directory Messages"
   }
