@@ -3,8 +3,8 @@ Creates the Example and GPT classes for a user to interface with the OpenAI API.
 Code derived from: https://github.com/shreyashankar/gpt3-sandbox
 """
 
-import openai
 import uuid
+import openai
 
 
 class Example:
@@ -12,7 +12,7 @@ class Example:
     def __init__(self, inp, out):
         self.input = inp
         self.output = out
-        self.id = uuid.uuid4().hex
+        self._id = uuid.uuid4().hex
 
     def get_input(self):
         """Returns the input of the example."""
@@ -24,7 +24,7 @@ class Example:
 
     def get_id(self):
         """Returns the unique ID of the example."""
-        return self.id
+        return self._id
 
     def as_dict(self):
         return {
@@ -39,6 +39,8 @@ class GPT:
 
     A user can add examples and set parameters of the API request.
     """
+
+    # pylint: disable=too-many-instance-attributes,too-many-arguments
     def __init__(self,
                  engine='davinci',
                  temperature=0.5,
@@ -59,6 +61,7 @@ class GPT:
         self.append_output_prefix_to_query = append_output_prefix_to_query
         self.stop = (output_suffix + input_prefix).strip()
 
+    # pylint: disable=no-self-use
     def set_api_key(self, key):
         """ Sets OpenAI API key """
         openai.api_key = key
@@ -71,11 +74,13 @@ class GPT:
         assert isinstance(ex, Example), "Please create an Example object."
         self.examples[ex.get_id()] = ex
 
+    # pylint: disable=redefined-builtin,invalid-name
     def delete_example(self, id):
         """Delete example with the specific id."""
         if id in self.examples:
             del self.examples[id]
 
+    # pylint: disable=invalid-name
     def get_example(self, id):
         """Get a single example."""
         return self.examples.get(id, None)
@@ -101,6 +106,7 @@ class GPT:
         """Returns the max tokens specified for the API."""
         return self.max_tokens
 
+    # pylint: disable=invalid-name
     def craft_query(self, prompt):
         """Creates the query for the API request."""
         q = self.get_prime_text(
