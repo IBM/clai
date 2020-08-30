@@ -73,7 +73,7 @@ def get_predictions(nlc2cmd_dl):
 
 def compute_score(ground_truths, predicted_cmds, predicted_confds, metric_params):
 
-    score = 0.0
+    score = float("-inf")
 
     for grnd_truth_cmd in ground_truths:
         for i, predicted_cmd in enumerate(predicted_cmds):
