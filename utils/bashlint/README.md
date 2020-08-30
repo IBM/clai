@@ -1,5 +1,7 @@
 ## Bash Command Parser
 
+:arrow_down: *Get the code by either cloning this repo or through the link: [https://ibm.box.com/v/bashlint-code](https://ibm.box.com/v/bashlint-code)*
+
 This submodule is a bash command parser which augments the [bashlex](https://github.com/idank/bashlex) tool with utility-flag, utility-argument and flag-argument edges. 
 
 _The parser cannot parse the following code structures._
