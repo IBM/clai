@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-#!/bin/env python3
+#!/usr/bin/env python3
 # pylint: disable=invalid-name,redefined-outer-name
 import json
 

@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-#!/bin/env python3
+#!/usr/bin/env python3
 from clai.emulator.emulator_docker_bridge import EmulatorDockerBridge
 
 if __name__ == '__main__':

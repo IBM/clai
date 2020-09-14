@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 echo "==============================================================="
 echo " Phase 1: Installing necessary dependencies"
