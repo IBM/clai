@@ -56,7 +56,8 @@ fi
 PYTHON_VERSION=`python3 -c 'import sys; print(str(sys.version_info[0])+"."+str(sys.version_info[1]))'`
 PYTHONLIB="python${PYTHON_VERSION}/site-packages"
 OPSYS=`uname -s`
-if [ "$OPSYS" == "OS/390" ]; then
+
+if [ "$OPSYS" == "OS/390" ] || [ "$OPSYS" == "z/OS" ]; then
     PYTEST='pytest'
 else
     PYTEST='python3 -m pytest'
@@ -147,7 +148,7 @@ done
 
 # If we're not already running on a system where CLAI is installed,
 # we will want to install the CLAI dependencies
-if [ "$OPSYS" != "OS/390" ]; then
+if [ "$OPSYS" != "OS/390" ] && [ "$OPSYS" != "z/OS" ]; then
 
     # Make sure that we have pip installed
     isPipThere=$(command -v pip3)

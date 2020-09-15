@@ -58,7 +58,7 @@ preexec_override_invoke() {
             CURRENT_PWD=$(eval 'pwd')
 
             sys_name=`uname -s`
-            if [ "$sys_name" == "OS/390" ]
+            if [ "$sys_name" == "OS/390" ] || [ "$sys_name" == "z/OS" ]
             then
                 random_str=`date +%Y%m%d%H%M%S`
                 if [[ ! "$TMPDIR" ]]

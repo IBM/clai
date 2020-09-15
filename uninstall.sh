@@ -45,7 +45,7 @@ if ! command_exists python3 ; then
 fi
 
 if ps -o args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
-  if [ ! $(uname) == 'OS/390' ]; then
+  if [ ! $(uname) == 'OS/390' ] && [ ! $(uname) == 'z/OS' ]; then
     running_process=$(ps -o args -u $(whoami) | grep "[c]lai-run" | head -1)
     pkill -f "${running_process}"
   else
