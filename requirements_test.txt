@@ -1,7 +1,8 @@
 elasticsearch==7.0.5
 beautifulsoup4
 pytest==4.6.1
-# pyetest "Add ons"
-astroid==2.2.5
+
+# pytest "Add ons"
+astroid==2.2.5 ; sys_platform != 'zos'
 pytest-docker-tools==0.2.0
 pytest-mock==1.10.4

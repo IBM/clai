@@ -24,7 +24,7 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 ### Prerequisites
 
-+ `Bash` bash 4.3 is required if you are working on z/OS
++ `Bash` Bash 4.3 or higher is required if you are working on z/OS
 + `Python 3.6` or higher
 + `Homebrew` + `fswatch` if you are working on MacOS
 + `Docker` if you are using the containerized version of CLAI (see below)

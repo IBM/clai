@@ -1,0 +1,4 @@
+beautifulsoup4
+elasticsearch==7.0.5
+pytest-docker-tools==0.2.0
+spacy==2.2.0.dev18
