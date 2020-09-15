@@ -112,6 +112,13 @@ data
 
 nohup.out
 
+# hide wa config
+clai/server/plugins/nlc2cmd/remote/config.json
+
+# hide local gitbot stuff config
+clai/server/plugins/gitbot/config.json
+!clai/server/plugins/gitbot/rasa/data
+
 # hide kube bot config
 */kube_agent/config/*
 */kube_agent/bb-survey-server/*

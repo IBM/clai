@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 DIR="data/"
 MANPAGES_DIR="data/manpages"
