@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-# Sample Bash profile for a z/OS USS ID that will run CLAI
+# Sample bash profile for a z/OS USS ID that will run CLAI
 #
 # Instructions: Uncomment the `export SHELL` statement that is appropriate for
 # your system configuration

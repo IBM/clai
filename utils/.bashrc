@@ -5,18 +5,19 @@
 # of this source tree for licensing information.
 #
 
-# Sample bashrc file for a z/OS USS ID that will run CLAI
+# Sample .bashrc file for a z/OS USS ID that will run CLAI
 #
 # Instructions: set the following environment variables as is appropriate for
-# your system configuration
+# your system configuration.  If nothing else, you definitely need to change the
+# value of PYTHON_HOME.
 
 # Respect file tags for ASCII/EBCDIC stuff.
 export _BPXK_AUTOCVT=ON
 export _CEE_RUNOPTS="FILETAG(AUTOCVT,AUTOTAG) POSIX(ON)"
 
-# Specify the name of the TCP/IP stack to be used, as defined in the
-# TCPIPJOBNAME statement in the related TCPIP.DATA.
-export _BPXK_SETIBMOPT_TRANSPORT=TCP342
+# Uncomment this if you need to specify the name of a particular TCP/IP stack to
+# be used; needed when your system configuration uses multiple TCP/IP stacks.
+#export _BPXK_SETIBMOPT_TRANSPORT=TCP342
 
 # Configure Python
 export PYTHON_HOME=/path/to/python
