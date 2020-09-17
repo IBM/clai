@@ -59,7 +59,8 @@ $ ./install.sh --user
 $ env "HOME=$HOME" ./install.sh --user
 ```
 
-**In z/OS**, you need to update your [.profile](/utils/.profile) and [.bash_profile](/utils/.bash_profile):
+**In z/OS**, you need to update your [.bashrc](/utils/.bashrc),
+[.profile](/utils/.profile), and [.bash_profile](/utils/.bash_profile).
 
 After the installation is complete, you will be prompted to restart the shell before CLAI becomes active.
 

@@ -291,7 +291,7 @@ def execute(args):
 
     code_path = os.path.join(bin_path, 'clai')
     cli_path = os.path.join(bin_path, 'bin')
-    temp_path = '~/tmp'
+    temp_path = "./tmp"
     mkdir(f"{temp_path}/")
 
     create_rc_file_if_not_exist(args.system)
@@ -365,7 +365,7 @@ def execute(args):
 
         save_report_info(unassisted, agent_datasource, bin_path, demo_mode)
 
-    remove(f"{temp_path}/")
+    remove(f"{temp_path}")
 
     if not user_install:
         os.system(f'chmod -R 777 /var/tmp')
