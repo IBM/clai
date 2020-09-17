@@ -9,7 +9,7 @@
 * [Kartik Talamadupula](mailto:krtalamad@us.ibm.com)
 
 ## IBM Z Advanced Technology Team
-(These are the nice folks modified CLAI to run on z/OS)
+These are the nice folks who modified CLAI to run on z/OS:
 * [Tom Conti](mailto:tconti@us.ibm.com)
 * [Dan FitzGerald](mailto:danfitz@us.ibm.com)
 * [Daniel Gisolfi](mailto:Daniel.Gisolfi@ibm.com)
