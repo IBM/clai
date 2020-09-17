@@ -11,60 +11,58 @@
 
 repo=clai
 version=TBD
-uid=$(shell id -u)
-no-docker-compose = $(shell type docker-compose 2> /dev/null)
 
 about:
-	@echo "Processing a POSIX.2-style Makefile"
-
+	@echo "Processing a GNU-style Makefile"
+	
 init-test:
 	@python3 -m pip install -r requirements_test.txt 
-
+	
 clean: about
 	-rm -f *.pyc *.pyo *.pyd *\$$py.class
 	# These two files will be updated by CLAI, we dont want to commit the testing data
 	-git checkout anonymize.json
 	-git checkout configPlugins.json
-
+	
 test: about
-.IF no-docker-compose
+ifeq (, $(shell type docker-compose 2> /dev/null))
 	$(warning docker-compose not in $(PATH), running tests locally)
 	$(MAKE) init-test
 	@python3 -m pytest $(PWD)/test
-.ELSE
+else
 	@echo "running tests in a docker container"
 	@docker-compose run clai bash -c "cd /clai && make init-test && python3 -m pytest ./test"
-.END
+endif
 
 dev: about
-.IF no-docker-compose
+ifeq (, $(shell type docker-compose 2> /dev/null))
 	$(warning docker-compose not in $(PATH), running development script locally)
 	@python3 develop.py install --path $(PWD)
-.ELSE
+else
 	@echo "running development script in a docker container"
 	@docker-compose run clai bash -c "cd /clai && python3 develop.py install --path /clai && bash"
-.END
+endif
 	
 install: about
-.IF uid == 0
-	@echo "Installing CLAI with superuser privileges"
+ifeq ($(shell whoami), root)
+	@echo "Installing CLAI as root"
 	./install.sh
-.ELSE
+else
 	@echo "You are not running as the superuser, will preform an install local to your user"
 	./install.sh --user
-.END
+endif
 
 uninstall: about
-.IF uid == 0
-	@echo "Unstalling CLAI with superuser privileges"
+ifeq ($(shell whoami), root)
+	@echo "Uninstalling CLAI as root"
 	./uninstall.sh
-.ELSE
-	@echo "You are not running as the superuser, will preform an uninstalling local to your user"
+else
+	@echo "You are not running as the superuser, will preform an uninstall local to your user"
 	./uninstall.sh --user
-.END
+endif
 
 MAKE:
 	intro
 	install
-
+	
 .PHONY: intro init-test clean test dev install uninstall
