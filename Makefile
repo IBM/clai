@@ -15,6 +15,7 @@ makefile=$(shell utils/getMakeType.sh)
 
 intro:
 	@echo "$(repo) v$(version)"
+	# TODO: Make this work with USS-style make
 	
 init-test:
 	@make -f $(makefile) init-test

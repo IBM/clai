@@ -5,7 +5,7 @@
 # See LICENSE.txt file in the root directory
 # of this source tree for licensing information.
 #
-
+set -x
 makecmd=$(ps | grep $PPID | tail -n 1 | awk '{ print $NF }')
 makestr=$($makecmd -V 2> /dev/null)
 

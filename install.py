@@ -323,9 +323,11 @@ def execute(args):
         os.system(f'chmod 666 {bin_path}/anonymize.json')
         os.system(f'chmod -R 777 {bin_path}')
         cli_executable(cli_path)
-        if is_zos():
-            os.system(f'chtag -tc 1047 -R {bin_path}')
-            os.system(f'chtag -tc 1047 -R {cli_path}')
+        
+        # TODO: this is disabled to make IBM Python work
+        #if is_zos():
+        #    os.system(f'chtag -tc 1047 -R {bin_path}')
+        #    os.system(f'chtag -tc 1047 -R {cli_path}')
 
         download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
         copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
@@ -393,9 +395,9 @@ def register_file(system):
         # so handle special characters (newline, IBM-1047 vs IBM-037) used here
         if is_rw_with_EBCDIC(file):
             encoding = "cp1047"
-            newline = "\x85"
-            left_bracket = "\xDD"
-            right_bracket = "\xA8"
+            #newline = "\x85"
+            #left_bracket = "\xDD"
+            #right_bracket = "\xA8"
 
         print(f"registering {file}")
         append_to_file(file, "# CLAI setup"+newline, encoding)
