@@ -9,8 +9,8 @@
 #
 # Author: Daniel Nicolas Gisolfi
 
-uid=$(shell id -u)
-no-docker-compose = $(shell type docker-compose 2> /dev/null)
+uid=`id -u`
+no-docker-compose = `type docker-compose 2> /dev/null`
 
 about:
 	@echo "Processing a z/OS USS make-style Makefile"
@@ -26,7 +26,7 @@ clean: about
 
 test: about
 .IF no-docker-compose
-	$(warning docker-compose not in $(PATH), running tests locally)
+	@echo "docker-compose not in $(PATH), running tests locally"
 	$(MAKE) init-test
 	@python3 -m pytest $(PWD)/test
 .ELSE
@@ -36,7 +36,7 @@ test: about
 
 dev: about
 .IF no-docker-compose
-	$(warning docker-compose not in $(PATH), running development script locally)
+	@echo "docker-compose not in $(PATH), running development script locally"
 	@python3 develop.py install --path $(PWD)
 .ELSE
 	@echo "running development script in a docker container"
