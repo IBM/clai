@@ -34,9 +34,15 @@ resolving, then later re-introducing character encoding problems.  Furthermore,
 an install process that worked on one level of Pip may not work with a
 subsequent level of Pip.  Its a mess.
 
-One "known good" path to installing CLAI on z/OS is to use Bash 4.3, Python 3.6
-from IzODA, and a backlevel version of Pip3 (such as v9.0.1).  You can perform
-installation using the instructions in [README.md](README.md), or you can run
+We have verified that CLAI works with IBM Open Enterprise Python for z/OS,
+Rocket Python, and the version of Rocket Python shipped with IzODA.
+
+When using Rocket Python, CLAI will only install if you use a backlevel version
+of Pip3 (we've had success with v9.0.1).  This problem does not exist when using
+IBM Open Enterprise Python for z/OS.
+
+You can perform installation using the instructions in [README.md](README.md),
+or you can run:
 
 ```commandline
 (bash-4.3)USERID@ZOSYS:~> cd clai
