@@ -6,6 +6,7 @@
 * [Tathagata Chakraborti](mailto:Tathagata.Chakraborti1@ibm.com)
 * [Eli M. Dow](mailto:emdow@us.ibm.com)
 * [Kshitij Fadnis](mailto:kpfadnis@us.ibm.com)
+* [Borja Godoy](mailto:Borja.Godoy@ibm.com)
 * [Kartik Talamadupula](mailto:krtalamad@us.ibm.com)
 
 ## IBM Z Advanced Technology Team

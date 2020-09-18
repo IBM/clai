@@ -9,30 +9,31 @@
 #
 # Author: Dan FitzGerald
 
-repo=clai
-version=TBD
-makefile=$(shell utils/getMakeType.sh)
+repo=`echo "clai/__version__.py __title__" | utils/getVersionInfo.sh`
+version=`echo "clai/__version__.py __version__" | utils/getVersionInfo.sh`
+make_cmd=`ps -o comm | grep make`
+makefile=`ps -o comm | grep make | utils/getMakeType.sh`
 
 intro:
 	@echo "$(repo) v$(version)"
 	
 init-test:
-	@make -f $(makefile) init-test
+	@$(make_cmd) -f $(makefile) init-test
 	
 clean: intro
-	@make -f $(makefile) clean
+	@$(make_cmd) -f $(makefile) clean
 	
 test: intro
-	@make -f $(makefile) test
+	@$(make_cmd) -f $(makefile) test
 	
 dev: intro
-	@make -f $(makefile) dev
+	@$(make_cmd) -f $(makefile) dev
 	
 install: intro
-	@make -f $(makefile) install
+	@$(make_cmd) -f $(makefile) install
 
 uninstall: intro
-	@make -f $(makefile) uninstall
+	@$(make_cmd) -f $(makefile) uninstall
 
 MAKE:
 	intro

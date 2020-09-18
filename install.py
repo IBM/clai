@@ -8,7 +8,9 @@
 # pylint: disable=no-name-in-module,import-error,too-many-statements
 import json
 import os
+import re
 import ssl
+import subprocess
 import sys
 import argparse
 import getpass
@@ -169,7 +171,47 @@ def mkdir(path):
 def cp_tree(from_path, to_path):
     print("copying folder from %s to %s" % (from_path, to_path))
     copy_tree(from_path, to_path)
+    
+    # Unfortunately, the results of copy_tree() on z/OS are different depending
+    # on which version of Python you're using:
+    #
+    #   a) With Rocket and IzODA Python for z/OS, the target files are
+    #      encoded in EBCDIC and left untagged
+    #
+    #   b) With IBM Open Enterprise Python for z/OS, the target files are
+    #      encoded in ASCII and are tagged for ASCII
+    #
+    # In order to handle the first case, we must recursively traverse the
+    # destination tree and tag any untagged files as EBCDIC.
+    if is_zos():
+        recursively_tag_untagged_files_as_ebcdic(to_path)
 
+
+def recursively_tag_untagged_files_as_ebcdic(path):
+    for file in os.listdir(path):
+        filepath = f"{path}{os.path.sep}{file}"
+        if os.path.isdir(filepath) and not os.path.islink(filepath):
+            recursively_tag_untagged_files_as_ebcdic(filepath)
+        else:
+            try:
+                result: CompletedProcess = subprocess.run(
+                    ['ls', '-T', filepath],
+                    encoding="UTF8",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT
+                )
+                result = result.stdout.strip()
+                
+                match = re.match(r'(?P<type>\S+)\s+(?P<encoding>\S+)\s+T\=(?P<tagging>on|off)\s+(?P<filepath>.*)', result)
+                if match:
+                    tagging:str = match.group('tagging')
+                    
+                    # Files that are not already tagged will be retagged as EBCDIC
+                    if tagging != "on":
+                        os.system(f'chtag -tc 1047 {filepath}')
+            except:
+                pass    # `ls -T` failed for some reason; skip this file
+            
 
 def copy(file, to_path):
     print("copying file from %s to %s" % (file, to_path))
@@ -323,9 +365,11 @@ def execute(args):
         os.system(f'chmod 666 {bin_path}/anonymize.json')
         os.system(f'chmod -R 777 {bin_path}')
         cli_executable(cli_path)
-        if is_zos():
-            os.system(f'chtag -tc 1047 -R {bin_path}')
-            os.system(f'chtag -tc 1047 -R {cli_path}')
+        
+        # TODO: Remove
+        #if is_zos():
+        #    os.system(f'chtag -tc 1047 -R {bin_path}')
+        #    os.system(f'chtag -tc 1047 -R {cli_path}')
 
         download_file(URL_BASH_PREEXEC, filename='%s/%s' % (temp_path, BASH_PREEXEC))
         copy('%s/%s' % (temp_path, BASH_PREEXEC), bin_path)
@@ -393,9 +437,9 @@ def register_file(system):
         # so handle special characters (newline, IBM-1047 vs IBM-037) used here
         if is_rw_with_EBCDIC(file):
             encoding = "cp1047"
-            newline = "\x85"
-            left_bracket = "\xDD"
-            right_bracket = "\xA8"
+            #newline = "\x85"
+            #left_bracket = "\xDD"
+            #right_bracket = "\xA8"
 
         print(f"registering {file}")
         append_to_file(file, "# CLAI setup"+newline, encoding)

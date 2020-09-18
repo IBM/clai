@@ -9,9 +9,6 @@
 #
 # Author: Daniel Nicolas Gisolfi
 
-repo=clai
-version=TBD
-
 about:
 	@echo "Processing a GNU-style Makefile"
 	
