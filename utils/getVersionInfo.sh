@@ -6,13 +6,6 @@
 # of this source tree for licensing information.
 #
 
-read arg
-makestr=$($arg -V 2> /dev/null)
-
-if [ -n "$makestr" ]; then
-    echo "Makefile.uss"
-else
-    echo "Makefile.gnu"
-fi
-
+read versionFile fieldName
+cat $versionFile | grep $fieldName | awk '{print $3}' | sed 's/\"//g'
 exit 0

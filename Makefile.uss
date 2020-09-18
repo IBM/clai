@@ -5,17 +5,15 @@
 # of this source tree for licensing information.
 #
 
-# Makefile for GNU-style make
+# Makefile for the default z/OS USS make
 #
 # Author: Daniel Nicolas Gisolfi
 
-repo=clai
-version=TBD
 uid=$(shell id -u)
 no-docker-compose = $(shell type docker-compose 2> /dev/null)
 
 about:
-	@echo "Processing a POSIX.2-style Makefile"
+	@echo "Processing a z/OS USS make-style Makefile"
 
 init-test:
 	@python3 -m pip install -r requirements_test.txt 
