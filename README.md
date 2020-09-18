@@ -199,7 +199,7 @@ $ clai stop
 $ clai start
 ```
 
-> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is posible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
+> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is possible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
 
 ### Configuring CLAI
 
