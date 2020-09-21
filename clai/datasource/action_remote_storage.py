@@ -9,16 +9,16 @@ import multiprocessing as mp
 from typing import Optional, List, Union
 
 import requests
-
 from clai.remote_storage.model_api import TerminalReplayMemoryApi, StateApi, RecordToSendApi
+
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import TerminalReplayMemory, Action, State
 from clai.server.logger import current_logger as logger
 from clai.tools.anonymizer import Anonymizer
 
-URL_SERVER = "https://us-south.functions.cloud.ibm.com/" \
-             "api/v1/web/85360624-31b1-45cd-be6e-562692d2484a/default/" \
-             "store_bashbot_command.json"
+URL_SERVER = "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/" \
+             "d1ff5fa24d63f062cc6884d985ffe78e8efb224d629dbeaacc453c500a0aa620/" \
+             "store_bashbot_command"
 
 
 class ActionRemoteStorage:

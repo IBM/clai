@@ -201,7 +201,7 @@ $ clai stop
 $ clai start
 ```
 
-> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is posible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
+> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is possible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
 
 ### Configuring CLAI
 
@@ -266,3 +266,5 @@ Want to build your own skills? Get started with the [`CLAI API`](clai/server/plu
 ---------------
 
 The CLAI logo is available under the [`Free Art License`](http://artlibre.org/licence/lal/en/). It has been adopted and modified from the [`Bash logo`](https://github.com/odb/official-bash-logo).
+
+The fine people who developed and contributed to CLAI are listed on our [authors page](AUTHORS.md).
