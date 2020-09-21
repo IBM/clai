@@ -117,7 +117,6 @@ class Provider:
         self.__log_json__(request)
         
         session:Session = Session()
-        session.verify = False  # TODO: Fix our certificate verification issue
         response:Response = session.send(request=request.prepare())
         self.__log_json__(response)
         
