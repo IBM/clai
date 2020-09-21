@@ -34,18 +34,27 @@ resolving, then later re-introducing character encoding problems.  Furthermore,
 an install process that worked on one level of Pip may not work with a
 subsequent level of Pip.  Its a mess.
 
-We have verified that CLAI works with IBM Open Enterprise Python for z/OS,
-Rocket Python, and the version of Rocket Python shipped with IzODA.
+### "Known Good" Configurations
 
-When using Rocket Python, CLAI will only install if you use a backlevel version
-of Pip3 (we've had success with v9.0.1).  This problem does not exist when using
-IBM Open Enterprise Python for z/OS.
+The best results we've had in installing CLAI on z/OS were with IBM Open
+Enterprise Python for z/OS 3.8, using Pip3 >= 20.0.0.
 
-You can perform installation using the instructions in [README.md](README.md),
-or you can run:
+The following additional configurations are known to work to some degree or
+another:
+
++ IzODA Python 3.6, but only with a backlevel Pip3 (verified with Pip3 v9.0.1)
+
+With any of the above configurations, you can perform installation using the
+instructions in [README.md](README.md), or you can run:
 
 ```commandline
 (bash-4.3)USERID@ZOSYS:~> cd clai
 (bash-4.3)USERID@ZOSYS:~/clai> make clean
 (bash-4.3)USERID@ZOSYS:~/clai> make install
 ```
+
+### Known Problems
+
+#### IzODA Python 3.6
+
++ The `zmsgcode` plugin fails to work due to an SSL validation failure
