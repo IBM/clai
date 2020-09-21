@@ -433,6 +433,9 @@ def register_file(system):
         # as cp037 (IBM-037)
         if is_rw_with_EBCDIC(file):
             encoding = "cp1047"
+            newline = "\x85"
+            left_bracket = "\xDD"
+            right_bracket = "\xA8"
 
         print(f"registering {file}")
         append_to_file(file, "# CLAI setup"+newline, encoding)
