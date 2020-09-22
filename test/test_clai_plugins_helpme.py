@@ -13,7 +13,7 @@ from clai.server.plugins.helpme.helpme import HelpMeAgent
 
 class RetrievalAgentTest(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
+    def set_up_class(cls):
         cls.state = State(user_name='tester', command_id='0', command="./tmp_file.sh", result_code='1',
                           stderr="Permission denied")
 
@@ -33,17 +33,17 @@ class RetrievalAgentTest(unittest.TestCase):
     def test_get_forum(self):
         forum = self.agent.store.search("Permission denied", service='stack_exchange', size=1)
         self.assertEqual(1, len(forum))
-    
+
     @unittest.skip("Local testing")
-    def test_get_KnowledgeCenter(self):
+    def test_get_kc(self):
         kc_hits = self.agent.store.search("Permission denied", service='ibm_kc', size=1)
         print("Got this result from the KnowledgeCenter: " + str(kc_hits))
         self.assertEqual(1, len(kc_hits))
-        
+
         man_hits = self.agent.store.search(kc_hits[0]['summary'],
-                                       service='manpages',
-                                       size=10)
-        
+                                           service='manpages',
+                                           size=10)
+
         print("Got this result from the Manpages service: " + str(man_hits))
         self.assertEqual('connect', man_hits['commands'][-1])
 
