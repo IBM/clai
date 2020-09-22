@@ -16,7 +16,7 @@ class Logger:
 
         log_formatter = logging.Formatter(
             '%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
-        log_file = os.getenv('CLAI_LOG_FILE','/var/tmp/app.log')
+        log_file = os.getenv('CLAI_LOG_FILE', '/var/tmp/app.log')
         self.logger = logging.getLogger('clai_logger')
         self.logger.setLevel(logging.INFO)
         self.log_handler = handlers.RotatingFileHandler(

@@ -107,26 +107,24 @@ def remove_between(rc_file_path, start, end):
         codeset = "utf-8"
         lines = []
         if is_rw_with_EBCDIC(path):
-        # The open() with encoding cp1047 (IBM-1047), working as cp037 (IBM-037), doesn't identify the newline correctly, 
-        # Use \x85 to identify newline
+        # The open() with encoding cp1047 (IBM-1047), working as cp037
+        # (IBM-037), doesn't identify the newline correctly.  Use \x85 to
+        # identify the newline.
             codeset = "cp1047"
             newline = '\x85'
-            err_lines = open(path, "r",
-                           encoding=codeset,
-                           errors="ignore").readlines()
-            for err_line in err_lines:
+            for err_line in open(path, "r", encoding=codeset, errors="ignore").readlines():
                 right_line_list = err_line.split(newline)
                 length = len(right_line_list)
                 i = 0
                 for right_line in right_line_list:
                     i = i + 1
                     # not empty element or not the last emtpy element
-                    if len(right_line) or length != i:
+                    if right_line or length != i:
                         lines.append(right_line+newline)
         else:
             lines = open(path, "r",
-                        encoding=codeset,
-                        errors="ignore").readlines()
+                         encoding=codeset,
+                         errors="ignore").readlines()
 
         remove_line = False
         lines_after_remove = []

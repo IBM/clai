@@ -5,9 +5,9 @@
 # of this source tree for licensing information.
 #
 
+# pylint: disable=broad-except,invalid-name
 import os
 import sys
-import ssl
 import json
 import argparse
 
@@ -24,15 +24,14 @@ from uninstall import execute as uninstall
 from clai.tools.file_util import get_setup_file
 from clai.tools.console_helper import print_error
 from clai.tools.console_helper import print_complete
-from clai.datasource.stats_tracker import StatsTracker
 from clai.datasource.config_storage import ConfigStorage
 from clai.server.agent_datasource import AgentDatasource
 
-from clai import platform
+from clai import PLATFORM
 
-actions = ["install", "uninstall"]
+ACTIONS = ["install", "uninstall"]
 
-DEFAULT_PORT = os.getenv('CLAI_PORT', 8010)
+DEFAULT_PORT = os.getenv('CLAI_PORT', '8010')
 
 URL_BASH_PREEXEC = (
     "http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh"
@@ -49,7 +48,7 @@ def parse_args():
         "action",
         action="store",
         type=str,
-        help=f'action for script to preform one of: {" ".join(actions)}',
+        help=f'action for script to perform one of: {" ".join(ACTIONS)}',
     )
 
     parser.add_argument(
@@ -68,9 +67,9 @@ def parse_args():
 
     args = parser.parse_args()
 
-    if args.action not in actions:
+    if args.action not in ACTIONS:
         print_error(
-            f"Not a valid action: '{args.action}' Valid actions: [{', '.join(actions)}]"
+            f"Not a valid action: '{args.action}' Valid actions: [{', '.join(ACTIONS)}]"
         )
         sys.exit(1)
 
@@ -104,7 +103,7 @@ def link(src, dest):
 
 def install(repo_path: str, install_path: str):
     createInstallDir(install_path)
-    
+
     required_scripts = os.listdir(os.path.join(repo_path, "scripts"))
     required_dirs = ["bin", "clai"]
     required_files = [file for file in os.listdir(repo_path) if file.endswith(".json")]
@@ -153,7 +152,7 @@ def install(repo_path: str, install_path: str):
     plugins = agent_datasource.all_plugins()
     for plugin in plugins:
         default = z_default = False
-        if platform == 'zos':
+        if PLATFORM in ('zos', 'os390'):
             z_default = plugin.z_default
         else:
             default = plugin.default

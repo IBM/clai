@@ -5,6 +5,7 @@
 # of this source tree for licensing information.
 #
 
+# pylint: disable=invalid-name
 import io
 import os
 import platform
@@ -13,12 +14,11 @@ import platform
 def is_windows():
     return platform.system() == 'Windows'
 
-
 def is_mac():
     return platform.system() == 'Darwin'
 
 def is_zos():
-    return platform.system().lower() in ['os/390','z/os']
+    return platform.system().lower() in ('zos', 'os390')
 
 def is_rw_with_EBCDIC(file):
     # Assume that the file is read/writen with IBM-1047 on z/OS when
@@ -31,9 +31,9 @@ def is_rw_with_EBCDIC(file):
             is_EBCDIC = True
         else:
             cmd = "chtag -p " + file_path_complete + " | cut -d ' ' -f 2,6 "
-            pfile = os.popen(cmd,'r')
+            pfile = os.popen(cmd, 'r')
             output = pfile.read().strip()
-            if output in ("untagged T=off","IBM-1047 T=off"):
+            if output in ("untagged T=off", "IBM-1047 T=off"):
                 is_EBCDIC = True
             pfile.close()
     return is_EBCDIC
