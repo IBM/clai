@@ -12,10 +12,14 @@ from .providers import Provider
 
 
 class StackExchange(Provider):
-
     def __init__(self, name: str, description: str, section: dict):
         super().__init__(name, description, section)
-        self.__log_debug__("UNIX StackExchange provider initialized")
+
+        # This search provider doesn't support any variant searches
+        for variant in self.get_variants():
+            raise AttributeError(f"Invalid {self.name} search variant: '{variant}'")
+
+        self.__log_debug__("Provider initialized")
 
     def call(self, query: str, limit: int = 1, **kwargs):
         self.__log_debug__(

@@ -94,8 +94,8 @@ class MsgCodeAgent(Agent):
         # If this message wasn't one we could send to bpxmtext, or if bpxmtext
         # didn't return a meaningful message, try searching the KnowledgeCenter
         if not helpWasFound:
-            kc_api:Provider = self.store.get_apis()['ibm_kc']
-            if kc_api is not None and kc_api.can_run_on_this_os(): 
+            kc_api:Provider = self.store.getAPIs()['ibm_kc']
+            if kc_api is not None and kc_api.canRunOnThisOS(): 
                 data = self.store.search(msgid, service='ibm_kc', size=1) 
                 if data:
                     logger.info(f"==> Success!!! Found information for msgid {msgid}")
@@ -105,7 +105,7 @@ class MsgCodeAgent(Agent):
                         .append(
                             f"I looked up {msgid} in the IBM KnowledgeCenter for you:\n") \
                         .info() \
-                        .append(kc_api.get_printable_output(data)) \
+                        .append(kc_api.getPrintableOutput(data)) \
                         .warning() \
                         .to_console()
                     helpWasFound = True # Mark that help was indeed found
