@@ -13,7 +13,7 @@ from clai.server.plugins.nlc2cmd.nlc2cmd import NLC2CMD
 
 class NLC2CMDCloudTest(unittest.TestCase):
     @classmethod
-    def set_up_class(cls):
+    def setUpClass(cls):
         cls.state = State(user_name='tester', command_id='0', command="show me the list of cloud tags", result_code='0')
 
         cls.agent = NLC2CMD()

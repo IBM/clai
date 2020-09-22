@@ -33,7 +33,7 @@ def obtain_last_processes(user_name):
         for process in PSUTIL.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
             process_changes.append(process.info)
     else:
-        # TODO: Figure out the equivalent on z/OS
+        # TODO: Figure out the equivilant on z/OS
         pass
 
     porcess_changes = list(filter(lambda _: _['username'] == user_name, process_changes))
