@@ -17,14 +17,10 @@ from clai.tools.anonymizer import Anonymizer
 
 def __send_event__(event: StatEvent):
     try:
-        amplitude_logger = amplitude.AmplitudeLogger(
-            api_key="cc826565c91ab899168235a2845db189"
-        )
-        event_args = {
-            "device_id": event.user,
-            "event_type": event.event_type,
-            "event_properties": event.data,
-        }
+        amplitude_logger = amplitude.AmplitudeLogger(api_key="cc826565c91ab899168235a2845db189")
+        event_args = {"device_id": event.user, "event_type": event.event_type,
+                      "event_properties": event.data
+                      }
         event = amplitude_logger.create_event(**event_args)
         amplitude_logger.log_event(event)
     # pylint: disable=broad-except
@@ -86,7 +82,7 @@ class StatsTracker:
         event = StatEvent(
             event_type="activate",
             user=self.anonymizer.anonymize(user),
-            data={"skill": f"{skill_name}"},
+            data={"skill": f"{skill_name}"}
         )
         self.__store__(event)
 
@@ -94,7 +90,7 @@ class StatsTracker:
         event = StatEvent(
             event_type="deactivate",
             user=self.anonymizer.anonymize(user),
-            data={"skill": f"{skill_name}"},
+            data={"skill": f"{skill_name}"}
         )
         self.__store__(event)
 
@@ -103,7 +99,9 @@ class StatsTracker:
             return
 
         event = StatEvent(
-            event_type="install", user=self.anonymizer.anonymize(user), data={}
+            event_type="install",
+            user=self.anonymizer.anonymize(user),
+            data={}
         )
 
         __send_event__(event)
@@ -113,7 +111,9 @@ class StatsTracker:
             return
 
         event = StatEvent(
-            event_type="uninstall", user=self.anonymizer.anonymize(user), data={}
+            event_type="uninstall",
+            user=self.anonymizer.anonymize(user),
+            data={}
         )
 
         __send_event__(event)

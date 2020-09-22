@@ -9,8 +9,16 @@ from clai.tools.colorize_console import Colorize
 
 
 def print_complete(text):
-    print(Colorize().complete().append(text).to_console())
+    print(Colorize()
+          .complete()
+          .append(text)
+          .to_console()
+          )
 
 
 def print_error(text):
-    print(Colorize().warning().append(text).to_console())
+    print(Colorize()
+          .warning()
+          .append(text)
+          .to_console()
+          )

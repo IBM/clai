@@ -1,19 +1,12 @@
 from typing import List
 
 from clai.datasource.action_remote_storage import ActionRemoteStorage
-from clai.server.command_message import (
-    TerminalReplayMemory,
-    TerminalReplayMemoryComplete,
-)
+from clai.server.command_message import TerminalReplayMemory, TerminalReplayMemoryComplete
 from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 
 
 class OrchestratorStorage:
-    def __init__(
-        self,
-        orchestrator_provider: OrchestratorProvider,
-        remote_storage: ActionRemoteStorage,
-    ):
+    def __init__(self, orchestrator_provider: OrchestratorProvider, remote_storage: ActionRemoteStorage):
         self._memory: List[TerminalReplayMemoryComplete] = []
         self.orchestrator_provider = orchestrator_provider
         self.remote_storage = remote_storage

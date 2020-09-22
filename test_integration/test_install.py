@@ -16,17 +16,14 @@ from test_integration.conftest import get_base_path
 
 my_clai_image = build(
     path=get_base_path(),
-    dockerfile="./test_integration/docker/centos/Dockerfile.no.install",
+    dockerfile='./test_integration/docker/centos/Dockerfile.no.install')
+
+my_clai = container(
+    image='{my_clai_image.id}',
 )
 
-my_clai = container(image="{my_clai_image.id}",)
-
-INSTALL_CORRECTLY_MESSAGE = (
-    "CLAI has been installed correctly, you need restart your shell."
-)
-UNINSTALL_CORRECTLY_MESSAGE = (
-    "CLAI has been uninstalled correctly, you need restart your shell."
-)
+INSTALL_CORRECTLY_MESSAGE = "CLAI has been installed correctly, you need restart your shell."
+UNINSTALL_CORRECTLY_MESSAGE = "CLAI has been uninstalled correctly, you need restart your shell."
 
 
 def test_install_should_finish_correctly(my_clai):
@@ -37,9 +34,9 @@ def test_install_should_finish_correctly(my_clai):
 def test_install_should_modify_correct_startup_files(my_clai):
     execute_cmd(my_clai, "sudo ./install.sh --unassisted --demo")
 
-    files = my_clai.get_files("/root")
-    bashrc_output = str(files["root/.bashrc"])
-    bash_profile_output = str(files["root/.bash_profile"])
+    files = my_clai.get_files('/root')
+    bashrc_output = str(files['root/.bashrc'])
+    bash_profile_output = str(files['root/.bash_profile'])
 
     assert "# CLAI setup" in bashrc_output
     assert "# CLAI setup" in bash_profile_output
@@ -56,15 +53,15 @@ def test_uninstall_should_return_the_correct_uninstall_message(my_clai):
 
 
 def test_uninstall_should_return_bash_files_to_previous_state(my_clai):
-    files = my_clai.get_files("/root")
-    bashrc_original = str(files["root/.bashrc"])
-    bash_profile_original = str(files["root/.bash_profile"])
+    files = my_clai.get_files('/root')
+    bashrc_original = str(files['root/.bashrc'])
+    bash_profile_original = str(files['root/.bash_profile'])
     execute_cmd(my_clai, "sudo ./install.sh --unassisted --demo")
     execute_cmd(my_clai, "sudo ./uninstall.sh")
     sleep(2)
-    files = my_clai.get_files("/root")
-    bashrc_after_uninstall = str(files["root/.bashrc"])
-    bash_profile_after_uninstall = str(files["root/.bash_profile"])
+    files = my_clai.get_files('/root')
+    bashrc_after_uninstall = str(files['root/.bashrc'])
+    bash_profile_after_uninstall = str(files['root/.bash_profile'])
 
     assert bashrc_after_uninstall == bashrc_original
     assert bash_profile_original == bash_profile_after_uninstall

@@ -14,6 +14,7 @@ from clai.datasource.model.plugin_config import PluginConfig, PluginConfigJson
 
 
 class ConfigStorage:
+
     def __init__(self, alternate_path: Optional[str] = None):
         self.alternate_path = alternate_path
 
@@ -22,7 +23,7 @@ class ConfigStorage:
             return self.alternate_path
 
         base_dir = os.path.dirname(clai.datasource.__file__)
-        filename = os.path.join(base_dir, "../../configPlugins.json")
+        filename = os.path.join(base_dir, '../../configPlugins.json')
         return filename
 
     def read_all_user_config(self) -> PluginConfigJson:
@@ -48,12 +49,12 @@ class ConfigStorage:
             default_orchestrator=config_for_all_users.default_orchestrator,
             installed=config_for_all_users.installed,
             report_enable=config_for_all_users.report_enable,
-            user_install=config_for_all_users.user_install,
+            user_install=config_for_all_users.user_install
         )
 
     def store_config(self, config: PluginConfig, user_name: str = None):
         current_config = self.read_all_user_config()
-        with open(self.get_config_path(), "w") as json_file:
+        with open(self.get_config_path(), 'w') as json_file:
             if user_name:
                 current_config.selected[user_name] = config.selected
             current_config.installed = config.installed

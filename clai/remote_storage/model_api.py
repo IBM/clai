@@ -9,12 +9,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from clai.server.command_message import (
-    ProcessesValues,
-    FilesChangesValues,
-    NetworkValues,
-    Action,
-)
+from clai.server.command_message import ProcessesValues, FilesChangesValues, NetworkValues, Action
 
 
 class StateApi(BaseModel):

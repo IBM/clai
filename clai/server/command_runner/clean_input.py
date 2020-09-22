@@ -5,7 +5,6 @@
 # of this source tree for licensing information.
 #
 
-
 def extract_quoted_agent_name(plugin_to_select):
     if plugin_to_select.startswith('"'):
         names = plugin_to_select.split('"')[1::2]

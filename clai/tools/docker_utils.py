@@ -10,13 +10,12 @@ from time import sleep
 
 MAX_SIZE_STDOUT = 5000000
 
-
 def wait_server_is_started():
     sleep(2)
 
 
 def read(socket, chunk_readed=None):
-    data = ""
+    data = ''
     try:
         socket.output._sock.recv(1)
         while True:
@@ -28,8 +27,8 @@ def read(socket, chunk_readed=None):
             if not data_bytes:
                 break
 
-            chunk = data_bytes.decode("utf8", errors="ignore")
-            if chunk.endswith("]# "):
+            chunk = data_bytes.decode('utf8', errors='ignore')
+            if chunk.endswith(']# '):
                 if data:
                     break
             else:
@@ -41,18 +40,16 @@ def read(socket, chunk_readed=None):
             data = data[-MAX_SIZE_STDOUT:]
 
     except Exception as exception:
-        print(f"error: {exception}")
+        print(f'error: {exception}')
     return data
 
 
 def execute_cmd(container, command):
-    socket = container.exec_run(
-        cmd="bash -l", stdin=True, tty=True, privileged=True, socket=True
-    )
+    socket = container.exec_run(cmd="bash -l", stdin=True, tty=True, privileged=True, socket=True)
 
     wait_server_is_started()
 
-    command_to_exec = command + "\n"
+    command_to_exec = command + '\n'
     socket.output._sock.send(command_to_exec.encode())
 
     data = read(socket)

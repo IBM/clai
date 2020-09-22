@@ -14,4 +14,4 @@ from clai.server.command_message import StateDTO, Action
 class ClientConnector(abc.ABC):
     @abc.abstractmethod
     def send(self, message: StateDTO) -> Action:
-        """Send a message to the server using a DTO"""
+        '''Send a message to the server using a DTO'''

@@ -17,13 +17,13 @@ from clai.server.state_mapper import process_message
 class WebSocketClientConnector(ClientConnector):
     DEFAULT_HOST = "ws://clai-server-test.mybluemix.net"
 
-    def __init__(self, host: str = DEFAULT_HOST):
+    def __init__(self,
+                 host: str = DEFAULT_HOST):
         self.host = host
 
     def send(self, message: StateDTO) -> Action:
-        response = asyncio.get_event_loop().run_until_complete(
-            self.__send_message(message)
-        )
+        response = asyncio.get_event_loop() \
+            .run_until_complete(self.__send_message(message))
         return response
 
     async def __send_message(self, message: StateDTO):

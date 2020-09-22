@@ -10,10 +10,7 @@
 import json
 
 from clai.datasource.action_remote_storage import ActionRemoteStorage
-from clai.datasource.server_status_datasource import (
-    current_status_datasource,
-    ServerStatusDatasource,
-)
+from clai.datasource.server_status_datasource import current_status_datasource, ServerStatusDatasource
 from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import State, Action, StateDTO
@@ -26,19 +23,16 @@ from clai.server.socket_server_connector import SocketServerConnector
 class ClaiServer:
 
     # pylint: disable=too-many-arguments
-    def __init__(
-        self,
-        server_status_datasource: ServerStatusDatasource = current_status_datasource,
-        connector: ServerConnector = SocketServerConnector(current_status_datasource),
-        agent_datasource=AgentDatasource(),
-    ):
+    def __init__(self,
+                 server_status_datasource: ServerStatusDatasource = current_status_datasource,
+                 connector: ServerConnector = SocketServerConnector(current_status_datasource),
+                 agent_datasource=AgentDatasource()
+                 ):
         self.connector = connector
         self.agent_datasource = agent_datasource
         self.server_status_datasource = server_status_datasource
         self.remote_storage = ActionRemoteStorage()
-        self.message_handler = MessageHandler(
-            server_status_datasource, agent_datasource=agent_datasource
-        )
+        self.message_handler = MessageHandler(server_status_datasource, agent_datasource=agent_datasource)
         self.stats_tracker = StatsTracker()
 
     def init_server(self):
@@ -60,7 +54,7 @@ class ClaiServer:
             file_changes=dto.file_changes,
             network=dto.network,
             result_code=dto.result_code,
-            stderr=dto.stderr,
+            stderr=dto.stderr
         )
 
     def create_socket(self, host, port):

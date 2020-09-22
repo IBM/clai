@@ -15,21 +15,16 @@ from clai.server.command_runner.command_runner import CommandRunner, PostCommand
 
 # pylint: disable=too-few-public-methods
 class AgentCommandRunner(CommandRunner, PostCommandRunner):
-    def __init__(
-        self,
-        agent_runner: AgentRunner,
-        server_status_datasource: ServerStatusDatasource,
-        ignore_threshold: bool = False,
-    ):
+
+    def __init__(self, agent_runner: AgentRunner, server_status_datasource: ServerStatusDatasource,
+                 ignore_threshold: bool = False):
         self.agent_runner = agent_runner
         self.server_status_datasource = server_status_datasource
         self.ignore_threshold = ignore_threshold
         self.force_agent = None
 
     def execute(self, state: State) -> Union[Action, List[Action]]:
-        action = self.agent_runner.process(
-            state, self.ignore_threshold, self.force_agent
-        )
+        action = self.agent_runner.process(state, self.ignore_threshold, self.force_agent)
         if not action:
             action = Action()
         return action

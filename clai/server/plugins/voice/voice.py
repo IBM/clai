@@ -16,45 +16,36 @@ from gtts import gTTS
 
 
 class Voice(Agent):
+
     def __init__(self):
         super(Voice, self).__init__()
-        self._tmp_filepath = os.path.join(tempfile.gettempdir(), "tts.mp3")
+        self._tmp_filepath = os.path.join(tempfile.gettempdir(), 'tts.mp3')
 
     # pylint: disable=no-self-use
     def summarize_output(self, state):
         cmd = str(state.command)
         stderr = str(state.stderr)
-        err_txt = stderr.split("\n")[0]  # Speak the first line
+        err_txt = stderr.split('\n')[0]  # Speak the first line
 
-        text = f"Error occurred for command {cmd}. " f"Error is: {err_txt}"
+        text = f'Error occurred for command {cmd}. ' \
+               f'Error is: {err_txt}'
 
         return text
 
     def synthesize(self, text):
         """ Converts text to audio and saves to temp file """
-        tts = gTTS(text, lang="en", lang_check=False)
+        tts = gTTS(text, lang='en', lang_check=False)
         tts.save(self._tmp_filepath)
 
     def speak(self):
-        subprocess.Popen(
-            [
-                "nohup",
-                "ffplay",
-                "-nodisp",
-                "-autoexit",
-                "-nostats",
-                "-hide_banner",
-                "-loglevel",
-                "warning",
-                self._tmp_filepath,
-            ],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        subprocess.Popen(['nohup', 'ffplay', '-nodisp', '-autoexit',
+                          '-nostats', '-hide_banner',
+                          '-loglevel', 'warning', self._tmp_filepath],
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     def post_execute(self, state: State) -> Action:
 
-        if state.result_code == "0":
+        if state.result_code == '0':
             return Action(suggested_command=state.command)
 
         # Summarize output from current state

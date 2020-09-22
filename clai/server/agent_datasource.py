@@ -17,14 +17,13 @@ import clai.server.plugins
 from clai.datasource.config_storage import config_storage as config, ConfigStorage
 from clai.datasource.model.plugin_config import PluginConfig
 from clai.server.agent import Agent, ClaiIdentity
-from clai.server.agent_datasource_executor import (
-    thread_agent_datasource_executor as agent_datasource_executor,
-)
+from clai.server.agent_datasource_executor import thread_agent_datasource_executor as agent_datasource_executor
 from clai.server.command_runner.agent_descriptor import AgentDescriptor
 from clai.server.logger import current_logger as logger
 
 
 class AgentDatasource:
+
     def __init__(self, config_storage: ConfigStorage = config):
         self.__selected_plugin: Dict[str, Optional[List[pkg.ModuleInfo]]] = {}
         self.__plugins: Dict[str, Agent] = {}
@@ -50,8 +49,7 @@ class AgentDatasource:
     def load_agent(self, name: str):
         try:
             plugin = importlib.import_module(
-                f"clai.server.plugins.{name}.{name}", package=name
-            )
+                f'clai.server.plugins.{name}.{name}', package=name)
 
             importlib.invalidate_caches()
             plugin = importlib.reload(plugin)
@@ -67,7 +65,7 @@ class AgentDatasource:
                     logger.info(f"{name} is ready")
         # pylint: disable=broad-except
         except Exception as ex:
-            logger.info(f"load agent exception: {ex}")
+            logger.info(f'load agent exception: {ex}')
 
     def get_instances(self, user_name: str, agent_to_select: str = None) -> List[Agent]:
         select_plugins_by_user = self.__get_selected_by_user(user_name)
@@ -83,11 +81,8 @@ class AgentDatasource:
                 return [ClaiIdentity()]
 
             select_plugins_by_user = list(
-                filter(
-                    lambda value: value.name == agent_descriptor_selected.pkg_name,
-                    select_plugins_by_user,
-                )
-            )
+                filter(lambda value: value.name == agent_descriptor_selected.pkg_name,
+                       select_plugins_by_user))
 
         if agent_to_select:
             agent_descriptor_selected = self.get_agent_descriptor(agent_to_select)
@@ -95,11 +90,8 @@ class AgentDatasource:
                 return [ClaiIdentity()]
 
             select_plugins_by_user = list(
-                filter(
-                    lambda value: value.name == agent_descriptor_selected.pkg_name,
-                    select_plugins_by_user,
-                )
-            )
+                filter(lambda value: value.name == agent_descriptor_selected.pkg_name,
+                       select_plugins_by_user))
 
         agents = []
         for select_plugin_by_user in select_plugins_by_user:
@@ -121,26 +113,28 @@ class AgentDatasource:
             config_parser.read(file_path)
 
             default = z_default = False
-            if config_parser.has_option("DEFAULT", "default"):
-                default = config_parser.getboolean("DEFAULT", "default")
+            if config_parser.has_option('DEFAULT', 'default'):
+                default = config_parser.getboolean('DEFAULT', 'default')
 
-            if config_parser.has_option("DEFAULT", "z_default"):
-                z_default = config_parser.getboolean("DEFAULT", "z_default")
+            if config_parser.has_option('DEFAULT', 'z_default'):
+                z_default = config_parser.getboolean('DEFAULT', 'z_default')
 
             exclude = []
-            if config_parser.has_option("DEFAULT", "exclude"):
-                exclude = config_parser.get("DEFAULT", "exclude").lower().split()
+            if config_parser.has_option('DEFAULT', 'exclude'):
+                exclude = config_parser.get('DEFAULT', 'exclude').lower().split()
 
             return AgentDescriptor(
                 pkg_name=name,
-                name=config_parser["DEFAULT"]["name"],
-                description=config_parser["DEFAULT"]["description"],
+                name=config_parser['DEFAULT']['name'],
+                description=config_parser['DEFAULT']['description'],
                 exclude=exclude,
                 default=default,
-                z_default=z_default,
+                z_default=z_default
             )
 
-        return AgentDescriptor(pkg_name=name, name=name)
+        return AgentDescriptor(
+            pkg_name=name,
+            name=name)
 
     def get_report_enable(self) -> bool:
         plugins_config = self.config_storage.read_config(None)
@@ -159,19 +153,15 @@ class AgentDatasource:
         self.config_storage.store_config(plugins_config, user_name)
 
     @staticmethod
-    def filter_by_platform(
-        agent_descriptors: List[AgentDescriptor],
-    ) -> List[AgentDescriptor]:
+    def filter_by_platform(agent_descriptors: List[AgentDescriptor]) -> List[AgentDescriptor]:
         os_name = os.uname().sysname.lower()
-        return list(
-            filter(lambda agent: os_name not in agent.exclude, agent_descriptors)
-        )
+        return list(filter(lambda agent: os_name not in agent.exclude, agent_descriptors))
 
     def all_plugins(self) -> List[AgentDescriptor]:
         agent_descriptors = list(
             self.load_descriptors(os.path.join(importer.path, name), name)
-            for importer, name, _ in pkg.iter_modules(self.get_path())
-        )
+            for importer, name, _
+            in pkg.iter_modules(self.get_path()))
 
         agent_descriptors = self.filter_by_platform(agent_descriptors)
 
@@ -183,9 +173,7 @@ class AgentDatasource:
         logger.info(f"agents runned: {self.__plugins}")
         for agent_descriptor in agent_descriptors:
             if agent_descriptor.pkg_name in self.__plugins:
-                logger.info(
-                    f"{agent_descriptor.pkg_name} is {self.__plugins[agent_descriptor.pkg_name].ready}"
-                )
+                logger.info(f"{agent_descriptor.pkg_name} is {self.__plugins[agent_descriptor.pkg_name].ready}")
                 agent_descriptor.ready = self.__plugins[agent_descriptor.pkg_name].ready
             else:
                 logger.info(f"{agent_descriptor.pkg_name} not iniciate.")
@@ -234,9 +222,7 @@ class AgentDatasource:
                 return plugin
         return None
 
-    def select_plugin(
-        self, plugin_to_select: str, user_name: str
-    ) -> Optional[pkg.ModuleInfo]:
+    def select_plugin(self, plugin_to_select: str, user_name: str) -> Optional[pkg.ModuleInfo]:
         agent_descriptor_selected = self.get_agent_descriptor(plugin_to_select)
         if agent_descriptor_selected is None:
             return None
@@ -250,9 +236,7 @@ class AgentDatasource:
 
         return None
 
-    def unselect_plugin(
-        self, plugin_to_select: str, user_name: str
-    ) -> Optional[pkg.ModuleInfo]:
+    def unselect_plugin(self, plugin_to_select: str, user_name: str) -> Optional[pkg.ModuleInfo]:
         agent_descriptor_selected = self.get_agent_descriptor(plugin_to_select)
         if agent_descriptor_selected is None:
             return None
@@ -272,10 +256,7 @@ class AgentDatasource:
             self.__selected_plugin[user_name] = [plugin_to_select]
 
     def __unselect_plugin_for_user(self, plugin_to_select, user_name):
-        if (
-            user_name in self.__selected_plugin
-            and plugin_to_select in self.__selected_plugin[user_name]
-        ):
+        if user_name in self.__selected_plugin and plugin_to_select in self.__selected_plugin[user_name]:
             self.__selected_plugin[user_name].remove(plugin_to_select)
 
     def __get_selected_by_user(self, user_name) -> Optional[List[pkg.ModuleInfo]]:

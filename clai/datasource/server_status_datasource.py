@@ -53,9 +53,7 @@ class ServerStatusDatasource:
 
     def find_message_stored(self, id_to_find: str, user_mame: str) -> Optional[State]:
         messages_by_user = self.__find_messages_by_user(user_mame)
-        return next(
-            filter(lambda x: x.command_id == id_to_find, messages_by_user), None
-        )
+        return next(filter(lambda x: x.command_id == id_to_find, messages_by_user), None)
 
 
 # pylint: disable= invalid-name

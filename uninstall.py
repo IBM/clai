@@ -18,12 +18,7 @@ from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.console_helper import print_complete, print_error
-from clai.tools.file_util import (
-    get_rc_file,
-    get_setup_file,
-    get_rc_files,
-    is_rw_with_EBCDIC,
-)
+from clai.tools.file_util import get_rc_file, get_setup_file, get_rc_files, is_rw_with_EBCDIC
 
 
 def remove(path):
@@ -40,7 +35,8 @@ def remove_system_folder(path: str = None):
         default_system_destdir = "/".join(path.split("/")[0:-1])
     else:
         default_system_destdir = os.path.join(
-            os.path.expanduser("/opt/local/share"), "clai",
+            os.path.expanduser("/opt/local/share"),
+            "clai",
         )
 
     remove(default_system_destdir)
@@ -51,13 +47,13 @@ def clai_installed(rc_file_path):
     if os.path.isfile(path):
         line_to_search = "export CLAI_PATH="
         print("searching %s" % line_to_search)
-        lines = io.open(path, "r", encoding="utf-8", errors="ignore").readlines()
+        lines = io.open(path, "r",
+                        encoding="utf-8",
+                        errors="ignore").readlines()
         lines_found = list(filter(lambda line: line_to_search in line, lines))
 
         if lines_found:
-            my_path = (
-                lines_found[0].replace(line_to_search, "").replace("\n", "").strip()
-            )
+            my_path = lines_found[0].replace(line_to_search, "").replace("\n", "").strip()
             return my_path
 
     return None
@@ -90,13 +86,9 @@ def unregister_the_user(bin_path):
 
 
 def stat_uninstall(bin_path):
-    agent_datasource = AgentDatasource(
-        config_storage=ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json")
-    )
+    agent_datasource = AgentDatasource(config_storage=ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json"))
     report_enable = agent_datasource.get_report_enable()
-    stats_tracker = StatsTracker(
-        sync=True, anonymizer=Anonymizer(alternate_path=f"{bin_path}/anonymize.json")
-    )
+    stats_tracker = StatsTracker(sync=True, anonymizer=Anonymizer(alternate_path=f"{bin_path}/anonymize.json"))
     stats_tracker.report_enable = report_enable
     login = getpass.getuser()
     stats_tracker.log_uninstall(login)
@@ -108,17 +100,20 @@ def remove_setup_file(rc_file_path):
     os.remove(path)
 
 
+
 def remove_between(rc_file_path, start, end):
     path = os.path.expanduser(rc_file_path)
     if os.path.isfile(path):
         codeset = "utf-8"
         lines = []
         if is_rw_with_EBCDIC(path):
-            # The open() with encoding cp1047 (IBM-1047), working as cp037 (IBM-037), doesn't identify the newline correctly,
-            # Use \x85 to identify newline
+        # The open() with encoding cp1047 (IBM-1047), working as cp037 (IBM-037), doesn't identify the newline correctly, 
+        # Use \x85 to identify newline
             codeset = "cp1047"
-            newline = "\x85"
-            err_lines = open(path, "r", encoding=codeset, errors="ignore").readlines()
+            newline = '\x85'
+            err_lines = open(path, "r",
+                           encoding=codeset,
+                           errors="ignore").readlines()
             for err_line in err_lines:
                 right_line_list = err_line.split(newline)
                 length = len(right_line_list)
@@ -127,9 +122,11 @@ def remove_between(rc_file_path, start, end):
                     i = i + 1
                     # not empty element or not the last emtpy element
                     if len(right_line) or length != i:
-                        lines.append(right_line + newline)
+                        lines.append(right_line+newline)
         else:
-            lines = open(path, "r", encoding=codeset, errors="ignore").readlines()
+            lines = open(path, "r",
+                        encoding=codeset,
+                        errors="ignore").readlines()
 
         remove_line = False
         lines_after_remove = []
@@ -155,19 +152,15 @@ def remove_setup_register():
     for file in rc_files:
         remove_lines_setup(file)
 
-
 def is_user_install(bin_path):
-    plugins_config = (
-        ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json")
-        .read_config(None)
-        .user_install
-    )
+    plugins_config = ConfigStorage(
+        alternate_path=f"{bin_path}/configPlugins.json"
+    ).read_config(None).user_install
 
     return plugins_config
 
-
 def execute(args):
-    bin_path = os.getenv("CLAI_PATH", None)
+    bin_path = os.getenv('CLAI_PATH', None)
 
     if "-h" in args or "--help" in args:
         print(
