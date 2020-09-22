@@ -66,7 +66,7 @@ class HelpMeAgent(Agent):
         if state.result_code == '0':
             return Action(suggested_command=state.command)
         
-        apis:OrderedDict=self.store.getAPIs()
+        apis:OrderedDict=self.store.get_apis()
         helpWasFound = False
         for provider in apis:
             # We don't want to process the manpages provider... thats the provider
@@ -78,16 +78,16 @@ class HelpMeAgent(Agent):
             thisAPI:Provider = apis[provider]
             
             # Skip this provider if it isn't supported on the target OS
-            if not thisAPI.canRunOnThisOS():
+            if not thisAPI.can_run_on_this_os():
                 logger.info(f"Skipping search provider '{provider}'")
                 logger.info(f"==> Excluded on platforms: {str(thisAPI.getExcludes())}")
                 continue # Move to next provider in list
             
             logger.info(f"Processing search provider '{provider}'")
             
-            if thisAPI.hasVariants():
-                logger.info(f"==> Has search variants: {str(thisAPI.getVariants())}")
-                variants:List = thisAPI.getVariants()
+            if thisAPI.has_variants():
+                logger.info(f"==> Has search variants: {str(thisAPI.get_variants())}")
+                variants:List = thisAPI.get_variants()
             else:
                 logger.info(f"==> Has no search variants")
                 variants:List = [None]
@@ -112,7 +112,7 @@ class HelpMeAgent(Agent):
                     logger.info(f"==> Success!!! Found a result in the {apiString}")
     
                     # Find closest match b/w relevant data and manpages for unix
-                    searchResult = thisAPI.extractSearchResult(data)
+                    searchResult = thisAPI.extract_search_result(data)
                     manpages = self.store.search(searchResult, service='manpages', size=5)
                     if manpages:
                         logger.info("==> Success!!! found relevant manpages.")
@@ -131,7 +131,7 @@ class HelpMeAgent(Agent):
                             .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
                             .append(f"and found this in the {thisAPI}:\n") \
                             .info() \
-                            .append(thisAPI.getPrintableOutput(data)) \
+                            .append(thisAPI.get_printable_output(data)) \
                             .warning() \
                             .append("Do you want to try: man {}".format(command)) \
                             .to_console()
