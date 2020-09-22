@@ -13,12 +13,7 @@ from . import Provider
 class Manpages(Provider):
     def __init__(self, name: str, description: str, section: dict):
         super().__init__(name, description, section)
-
-        # This search provider doesn't support any variant searches
-        for variant in self.get_variants():
-            raise AttributeError(f"Invalid {self.name} search variant: '{variant}'")
-
-        self.__log_debug__("Provider initialized")
+        self.__log_debug__("Manpages provider initialized")
 
     def call(self, query: str, limit: int = 1, **kwargs):
         self.__log_debug__(

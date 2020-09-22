@@ -41,7 +41,7 @@ class KnowledgeCenter(Provider):
                     f"Invalid {self.name} search variant: '{variant.name}'"
                 )
 
-        self.__log_debug__("Provider initialized")
+        self.__log_debug__("z/OS KnowledgeCenter provider initialized")
 
     def get_variants(self) -> List[KCtype]:
         """Override the default get_variants() method so that it instead returns

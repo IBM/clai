@@ -26,11 +26,11 @@ class SearchAgentTest(unittest.TestCase):
     def print_and_verify(self, question, answer):
         state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
+        print(f"Input: {state.command}")
         print("===========================")
-        print("Response: {}".format(action.suggested_command))
+        print(f"Response: {action.suggested_command}")
         print("===========================")
-        print("Explanation: {}".format(action.description))
+        print(f"Explanation: {action.description}")
         self.assertEqual(answer, action.suggested_command)
 
     @unittest.skip("Only for local testing")
