@@ -9,10 +9,14 @@ import spacy
 
 
 class QuestionDetection(object):
-
     def __init__(self):
-        self.nlp = spacy.load('en_core_web_sm')
-        self.WH_TAGS = ['WDT', 'WP', 'WP$', 'WRB']  # WH word tags. These signify the presence of an interrogative word
+        self.nlp = spacy.load("en_core_web_sm")
+        self.WH_TAGS = [
+            "WDT",
+            "WP",
+            "WP$",
+            "WRB",
+        ]  # WH word tags. These signify the presence of an interrogative word
 
     def is_question(self, text):
         """
@@ -29,7 +33,7 @@ class QuestionDetection(object):
             (bool): True if the text is a question.
         """
 
-        if text.endswith('?'):
+        if text.endswith("?"):
             return True
 
         doc = self.nlp(text)

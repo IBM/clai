@@ -1,4 +1,4 @@
-#pylint: disable=too-few-public-methods
+# pylint: disable=too-few-public-methods
 class OrchestratorDescriptor:
     def __init__(self, name: str, exclude: bool, description: str):
         self.name = name

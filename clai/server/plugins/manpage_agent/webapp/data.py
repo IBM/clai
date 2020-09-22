@@ -12,17 +12,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Datastore:
     def __init__(self):
-        self.path = './data'
+        self.path = "./data"
         self.transformer_func, self.vectors, self.commands = self.read()
 
     def read(self):
-        with open(self.path + '/model/func.p', 'rb') as f:
+        with open(self.path + "/model/func.p", "rb") as f:
             transformer_func = pickle.load(f)
 
-        with open(self.path + '/model/vectors.p', 'rb') as f:
+        with open(self.path + "/model/vectors.p", "rb") as f:
             vectors = pickle.load(f)
 
-        with open(self.path + '/model/keys.p', 'rb') as f:
+        with open(self.path + "/model/keys.p", "rb") as f:
             commands = pickle.load(f)
 
         return transformer_func, vectors, commands

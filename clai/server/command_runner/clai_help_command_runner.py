@@ -12,6 +12,5 @@ from clai.server.command_runner.command_runner import CommandRunner
 
 # pylint: disable=too-few-public-methods
 class ClaiHelpCommandRunner(CommandRunner):
-
     def execute(self, state: State) -> Action:
         return create_message_help()

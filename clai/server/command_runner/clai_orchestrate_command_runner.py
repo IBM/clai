@@ -15,14 +15,16 @@ from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 
 
 class ClaiOrchestrateCommandRunner(CommandRunner):
-    SELECT_DIRECTIVE = 'clai orchestrate'
-    __VERBOSE_MODE = '-v'
+    SELECT_DIRECTIVE = "clai orchestrate"
+    __VERBOSE_MODE = "-v"
 
     def __init__(self, orchestrator_provider: OrchestratorProvider):
         self.orchestrator_provider = orchestrator_provider
 
     def execute(self, state: State) -> Action:
-        orchestrator_to_select = state.command.replace(f'{self.SELECT_DIRECTIVE}', '').strip()
+        orchestrator_to_select = state.command.replace(
+            f"{self.SELECT_DIRECTIVE}", ""
+        ).strip()
 
         verbose = False
         if self.__VERBOSE_MODE in orchestrator_to_select:
@@ -37,5 +39,5 @@ class ClaiOrchestrateCommandRunner(CommandRunner):
         return create_orchestrator_list(
             self.orchestrator_provider.get_current_orchestrator_name(),
             self.orchestrator_provider.all_orchestrator(),
-            verbose
+            verbose,
         )

@@ -19,7 +19,8 @@ import matplotlib.cbook as cbook
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from PIL import Image
-  
+
+
 class DATAXPLORE(Agent):
     def __init__(self):
         super(DATAXPLORE, self).__init__()
@@ -35,11 +36,11 @@ class DATAXPLORE(Agent):
             commandStr = str(command)
             commandTokenized = commandStr.split(" ")
             if len(commandTokenized) == 2:
-                if commandTokenized[0] == 'summarize':
+                if commandTokenized[0] == "summarize":
                     fileName = commandTokenized[1]
                     csvFile = fileName.split(".")
                     if len(csvFile) == 2:
-                        if csvFile[1] == 'csv':
+                        if csvFile[1] == "csv":
                             path = os.path.abspath(fileName)
                             data = pd.read_csv(path)
                             df = pd.DataFrame(data)
@@ -48,17 +49,17 @@ class DATAXPLORE(Agent):
                             response = "We currently support only csv files. Please, Try >> clai dataxplore summarize csvFileLocation "
                     else:
                         response = "Not a supported file format. Please, Try >> clai dataxplore summarize csvFileLocation "
-                elif commandTokenized[0] == 'plot':
+                elif commandTokenized[0] == "plot":
                     fileName = commandTokenized[1]
                     csvFile = fileName.split(".")
                     if len(csvFile) == 2:
-                        if csvFile[1] == 'csv':
-                            plt.close('all')
+                        if csvFile[1] == "csv":
+                            plt.close("all")
                             path = os.path.abspath(fileName)
-                            data = pd.read_csv(path,index_col=0, parse_dates=True)
+                            data = pd.read_csv(path, index_col=0, parse_dates=True)
                             data.plot()
-                            plt.savefig('/tmp/claifigure.png')
-                            im = Image.open('/tmp/claifigure.png')
+                            plt.savefig("/tmp/claifigure.png")
+                            im = Image.open("/tmp/claifigure.png")
                             im.show()
                             response = "Please, check the popup for figure."
                         else:
@@ -76,7 +77,8 @@ class DATAXPLORE(Agent):
                 suggested_command=NOOP_COMMAND,
                 execute=True,
                 description=Colorize().info().append(response).to_console(),
-                confidence=confidence)
+                confidence=confidence,
+            )
 
         except Exception as ex:
-            return [ { "text" : "Method failed with status " + str(ex) }, 0.0 ]
+            return [{"text": "Method failed with status " + str(ex)}, 0.0]

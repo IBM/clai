@@ -24,7 +24,7 @@ class Anonymizer:
             return self.alternate_path
 
         base_dir = os.path.dirname(clai.tools.__file__)
-        filename = os.path.join(base_dir, '../../anonymize.json')
+        filename = os.path.join(base_dir, "../../anonymize.json")
         return filename
 
     def anonymize(self, key: str) -> str:
@@ -48,6 +48,6 @@ class Anonymizer:
 
     def __create_anonymize(self, key: str) -> str:
         self.__cache[key] = str(uuid.uuid4())
-        with open(self.__get_config_path__(), 'w+') as json_file:
+        with open(self.__get_config_path__(), "w+") as json_file:
             json.dump(self.__cache, json_file)
         return self.__cache[key]

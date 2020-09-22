@@ -9,8 +9,8 @@ import builtins
 
 
 def spy_print(mocker):
-    return mocker.spy(builtins, 'print')
+    return mocker.spy(builtins, "print")
 
 
 def mock_input_console(mocker, value):
-    mocker.patch('builtins.input', return_value=value)
+    mocker.patch("builtins.input", return_value=value)

@@ -13,7 +13,7 @@ from clai.server.command_runner.command_runner import CommandRunner
 
 # pylint: disable=too-few-public-methods
 class ClaiPluginsCommandRunner(CommandRunner):
-    __VERBOSE_MODE = '-v'
+    __VERBOSE_MODE = "-v"
 
     def __init__(self, agent_datasource: AgentDatasource):
         self.agent_datasource = agent_datasource
@@ -22,7 +22,7 @@ class ClaiPluginsCommandRunner(CommandRunner):
         action_to_return = create_message_list(
             self.agent_datasource.get_current_plugin_name(state.user_name),
             self.agent_datasource.all_plugins(),
-            self.__VERBOSE_MODE in state.command
+            self.__VERBOSE_MODE in state.command,
         )
         action_to_return.origin_command = state.command
         return action_to_return
