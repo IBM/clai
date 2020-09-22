@@ -12,16 +12,14 @@ from pydantic import BaseModel
 
 # pylint: disable=too-few-public-methods,dangerous-default-value,too-many-arguments
 class PluginConfig:
-    def __init__(
-        self,
-        selected: List[str] = [],
-        orchestrator: Optional[str] = None,
-        default: List[str] = [],
-        installed: List[str] = [],
-        report_enable: bool = False,
-        default_orchestrator: str = "",
-        user_install: bool = False,
-    ):
+    def __init__(self,
+                 selected: List[str] = [],
+                 orchestrator: Optional[str] = None,
+                 default: List[str] = [],
+                 installed: List[str] = [],
+                 report_enable: bool = False,
+                 default_orchestrator: str = "",
+                 user_install: bool = False):
         self.selected = selected
         self.default = default
         self.installed = installed

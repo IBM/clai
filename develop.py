@@ -31,7 +31,7 @@ from clai import PLATFORM
 
 ACTIONS = ["install", "uninstall"]
 
-DEFAULT_PORT = os.getenv("CLAI_PORT", default="8010")
+DEFAULT_PORT = os.getenv('CLAI_PORT', '8010')
 
 URL_BASH_PREEXEC = (
     "http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh"
@@ -62,7 +62,7 @@ def parse_args():
         action="store",
         type=str,
         help="The location that clai is installed in",
-        default=f"{os.getenv('HOME', '/home/root')}/.bin/clai/bin",
+        default=f"{os.getenv('HOME', '/home/root')}/.bin/clai/bin"
     )
 
     args = parser.parse_args()
@@ -152,15 +152,13 @@ def install(repo_path: str, install_path: str):
     plugins = agent_datasource.all_plugins()
     for plugin in plugins:
         default = z_default = False
-        if PLATFORM in ("zos", "os390"):
+        if PLATFORM in ('zos', 'os390'):
             z_default = plugin.z_default
         else:
             default = plugin.default
 
         if default or z_default:
-            installed = install_plugins_dependencies(
-                install_path, plugin.pkg_name, False
-            )
+            installed = install_plugins_dependencies(install_path, plugin.pkg_name, False)
             if installed:
                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
 

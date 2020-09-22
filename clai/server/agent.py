@@ -16,10 +16,11 @@ from clai.server.command_message import State, Action, BASEDIR
 
 # pylint: disable=too-few-public-methods,bare-except
 class Agent(ABC):
+
     def __init__(self):
         self.agent_name = self.__class__.__name__
         self.ready = False
-        self._save_basedir = os.path.join(BASEDIR, "saved_agents")
+        self._save_basedir = os.path.join(BASEDIR, 'saved_agents')
         self._save_dirpath = os.path.join(self._save_basedir, self.agent_name)
 
     def execute(self, state: State) -> Union[Action, List[Action]]:
@@ -74,7 +75,7 @@ class Agent(ABC):
             self.__prepare_state_folder__()
 
             for var_name, var_val in state.items():
-                with open("{}/{}.p".format(self._save_dirpath, var_name), "wb") as file:
+                with open('{}/{}.p'.format(self._save_dirpath, var_name), 'wb') as file:
                     pickle.dump(var_val, file)
 
         # pylint: disable=broad-except
@@ -89,16 +90,13 @@ class Agent(ABC):
 
         filenames = []
         if os.path.exists(self._save_dirpath):
-            filenames = [
-                file
-                for file in os.listdir(self._save_dirpath)
-                if os.path.isfile(os.path.join(self._save_dirpath, file))
-            ]
+            filenames = [file for file in os.listdir(self._save_dirpath)
+                         if os.path.isfile(os.path.join(self._save_dirpath, file))]
 
         for filename in filenames:
             try:
-                key = os.path.splitext(filename)[0]  # filename without extension
-                with open(os.path.join(self._save_dirpath, filename), "rb") as file:
+                key = os.path.splitext(filename)[0]        # filename without extension
+                with open(os.path.join(self._save_dirpath, filename), 'rb') as file:
                     agent_state[key] = pickle.load(file)
             except:
                 pass
@@ -113,5 +111,6 @@ class Agent(ABC):
 
 
 class ClaiIdentity(Agent):
+
     def get_next_action(self, state: State) -> Action:
         return Action(suggested_command=state.command)

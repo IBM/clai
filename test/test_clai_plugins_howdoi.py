@@ -13,7 +13,7 @@ from clai.server.command_message import State
 from clai.server.plugins.howdoi.howdoi import HowDoIAgent
 from builtins import classmethod
 
-OS_NAME: str = os.uname().sysname.upper()
+OS_NAME:str = os.uname().sysname.upper()
 
 
 @unittest.skip("Only for local testing")
@@ -22,16 +22,16 @@ class SearchAgentTest(unittest.TestCase):
     def setUpClass(cls):
         _agent = HowDoIAgent()
         cls.agent = _agent
-
+        
     @classmethod
     def getQandA(cls):
-        question: str = ""
-        answer: str = ""
-
+        question:str = ""
+        answer:str = ""
+        
         callerFrame = sys._getframe(2) if hasattr(sys, "_getframe") else None
         if callerFrame is not None:
-            method: str = callerFrame.f_code.co_name
-
+            method:str = callerFrame.f_code.co_name
+            
             if method == "test_get_next_action_pwd_without_question":
                 if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     question = "pds"
@@ -39,7 +39,7 @@ class SearchAgentTest(unittest.TestCase):
                 else:
                     question = "pwd"
                     answer = None
-
+            
             elif method == "test_get_next_action_pwd_with_question":
                 if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     question = "What is a pds?"
@@ -47,40 +47,40 @@ class SearchAgentTest(unittest.TestCase):
                 else:
                     question = "What is pwd?"
                     answer = "man pwd"
-
+            
             elif method == "test_get_next_action_sudo":
                 question = "when to use sudo vs su?"
                 answer = "man su"
-
+            
             elif method == "test_get_next_action_disk":
                 question = "find out disk usage per user?"
                 if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man du"
                 else:
                     answer = "man df"
-
+            
             elif method == "test_get_next_action_zip":
                 question = "How to process gz files?"
                 if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man dnctl"
                 else:
                     answer = "man gzip"
-
+            
             elif method == "test_get_next_action_pds":
                 question = "copy a PDS member?"
                 if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
                     answer = "man tcsh"
                 else:
                     answer = "man cmp"
-
-        return (question, answer)
+        
+        return(question, answer)
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_without_question(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")
@@ -94,7 +94,7 @@ class SearchAgentTest(unittest.TestCase):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")
@@ -108,7 +108,7 @@ class SearchAgentTest(unittest.TestCase):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")
@@ -122,7 +122,7 @@ class SearchAgentTest(unittest.TestCase):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")
@@ -136,7 +136,7 @@ class SearchAgentTest(unittest.TestCase):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")
@@ -144,13 +144,13 @@ class SearchAgentTest(unittest.TestCase):
         print("===========================")
         print("Explanation: {}".format(action.description))
         self.assertEqual(answer, action.suggested_command)
-
+    
     @unittest.skip("Only for local testing")
     def test_get_next_action_pds(self):
         self.agent.init_agent()
         question, answer = self.getQandA()
 
-        state = State(user_name="tester", command_id="0", command=question)
+        state = State(user_name='tester', command_id='0', command=question)
         action = self.agent.get_next_action(state=state)
         print("Input: {}".format(state.command))
         print("===========================")

@@ -9,40 +9,33 @@ from typing import Optional
 from pydantic import BaseModel
 
 from clai.datasource.server_status_datasource import ServerStatusDatasource
-from clai.server.command_message import (
-    State,
-    Action,
-    ProcessesValues,
-    FilesChangesValues,
-    NetworkValues,
-)
+from clai.server.command_message import State, Action, ProcessesValues, FilesChangesValues, NetworkValues
 from clai.server.command_runner.command_runner import CommandRunner, PostCommandRunner
 
 
 # pylint: disable=too-few-public-methods
 class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
-    LAST_DIRECTIVE_DIRECTIVE = "clai last-info"
+    LAST_DIRECTIVE_DIRECTIVE = 'clai last-info'
 
     def __init__(self, server_status_datasource: ServerStatusDatasource):
         self.server_status_datasource = server_status_datasource
 
     def execute(self, state: State) -> Action:
-        return Action(suggested_command=":", execute=True, origin_command=state.command)
+        return Action(suggested_command=":",
+                      execute=True,
+                      origin_command=state.command
+                      )
 
     def execute_post(self, state: State) -> Action:
-        offset_last = state.command.replace(
-            f"{self.LAST_DIRECTIVE_DIRECTIVE}", ""
-        ).strip()
+        offset_last = state.command.replace(f'{self.LAST_DIRECTIVE_DIRECTIVE}', '').strip()
         if not offset_last:
-            offset_last = "0"
+            offset_last = '0'
 
         if not offset_last.isdigit():
-            offset_last = "0"
+            offset_last = '0'
 
         offset_last_as_int = int(offset_last)
-        last_message = self.server_status_datasource.get_last_message(
-            state.user_name, offset=offset_last_as_int
-        )
+        last_message = self.server_status_datasource.get_last_message(state.user_name, offset=offset_last_as_int)
 
         if not last_message:
             return Action()
@@ -58,10 +51,12 @@ class ClaiLastInfoCommandRunner(CommandRunner, PostCommandRunner):
             result_code=last_message.result_code,
             stderr=last_message.stderr,
             already_processed=last_message.already_processed,
-            action_suggested=last_message.action_suggested,
+            action_suggested=last_message.action_suggested
         )
 
-        return Action(description=str(info_to_show.json()))
+        return Action(
+            description=str(info_to_show.json())
+        )
 
 
 class InfoDebug(BaseModel):

@@ -6,7 +6,6 @@
 #
 
 from abc import ABC, abstractmethod
-
 from concurrent import futures
 
 

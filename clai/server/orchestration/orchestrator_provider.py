@@ -44,9 +44,7 @@ class OrchestratorProvider(ABC):
 
     def get_current_orchestrator(self):
         if not self.__current_orchestrator_name:
-            self.__current_orchestrator_name = (
-                self.agent_datasource.get_current_orchestrator()
-            )
+            self.__current_orchestrator_name = self.agent_datasource.get_current_orchestrator()
 
         if self.__current_orchestrator_name in self.orchestrator_instances:
             return self.orchestrator_instances[self.__current_orchestrator_name]
@@ -61,14 +59,12 @@ class OrchestratorProvider(ABC):
         """
 
         orchestrator_mods = importlib.import_module(
-            f"clai.server.orchestration.patterns.{orchestrator_name}.{orchestrator_name}",
-            package=orchestrator_name,
+            f'clai.server.orchestration.patterns.{orchestrator_name}.{orchestrator_name}',
+            package=orchestrator_name
         )
 
         for _, class_member in inspect.getmembers(orchestrator_mods, inspect.isclass):
-            if issubclass(class_member, Orchestrator) and (
-                class_member is not Orchestrator
-            ):
+            if issubclass(class_member, Orchestrator) and (class_member is not Orchestrator):
                 class_member = class_member()
                 self.orchestrator_instances[orchestrator_name] = class_member
                 return class_member
@@ -76,16 +72,12 @@ class OrchestratorProvider(ABC):
         return None
 
     def all_orchestrator(self) -> List[OrchestratorDescriptor]:
-        orchestrator_names = list(
-            map(lambda value: value.name, pkg.iter_modules(self.get_path()))
-        )
+        orchestrator_names = list(map(lambda value: value.name, pkg.iter_modules(self.get_path())))
 
         orchestrators = []
         for orchestrator in orchestrator_names:
             orchestrator_plugin = os.path.join(self.get_path()[0], orchestrator)
-            orchestrator_descriptor = self.load_descriptors(
-                orchestrator_plugin, orchestrator
-            )
+            orchestrator_descriptor = self.load_descriptors(orchestrator_plugin, orchestrator)
             if not orchestrator_descriptor.exclude:
                 orchestrators.append(orchestrator_descriptor)
 
@@ -99,18 +91,24 @@ class OrchestratorProvider(ABC):
             config_parser.read(file_path)
 
             exclude = False
-            if config_parser.has_option("DEFAULT", "exclude"):
-                exclude = config_parser.getboolean("DEFAULT", "exclude")
+            if config_parser.has_option('DEFAULT', 'exclude'):
+                exclude = config_parser.getboolean('DEFAULT', 'exclude')
 
             description = ""
-            if config_parser.has_option("DEFAULT", "description"):
-                description = config_parser.get("DEFAULT", "description")
+            if config_parser.has_option('DEFAULT', 'description'):
+                description = config_parser.get('DEFAULT', 'description')
 
             return OrchestratorDescriptor(
-                name=name, exclude=exclude, description=description
+                name=name,
+                exclude=exclude,
+                description=description
             )
 
-        return OrchestratorDescriptor(name=name, exclude=False, description="")
+        return OrchestratorDescriptor(
+            name=name,
+            exclude=False,
+            description=""
+        )
 
     @staticmethod
     def get_path():

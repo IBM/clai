@@ -16,13 +16,13 @@ class ContractSkills:
         return True
 
     def get_skill_name(self):
-        raise NotImplementedError("You should provide the commands to execute.")
+        raise NotImplementedError('You should provide the commands to execute.')
 
     def get_commands_to_execute(self):
-        raise NotImplementedError("You should provide the commands to execute.")
+        raise NotImplementedError('You should provide the commands to execute.')
 
     def get_commands_expected(self):
-        raise NotImplementedError("You should provide the commands expected.")
+        raise NotImplementedError('You should provide the commands expected.')
 
     @pytest.mark.dependency()
     def test_install(self, my_clai_module):
@@ -33,13 +33,11 @@ class ContractSkills:
 
         command_executed = execute_cmd(my_clai_module, command_select)
 
-        assert (
-            f"[x]\x1b[32m {skill_name} (Installed)" in command_executed
-        ), f"Skill {skill_name} not found installed. Output: {command_executed}"
+        assert f"[x]\x1b[32m {skill_name} (Installed)" in command_executed, \
+            f'Skill {skill_name} not found installed. Output: {command_executed}'
 
-    @pytest.mark.dependency(depends=["test_install"])
+    @pytest.mark.dependency(depends=['test_install'])
     def test_skill_values(self, my_clai_module, command, command_expected):
         command_executed = execute_cmd(my_clai_module, command)
-        assert (
-            command_expected in command_executed
-        ), f"Expected: {command_expected}, Received: {command_executed}"
+        assert command_expected in command_executed, \
+            f'Expected: {command_expected}, Received: {command_executed}'

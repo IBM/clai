@@ -12,24 +12,21 @@ from clai.datasource.server_status_datasource import ServerStatusDatasource
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.logger import current_logger as logger
 from clai.datasource.config_storage import config_storage
-from clai.datasource.server_pending_actions_datasource import (
-    ServerPendingActionsDatasource,
-)
+from clai.datasource.server_pending_actions_datasource import ServerPendingActionsDatasource
 from clai.server.agent_runner import AgentRunner
 from clai.server.command_message import State, Action
 from clai.server.command_runner.command_runner_factory import CommandRunnerFactory
 from clai.tools.file_util import read_history
 from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 
-STOP_COMMAND = "clai stop"
+STOP_COMMAND = 'clai stop'
 
 
 class MessageHandler:
-    def __init__(
-        self,
-        server_status_datasource: ServerStatusDatasource,
-        agent_datasource: AgentDatasource,
-    ):
+
+    def __init__(self,
+                 server_status_datasource: ServerStatusDatasource,
+                 agent_datasource: AgentDatasource):
         self.agent_datasource = agent_datasource
         orchestrator_provider = OrchestratorProvider(agent_datasource)
         self.agent_runner = AgentRunner(self.agent_datasource, orchestrator_provider)
@@ -39,7 +36,7 @@ class MessageHandler:
             self.agent_datasource,
             config_storage,
             self.server_status_datasource,
-            orchestrator_provider,
+            orchestrator_provider
         )
 
     def init_server(self):
@@ -47,9 +44,8 @@ class MessageHandler:
 
     def process_post_command(self, message: State) -> Action:
         message = self.complete_history(message)
-        command_runner = self.command_runner_factory.provide_post_command_runner(
-            message.command, self.agent_runner
-        )
+        command_runner = self.command_runner_factory \
+            .provide_post_command_runner(message.command, self.agent_runner)
         action = command_runner.execute_post(message)
         if not action:
             action = Action()
@@ -61,9 +57,8 @@ class MessageHandler:
             self.server_status_datasource.running = False
             return [Action()]
 
-        command_runner = self.command_runner_factory.provide_command_runner(
-            message.command, self.agent_runner
-        )
+        command_runner = self.command_runner_factory \
+            .provide_command_runner(message.command, self.agent_runner)
 
         action = command_runner.execute(message)
         if isinstance(action, Action):
@@ -73,27 +68,24 @@ class MessageHandler:
 
     def __process_command(self, message: State) -> Action:
         if not message.is_already_processed():
-            message.previous_execution = self.server_status_datasource.get_last_message(
-                message.user_name
-            )
+            message.previous_execution = self.server_status_datasource.get_last_message(message.user_name)
             actions = self.__process_command_ai(message)
             message.mark_as_processed()
             logger.info(f"after setting info: {message.is_already_processed()}")
             self.server_status_datasource.store_info(message)
             action = self.server_pending_actions_datasource.store_pending_actions(
-                message.command_id, actions, message.user_name
-            )
+                message.command_id,
+                actions,
+                message.user_name)
         else:
             logger.info(f"we have pending action")
-            action = self.server_pending_actions_datasource.get_next_action(
-                message.command_id, message.user_name
-            )
+            action = self.server_pending_actions_datasource.get_next_action(message.command_id, message.user_name)
 
         if action is None:
             action = Action(
                 suggested_command=message.command,
                 origin_command=message.command,
-                execute=False,
+                execute=False
             )
 
         action.origin_command = message.command
@@ -110,9 +102,7 @@ class MessageHandler:
         try:
             message = self.server_status_datasource.store_info(message)
             if message.is_post_process():
-                message = self.server_status_datasource.find_message_stored(
-                    message.command_id, message.user_name
-                )
+                message = self.server_status_datasource.find_message_stored(message.command_id, message.user_name)
                 return self.process_post_command(message)
             if message.is_command():
                 return self.__process_command(message)
@@ -139,10 +129,8 @@ class MessageHandler:
             last_values = lines[index::]
             message.values_executed = last_values
 
-            if (
-                message.action_suggested.suggested_command
-                and message.action_suggested.suggested_command in last_values[0]
-            ):
+            if message.action_suggested.suggested_command \
+                    and message.action_suggested.suggested_command in last_values[0]:
                 message.suggested_executed = True
         else:
             message.values_executed = []
@@ -155,6 +143,5 @@ class MessageHandler:
         if message is None or message.action_suggested is None:
             return True
         action_suggested = message.action_suggested.suggested_command
-        return message.command in command_executed or (
-            action_suggested and action_suggested in command_executed
-        )
+        return message.command in command_executed \
+               or (action_suggested and action_suggested in command_executed)

@@ -36,8 +36,8 @@ class SocketClientConnector(ClientConnector):
             logger.info(traceback.format_exc())
 
             return Action(
-                origin_command=message.command, suggested_command=message.command
-            )
+                origin_command=message.command,
+                suggested_command=message.command)
         finally:
             self.close()
 
@@ -50,8 +50,7 @@ class SocketClientConnector(ClientConnector):
 
         return Action(
             origin_command=command_to_send.command,
-            suggested_command=command_to_send.command,
-        )
+            suggested_command=command_to_send.command)
 
     def start_connections(self, host, port):
 
@@ -61,7 +60,10 @@ class SocketClientConnector(ClientConnector):
         client_socket.setblocking(False)
         client_socket.connect_ex(server_address)
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        data = types.SimpleNamespace(connid=self.uuid, outb=b"",)
+        data = types.SimpleNamespace(
+            connid=self.uuid,
+            outb=b'',
+        )
         self.sel.register(client_socket, events, data=data)
 
     def write(self, message: StateDTO):
@@ -70,9 +72,9 @@ class SocketClientConnector(ClientConnector):
         client_socket = key.fileobj
         data = key.data
         self.sel.modify(client_socket, selectors.EVENT_WRITE, data)
-        logger.info(f"echoing ${data}")
+        logger.info(f'echoing ${data}')
         data.outb = str(message.json())
-        sent = client_socket.send(data.outb.encode("utf-8"))
+        sent = client_socket.send(data.outb.encode('utf-8'))
         data.outb = data.outb[sent:]
         self.sel.modify(client_socket, selectors.EVENT_READ, data)
 

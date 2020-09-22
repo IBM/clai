@@ -17,6 +17,7 @@ CLAI_COMMAND_NAME = "clai"
 
 
 class ClaiDelegateToAgentCommandRunner(CommandRunner, PostCommandRunner):
+
     def __init__(self, agent: AgentCommandRunner):
         self.agent = agent
 
@@ -32,9 +33,7 @@ class ClaiDelegateToAgentCommandRunner(CommandRunner, PostCommandRunner):
             if possible_agents:
                 agent_name = possible_agents[0]
                 self.agent.force_agent = agent_name
-                state.command = command_to_check.replace(
-                    f'"{agent_name}"', "", 1
-                ).strip()
+                state.command = command_to_check.replace(f'"{agent_name}"', "", 1).strip()
 
         action = self.agent.execute(state)
         if not action:
@@ -45,9 +44,7 @@ class ClaiDelegateToAgentCommandRunner(CommandRunner, PostCommandRunner):
                 return ClaiHelpCommandRunner().execute(state)
 
         if isinstance(action, List):
-            diffent_actions = list(
-                filter(lambda value: not value.is_same_action(), action)
-            )
+            diffent_actions = list(filter(lambda value: not value.is_same_action(), action))
             if not diffent_actions:
                 return ClaiHelpCommandRunner().execute(state)
 

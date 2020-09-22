@@ -28,7 +28,7 @@ class FixBot(Agent):
 
     def post_execute(self, state: State) -> Action:
 
-        if state.result_code == "0":
+        if state.result_code == '0':
             return Action(suggested_command=state.command)
 
         cmd = str(state.command)
@@ -42,12 +42,13 @@ class FixBot(Agent):
 
             cmd_to_run = next(cmd_corrected).script
         except Exception:
-            return Action(suggested_command=state.command, confidence=0.1)
+            return Action(suggested_command=state.command,
+                          confidence=0.1)
         else:
             return Action(
                 description=Colorize()
                 .info()
                 .append("Maybe you want to try: {}".format(cmd_to_run))
                 .to_console(),
-                confidence=0.8,
+                confidence=0.8
             )
