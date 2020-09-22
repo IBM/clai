@@ -11,16 +11,21 @@ import os
 import shutil
 import pickle
 
-from clai.server.command_message import NOOP_COMMAND, State, TerminalReplayMemory, Action, BASEDIR, \
-    TerminalReplayMemoryComplete
+from clai.server.command_message import (
+    NOOP_COMMAND,
+    State,
+    TerminalReplayMemory,
+    Action,
+    BASEDIR,
+    TerminalReplayMemoryComplete,
+)
 
 
 # pylint: disable=too-many-arguments
 class Orchestrator(ABC):
-
     def __init__(self):
         self.orchestrator_name = self.__class__.__name__
-        self._save_basedir = os.path.join(BASEDIR, 'saved_orchestrators')
+        self._save_basedir = os.path.join(BASEDIR, "saved_orchestrators")
         self._save_dirpath = os.path.join(self._save_basedir, self.orchestrator_name)
         self.noop_command = NOOP_COMMAND
 
@@ -30,14 +35,21 @@ class Orchestrator(ABC):
         return {}
 
     @abstractmethod
-    def choose_action(self, command: State, agent_names: List[str],
-                      candidate_actions: Optional[List[Union[Action, List[Action]]]],
-                      force_response: bool, pre_post_state: str) -> Optional[Union[Action, List[Action]]]:
+    def choose_action(
+        self,
+        command: State,
+        agent_names: List[str],
+        candidate_actions: Optional[List[Union[Action, List[Action]]]],
+        force_response: bool,
+        pre_post_state: str,
+    ) -> Optional[Union[Action, List[Action]]]:
         """Choose an action and agent name for CLAI to respond with"""
 
-    def record_transition(self,
-                          prev_state: TerminalReplayMemoryComplete,
-                          current_state_pre: TerminalReplayMemory) -> None:
+    def record_transition(
+        self,
+        prev_state: TerminalReplayMemoryComplete,
+        current_state_pre: TerminalReplayMemory,
+    ) -> None:
         """
         Record terminal state transition to learn user behavior
         :param prev_state: Previous terminal state
@@ -74,7 +86,7 @@ class Orchestrator(ABC):
             self.__prepare_state_folder__()
 
             for var_name, value in state.items():
-                with open(f'{self._save_dirpath}/{var_name}.p', 'wb') as file:
+                with open(f"{self._save_dirpath}/{var_name}.p", "wb") as file:
                     pickle.dump(value, file)
 
         # pylint: disable=broad-except
@@ -89,13 +101,16 @@ class Orchestrator(ABC):
 
         files = []
         if os.path.exists(self._save_dirpath):
-            files = [file for file in os.listdir(self._save_dirpath)
-                     if os.path.isfile(os.path.join(self._save_dirpath, file))]
+            files = [
+                file
+                for file in os.listdir(self._save_dirpath)
+                if os.path.isfile(os.path.join(self._save_dirpath, file))
+            ]
 
         for filename in files:
             try:
                 key = os.path.splitext(filename)[0]  # filename without extension
-                with open(os.path.join(self._save_dirpath, filename), 'rb') as file:
+                with open(os.path.join(self._save_dirpath, filename), "rb") as file:
                     orchestrator_state[key] = pickle.load(file)
             # pylint: disable=bare-except
             except:

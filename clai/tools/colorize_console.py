@@ -13,15 +13,14 @@ class Colorize:
     COMPLETE = "\033[32m"
     NORMAL = "\033[0m"
 
-
     if PLATFORM in ('zos', 'os390'):
-        EMOJI_ROBOT = '@'
-        EMOJI_CHECK = '[x]'
-        EMOJI_BOX = '[ ]'
+        EMOJI_ROBOT = "@"
+        EMOJI_CHECK = "[x]"
+        EMOJI_BOX = "[ ]"
     else:
-        EMOJI_ROBOT = '\U0001F916'
-        EMOJI_CHECK = '\u2611'
-        EMOJI_BOX = '\u25FB'
+        EMOJI_ROBOT = "\U0001F916"
+        EMOJI_CHECK = "\u2611"
+        EMOJI_BOX = "\u25FB"
 
     def __init__(self):
         self._text_complete = ""

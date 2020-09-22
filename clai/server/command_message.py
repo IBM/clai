@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 
 class Process(BaseModel):
-    name: str = ''
+    name: str = ""
 
 
 class ProcessesValues(BaseModel):
@@ -23,10 +23,10 @@ class ProcessesValues(BaseModel):
 
 
 class FileStatus(str, Enum):
-    New = 'new'
-    Modified = 'modified'
-    Deleted = 'deleted'
-    Unknow = 'unknow'
+    New = "new"
+    Modified = "modified"
+    Deleted = "deleted"
+    Unknow = "unknow"
 
 
 class FileType(str, Enum):
@@ -63,22 +63,22 @@ class StateDTO(BaseModel):
 
 
 class State:
-
-    def __init__(self,
-                 command_id: str,
-                 user_name: str,
-                 command: str = None,
-                 root: bool = False,
-                 processes: Optional[ProcessesValues] = None,
-                 file_changes: Optional[FilesChangesValues] = None,
-                 network: Optional[NetworkValues] = None,
-                 result_code: Optional[str] = None,
-                 stderr: Optional[str] = None,
-                 previous_execution: Optional['State'] = None,
-                 already_processed: bool = False,
-                 action_suggested: 'Action' = None,
-                 action_post_suggested: 'Action' = None
-                 ):
+    def __init__(
+        self,
+        command_id: str,
+        user_name: str,
+        command: str = None,
+        root: bool = False,
+        processes: Optional[ProcessesValues] = None,
+        file_changes: Optional[FilesChangesValues] = None,
+        network: Optional[NetworkValues] = None,
+        result_code: Optional[str] = None,
+        stderr: Optional[str] = None,
+        previous_execution: Optional["State"] = None,
+        already_processed: bool = False,
+        action_suggested: "Action" = None,
+        action_post_suggested: "Action" = None,
+    ):
         self.command_id = command_id
         self.command = command
         self.root = root
@@ -95,7 +95,7 @@ class State:
         self.values_executed = []
         self.suggested_executed = False
 
-    def merge(self, state: 'State'):
+    def merge(self, state: "State"):
         if state.command is not None:
             self.command = state.command
         if not self.root:
@@ -131,8 +131,7 @@ class State:
 
 
 NOOP_COMMAND = ":"
-BASEDIR = os.getenv('CLAI_BASEDIR',
-                    os.path.join(os.path.expanduser('~'), '.clai'))
+BASEDIR = os.getenv("CLAI_BASEDIR", os.path.join(os.path.expanduser("~"), ".clai"))
 
 
 class Action(BaseModel):
@@ -145,13 +144,20 @@ class Action(BaseModel):
     agent_owner: str = None
 
     def is_same_command(self):
-        return not self.suggested_command or self.suggested_command == self.origin_command
+        return (
+            not self.suggested_command or self.suggested_command == self.origin_command
+        )
 
 
 class TerminalReplayMemory:
-    def __init__(self, command: State, agent_names: List[str],
-                 candidate_actions: Optional[List[Union[Action, List[Action]]]],
-                 force_response: bool, suggested_command: Optional[Action]):
+    def __init__(
+        self,
+        command: State,
+        agent_names: List[str],
+        candidate_actions: Optional[List[Union[Action, List[Action]]]],
+        force_response: bool,
+        suggested_command: Optional[Action],
+    ):
         self.command = deepcopy(command)
         self.agent_names = agent_names
         self.candidate_actions = deepcopy(candidate_actions)

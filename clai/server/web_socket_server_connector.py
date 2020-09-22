@@ -33,5 +33,5 @@ class WebSocketServerConnector(ServerConnector):
         logger.info(f" read from the web socket < {data}")
         action = self.process_message(data)
         print(f"> {action}")
-        action_to_send = str(action.json()).encode('utf8')
+        action_to_send = str(action.json()).encode("utf8")
         await websocket.send(action_to_send)

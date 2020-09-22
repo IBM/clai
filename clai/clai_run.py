@@ -11,8 +11,8 @@ import socket
 from clai.server.clai_server import ClaiServer
 from clai.server.web_socket_server_connector import WebSocketServerConnector
 
-START_DIRECTIVE = 'start'
-NEW_DIRECTIVE = 'new'
+START_DIRECTIVE = "start"
+NEW_DIRECTIVE = "new"
 
 
 def is_port_busy(host, port, reconnect):
@@ -26,7 +26,7 @@ def is_port_busy(host, port, reconnect):
                 print("Port is already in use")
             return True
 
-        print(f'something else raised in the socket: {exception}')
+        print(f"something else raised in the socket: {exception}")
     finally:
         socket_to_check.close()
 
@@ -50,9 +50,9 @@ def launcher_server(host, port, directive, websocket):
         if not is_port_busy(host, port, False):
             create_server_socket(host, port, websocket)
         else:
-            print('The server is up yet')
+            print("The server is up yet")
     if directive == START_DIRECTIVE:
         print(f"starting CLAI")
         while is_port_busy(host, port, True):
-            print('')
+            print("")
         create_server_socket(host, port, websocket)

@@ -17,15 +17,17 @@ from clai.server.logger import current_logger as logger
 
 # pylint: disable=too-few-public-methods
 class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
-    SELECT_DIRECTIVE = 'clai activate'
+    SELECT_DIRECTIVE = "clai activate"
 
-    def __init__(self, config_storage: ConfigStorage, agent_datasource: AgentDatasource):
+    def __init__(
+        self, config_storage: ConfigStorage, agent_datasource: AgentDatasource
+    ):
         self.agent_datasource = agent_datasource
         self.config_storage = config_storage
         self.stats_tracker = StatsTracker()
 
     def execute(self, state: State) -> Action:
-        plugin_to_select = state.command.replace(f'{self.SELECT_DIRECTIVE}', '').strip()
+        plugin_to_select = state.command.replace(f"{self.SELECT_DIRECTIVE}", "").strip()
         plugin_to_select = extract_quoted_agent_name(plugin_to_select)
 
         agent_descriptor = self.agent_datasource.get_agent_descriptor(plugin_to_select)
@@ -36,14 +38,13 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
             return create_error_select(plugin_to_select)
 
         if agent_descriptor and not agent_descriptor.installed:
-            logger.info(f'installing dependencies of plugin {agent_descriptor.name}')
+            logger.info(f"installing dependencies of plugin {agent_descriptor.name}")
 
-            command = f'$CLAI_PATH/fileExist.sh {agent_descriptor.pkg_name} $CLAI_PATH' \
-                    f'{" --user" if plugins_config.user_install else ""}'
-            action_selected_to_return = Action(
-                suggested_command=command,
-                execute=True
+            command = (
+                f"$CLAI_PATH/fileExist.sh {agent_descriptor.pkg_name} $CLAI_PATH"
+                f'{" --user" if plugins_config.user_install else ""}'
             )
+            action_selected_to_return = Action(suggested_command=command, execute=True)
         else:
             self.select_plugin(plugin_to_select, state)
             action_selected_to_return = Action(suggested_command=":", execute=True)
@@ -52,7 +53,9 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         return action_selected_to_return
 
     def select_plugin(self, plugin_to_select, state):
-        selected_plugin = self.agent_datasource.select_plugin(plugin_to_select, state.user_name)
+        selected_plugin = self.agent_datasource.select_plugin(
+            plugin_to_select, state.user_name
+        )
         if selected_plugin:
             self.stats_tracker.log_activate_skills(state.user_name, plugin_to_select)
             plugins_config = self.config_storage.read_config(state.user_name)
@@ -65,11 +68,11 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
 
         return create_message_list(
             self.agent_datasource.get_current_plugin_name(state.user_name),
-            self.agent_datasource.all_plugins()
+            self.agent_datasource.all_plugins(),
         )
 
     def execute_post(self, state: State) -> Action:
-        plugin_to_select = state.command.replace(f'{self.SELECT_DIRECTIVE}', '').strip()
+        plugin_to_select = state.command.replace(f"{self.SELECT_DIRECTIVE}", "").strip()
         plugin_to_select = extract_quoted_agent_name(plugin_to_select)
 
         agent_descriptor = self.agent_datasource.get_agent_descriptor(plugin_to_select)
@@ -77,11 +80,13 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         if not agent_descriptor:
             return Action()
 
-        if state.result_code == '0':
-            self.agent_datasource.mark_plugins_as_installed(plugin_to_select, state.user_name)
+        if state.result_code == "0":
+            self.agent_datasource.mark_plugins_as_installed(
+                plugin_to_select, state.user_name
+            )
             return self.select_plugin(plugin_to_select, state)
 
         return create_message_list(
             self.agent_datasource.get_current_plugin_name(state.user_name),
-            self.agent_datasource.all_plugins()
+            self.agent_datasource.all_plugins(),
         )

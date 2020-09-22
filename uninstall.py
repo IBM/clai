@@ -18,7 +18,12 @@ from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.console_helper import print_complete, print_error
-from clai.tools.file_util import get_rc_file, get_setup_file, get_rc_files, is_rw_with_EBCDIC
+from clai.tools.file_util import (
+    get_rc_file,
+    get_setup_file,
+    get_rc_files,
+    is_rw_with_EBCDIC,
+)
 
 
 def remove(path):
@@ -53,7 +58,9 @@ def clai_installed(rc_file_path):
         lines_found = list(filter(lambda line: line_to_search in line, lines))
 
         if lines_found:
-            my_path = lines_found[0].replace(line_to_search, "").replace("\n", "").strip()
+            my_path = (
+                lines_found[0].replace(line_to_search, "").replace("\n", "").strip()
+            )
             return my_path
 
     return None
@@ -86,9 +93,13 @@ def unregister_the_user(bin_path):
 
 
 def stat_uninstall(bin_path):
-    agent_datasource = AgentDatasource(config_storage=ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json"))
+    agent_datasource = AgentDatasource(
+        config_storage=ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json")
+    )
     report_enable = agent_datasource.get_report_enable()
-    stats_tracker = StatsTracker(sync=True, anonymizer=Anonymizer(alternate_path=f"{bin_path}/anonymize.json"))
+    stats_tracker = StatsTracker(
+        sync=True, anonymizer=Anonymizer(alternate_path=f"{bin_path}/anonymize.json")
+    )
     stats_tracker.report_enable = report_enable
     login = getpass.getuser()
     stats_tracker.log_uninstall(login)
@@ -98,7 +109,6 @@ def stat_uninstall(bin_path):
 def remove_setup_file(rc_file_path):
     path = os.path.expanduser(rc_file_path)
     os.remove(path)
-
 
 
 def remove_between(rc_file_path, start, end):
@@ -150,15 +160,19 @@ def remove_setup_register():
     for file in rc_files:
         remove_lines_setup(file)
 
+
 def is_user_install(bin_path):
-    plugins_config = ConfigStorage(
-        alternate_path=f"{bin_path}/configPlugins.json"
-    ).read_config(None).user_install
+    plugins_config = (
+        ConfigStorage(alternate_path=f"{bin_path}/configPlugins.json")
+        .read_config(None)
+        .user_install
+    )
 
     return plugins_config
 
+
 def execute(args):
-    bin_path = os.getenv('CLAI_PATH', None)
+    bin_path = os.getenv("CLAI_PATH", None)
 
     if "-h" in args or "--help" in args:
         print(

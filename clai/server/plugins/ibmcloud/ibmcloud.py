@@ -18,13 +18,13 @@ from clai.tools.colorize_console import Colorize
 from clai.server.plugins.ibmcloud.helper import KubeExe
 from clai.server.logger import current_logger as logger
 
-class IBMCloud(Agent):
 
+class IBMCloud(Agent):
     def __init__(self):
         super(IBMCloud, self).__init__()
 
         self.exe = KubeExe()
-        self.intents = ['deploy to kube', 'build yaml', 'run Dockerfile']
+        self.intents = ["deploy to kube", "build yaml", "run Dockerfile"]
 
     def get_next_action(self, state: State) -> Action:
 
@@ -32,11 +32,11 @@ class IBMCloud(Agent):
         # refer to the nlc2cmd skill for an example of a NLC layer
         if state.command in self.intents:
 
-            # deploy to kube deploys local Dockerfile to your ibmcloud 
+            # deploy to kube deploys local Dockerfile to your ibmcloud
             # run Dockerfile brings up an application locally
             self.exe.set_goal(state.command)
 
-            # this is the sequence of actions that achieves the user's goal    
+            # this is the sequence of actions that achieves the user's goal
             plan = self.exe.get_plan()
 
             if plan:
@@ -49,24 +49,31 @@ class IBMCloud(Agent):
                     # translate from actions in the planner's domain to Action Class
                     action_object = self.exe.execute_action(action)
                     # some actions may have null executions (internal to the reasoning engine)
-                    if action_object: action_list.append(action_object)
+                    if action_object:
+                        action_list.append(action_object)
 
                 return action_list
 
-            else: return Action(suggested_command=NOOP_COMMAND, 
-                                execute=True,
-                                description=Colorize().info().append('Sorry could not find a plan to help! :-(').to_console(),
-                                confidence=1.0)
+            else:
+                return Action(
+                    suggested_command=NOOP_COMMAND,
+                    execute=True,
+                    description=Colorize()
+                    .info()
+                    .append("Sorry could not find a plan to help! :-(")
+                    .to_console(),
+                    confidence=1.0,
+                )
 
         # does not do anything else by default
-        else: return Action(suggested_command=NOOP_COMMAND)
+        else:
+            return Action(suggested_command=NOOP_COMMAND)
 
     def post_execute(self, state: State) -> Action:
 
         # keep track of state changes
-        if state.result_code == '0':
+        if state.result_code == "0":
             # need stdout for state monitoring
-            self.exe.parse_command(state.command, stdout = "")
+            self.exe.parse_command(state.command, stdout="")
 
         return Action(suggested_command=NOOP_COMMAND)
-
