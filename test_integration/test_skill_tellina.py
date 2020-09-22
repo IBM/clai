@@ -9,16 +9,15 @@ from test_integration.contract_skills import ContractSkills
 
 
 class TestSkillTellina(ContractSkills):
-
     def get_skill_name(self):
-        return 'tellina'
+        return "tellina"
 
     def get_commands_to_execute(self):
-        return ['pwd',
-                'clai "tellina" exit terminal',
-                'clai "tellina" show me all files']
+        return [
+            "pwd",
+            'clai "tellina" exit terminal',
+            'clai "tellina" show me all files',
+        ]
 
     def get_commands_expected(self):
-        return ['/opt/IBM/clai',
-                'exit',
-                'find .']
+        return ["/opt/IBM/clai", "exit", "find ."]

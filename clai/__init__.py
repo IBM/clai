@@ -6,5 +6,6 @@
 #
 
 from sys import platform as detect_platform
-platform = None
-platform = platform if platform is not None else detect_platform
+
+PLATFORM = None
+PLATFORM = PLATFORM if PLATFORM is not None else detect_platform

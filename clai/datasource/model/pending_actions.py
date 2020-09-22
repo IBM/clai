@@ -23,6 +23,8 @@ class PendingActions:
         action_to_return = self.pending_actions[self.current_action]
         self.current_action += 1
 
-        action_to_return.pending_actions = self.current_action < len(self.pending_actions)
+        action_to_return.pending_actions = self.current_action < len(
+            self.pending_actions
+        )
 
         return action_to_return

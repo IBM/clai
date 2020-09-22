@@ -17,14 +17,14 @@ class ClaiPowerDisableCommandRunner(CommandRunner):
 
     def execute(self, state: State) -> Action:
         if not self.server_status_datasource.is_power():
-            text = 'You have manual mode already enable, use clai auto to activate it'
+            text = "You have manual mode already enable, use clai auto to activate it"
         else:
             self.server_status_datasource.set_power(False)
-            text = 'You have enable the manual mode'
+            text = "You have enable the manual mode"
 
         return Action(
             suggested_command=NOOP_COMMAND,
             origin_command=state.command,
             description=text,
-            execute=True
+            execute=True,
         )

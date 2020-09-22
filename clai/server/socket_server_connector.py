@@ -69,10 +69,10 @@ class SocketServerConnector(ServerConnector):
         if data.outb:
             logger.info(f"sending from client ${data.outb}")
             server_socket.send(data.outb)
-            data.outb = b''
+            data.outb = b""
 
     def __read(self, data, server_socket, process_message):
-        recv_data = b''
+        recv_data = b""
         chewing = True
         logger.info(f"receiving from client")
         while chewing:
@@ -84,7 +84,7 @@ class SocketServerConnector(ServerConnector):
         if recv_data:
             logger.info(f"receiving from client ${recv_data}")
             action = process_message(recv_data)
-            data.outb = str(action.json()).encode('utf8')
+            data.outb = str(action.json()).encode("utf8")
         else:
             self.sel.unregister(server_socket)
             server_socket.close()

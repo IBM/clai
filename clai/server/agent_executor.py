@@ -26,11 +26,17 @@ class ThreadExecutor(AgentExecutor):
     MAX_TIME_PLUGIN_EXECUTION = 4
     NUM_WORKERS = 4
 
-    def execute_agents(self, command: State, agents: List[Agent]) -> List[Union[Action, List[Action]]]:
+    def execute_agents(
+        self, command: State, agents: List[Agent]
+    ) -> List[Union[Action, List[Action]]]:
         with futures.ThreadPoolExecutor(max_workers=self.NUM_WORKERS) as executor:
             done, _ = futures.wait(
-                [executor.submit(plugin_instance.execute, command) for plugin_instance in agents],
-                timeout=self.MAX_TIME_PLUGIN_EXECUTION)
+                [
+                    executor.submit(plugin_instance.execute, command)
+                    for plugin_instance in agents
+                ],
+                timeout=self.MAX_TIME_PLUGIN_EXECUTION,
+            )
             if not done:
                 return []
             results = map(lambda future: future.result(), done)

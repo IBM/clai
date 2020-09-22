@@ -6,8 +6,9 @@
 #
 
 import os
-from flask import Flask, request, jsonify
+
 from data import Datastore
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 port = int(os.getenv("PORT", 5000))
@@ -15,17 +16,17 @@ port = int(os.getenv("PORT", 5000))
 _DATASTORE = Datastore()
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def homepage():
     return "Agent up"
 
 
-@app.route('/findManPage/', methods=['POST'])
+@app.route("/findManPage/", methods=["POST"])
 def find_man_page():
 
     try:
-        text = request.args.get('text', None)
-        result_count = request.args.get('result_count', 1)
+        text = request.args.get("text", None)
+        result_count = request.args.get("result_count", 1)
         result_count = int(result_count)
 
         if text is None:
@@ -36,16 +37,9 @@ def find_man_page():
         commands = [x[0] for x in result]
         dists = [x[1] for x in result]
     except Exception as err:
-        payload = {
-            'result': 'error',
-            'message': str(err)
-        }
+        payload = {"result": "error", "message": str(err)}
     else:
-        payload = {
-            'status': 'success',
-            'commands': commands,
-            'dists': dists
-        }
+        payload = {"status": "success", "commands": commands, "dists": dists}
     finally:
         return jsonify(payload)
 

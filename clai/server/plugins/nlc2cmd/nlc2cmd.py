@@ -26,4 +26,5 @@ class NLC2CMD(Agent):
             suggested_command=NOOP_COMMAND,
             execute=True,
             description=Colorize().info().append(response).to_console(),
-            confidence=confidence)
+            confidence=confidence,
+        )

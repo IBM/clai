@@ -5,8 +5,8 @@
 # of this source tree for licensing information.
 #
 
-import unicodedata
-from clai import platform
+from clai import PLATFORM
+
 
 class Colorize:
     WARNING = "\033[91m"
@@ -14,15 +14,14 @@ class Colorize:
     COMPLETE = "\033[32m"
     NORMAL = "\033[0m"
 
-    
-    if platform == 'zos':
-        EMOJI_ROBOT = '@'
-        EMOJI_CHECK = '[x]'
-        EMOJI_BOX = '[ ]'
+    if PLATFORM == "zos":
+        EMOJI_ROBOT = "@"
+        EMOJI_CHECK = "[x]"
+        EMOJI_BOX = "[ ]"
     else:
-        EMOJI_ROBOT = '\U0001F916'
-        EMOJI_CHECK = '\u2611'
-        EMOJI_BOX = '\u25FB'
+        EMOJI_ROBOT = "\U0001F916"
+        EMOJI_CHECK = "\u2611"
+        EMOJI_BOX = "\u25FB"
 
     def __init__(self):
         self._text_complete = ""

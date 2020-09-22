@@ -20,11 +20,11 @@ class LogWindow:
         self.text_gui.pack(side="left", fill="both", expand=True)
         presenter.attach_log(self.add_log_data)
 
-
     def add_toolbar(self, window):
         toolbar = tk.Frame(window, bd=1, relief=tk.RAISED)
-        self.autoscroll_button = tk.Checkbutton(toolbar, text="Auto Scroll", relief=tk.SOLID,
-                                                var=self.autoscroll_enable)
+        self.autoscroll_button = tk.Checkbutton(
+            toolbar, text="Auto Scroll", relief=tk.SOLID, var=self.autoscroll_enable
+        )
         self.autoscroll_button.pack(pady=5)
         toolbar.pack(side=tk.TOP, fill=tk.X)
 

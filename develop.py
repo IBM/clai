@@ -5,9 +5,9 @@
 # of this source tree for licensing information.
 #
 
+# pylint: disable=broad-except,invalid-name
 import os
 import sys
-import ssl
 import json
 import argparse
 
@@ -24,15 +24,14 @@ from uninstall import execute as uninstall
 from clai.tools.file_util import get_setup_file
 from clai.tools.console_helper import print_error
 from clai.tools.console_helper import print_complete
-from clai.datasource.stats_tracker import StatsTracker
 from clai.datasource.config_storage import ConfigStorage
 from clai.server.agent_datasource import AgentDatasource
 
-from clai import platform
+from clai import PLATFORM
 
-actions = ["install", "uninstall"]
+ACTIONS = ["install", "uninstall"]
 
-DEFAULT_PORT = os.getenv('CLAI_PORT', 8010)
+DEFAULT_PORT = os.getenv("CLAI_PORT", default="8010")
 
 URL_BASH_PREEXEC = (
     "http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh"
@@ -49,7 +48,7 @@ def parse_args():
         "action",
         action="store",
         type=str,
-        help=f'action for script to preform one of: {" ".join(actions)}',
+        help=f'action for script to preform one of: {" ".join(ACTIONS)}',
     )
 
     parser.add_argument(
@@ -63,14 +62,14 @@ def parse_args():
         action="store",
         type=str,
         help="The location that clai is installed in",
-        default=f"{os.getenv('HOME', '/home/root')}/.bin/clai/bin"
+        default=f"{os.getenv('HOME', '/home/root')}/.bin/clai/bin",
     )
 
     args = parser.parse_args()
 
-    if args.action not in actions:
+    if args.action not in ACTIONS:
         print_error(
-            f"Not a valid action: '{args.action}' Valid actions: [{', '.join(actions)}]"
+            f"Not a valid action: '{args.action}' Valid actions: [{', '.join(ACTIONS)}]"
         )
         sys.exit(1)
 
@@ -81,7 +80,7 @@ def parse_args():
     return args
 
 
-def createInstallDir(directory):
+def create_install_dir(directory):
     try:
         if not os.path.exists(directory):
             print(f"creating install directory: {directory}")
@@ -103,8 +102,8 @@ def link(src, dest):
 
 
 def install(repo_path: str, install_path: str):
-    createInstallDir(install_path)
-    
+    create_install_dir(install_path)
+
     required_scripts = os.listdir(os.path.join(repo_path, "scripts"))
     required_dirs = ["bin", "clai"]
     required_files = [file for file in os.listdir(repo_path) if file.endswith(".json")]
@@ -135,9 +134,7 @@ def install(repo_path: str, install_path: str):
         print(e)
         sys.exit(1)
 
-    download_file(
-        URL_BASH_PREEXEC, filename="%s/%s" % (install_path, BASH_PREEXEC)
-    )
+    download_file(URL_BASH_PREEXEC, filename="%s/%s" % (install_path, BASH_PREEXEC))
 
     register_the_user(install_path, False)
     append_setup_to_file(get_setup_file(), install_path, DEFAULT_PORT)
@@ -153,13 +150,15 @@ def install(repo_path: str, install_path: str):
     plugins = agent_datasource.all_plugins()
     for plugin in plugins:
         default = z_default = False
-        if platform == 'zos':
+        if PLATFORM == "zos":
             z_default = plugin.z_default
         else:
             default = plugin.default
 
         if default or z_default:
-            installed = install_plugins_dependencies(install_path, plugin.pkg_name, False)
+            installed = install_plugins_dependencies(
+                install_path, plugin.pkg_name, False
+            )
             if installed:
                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
 
@@ -169,9 +168,7 @@ def install(repo_path: str, install_path: str):
 def revert(install_path):
     print("Reverting file permissions to original state")
     scripts = [file for file in os.listdir(install_path) if file.endswith(".sh")]
-    json_files = [
-        file for file in os.listdir(install_path) if file.endswith(".json")
-    ]
+    json_files = [file for file in os.listdir(install_path) if file.endswith(".json")]
 
     try:
         for script in scripts:

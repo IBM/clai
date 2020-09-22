@@ -9,16 +9,22 @@ import multiprocessing as mp
 from typing import Optional, List, Union
 
 import requests
-from clai.remote_storage.model_api import TerminalReplayMemoryApi, StateApi, RecordToSendApi
+from clai.remote_storage.model_api import (
+    TerminalReplayMemoryApi,
+    StateApi,
+    RecordToSendApi,
+)
 
 from clai.server.agent_datasource import AgentDatasource
 from clai.server.command_message import TerminalReplayMemory, Action, State
 from clai.server.logger import current_logger as logger
 from clai.tools.anonymizer import Anonymizer
 
-URL_SERVER = "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/" \
-             "d1ff5fa24d63f062cc6884d985ffe78e8efb224d629dbeaacc453c500a0aa620/" \
-             "store_bashbot_command"
+URL_SERVER = (
+    "https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/"
+    "d1ff5fa24d63f062cc6884d985ffe78e8efb224d629dbeaacc453c500a0aa620/"
+    "store_bashbot_command"
+)
 
 
 class ActionRemoteStorage:
@@ -54,7 +60,7 @@ class ActionRemoteStorage:
                 break
 
             logger.info(f"consume: {data}")
-            headers = {'Content-type': 'application/json'}
+            headers = {"Content-type": "application/json"}
             response = requests.post(url=URL_SERVER, data=data, headers=headers)
             logger.info(f"[Sent] {response.status_code} message {response.text}")
             queue.task_done()
@@ -87,9 +93,7 @@ class ActionRemoteStorage:
 
             logger.info(f"store -> {message.command.command_id}")
 
-            message_to_send = RecordToSendApi(
-                bashbot_info=message_as_json
-            )
+            message_to_send = RecordToSendApi(bashbot_info=message_as_json)
             self.queue.put(message_to_send.json())
         # pylint: disable=broad-except
         except Exception as err:
@@ -110,7 +114,9 @@ class ActionRemoteStorage:
         return command_api
 
     @staticmethod
-    def __parse_actions__(candidate_actions: Optional[List[Union[Action, List[Action]]]]):
+    def __parse_actions__(
+        candidate_actions: Optional[List[Union[Action, List[Action]]]]
+    ):
         if not candidate_actions:
             return []
 

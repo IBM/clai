@@ -13,11 +13,16 @@ from clai.server.command_runner.clai_last_info_command_runner import InfoDebug
 
 
 class EmulatorPresenter:
-    def __init__(self, emulator_docker_bridge: EmulatorDockerBridge, on_skills_ready, on_server_running,
-                 on_server_stopped):
+    def __init__(
+        self,
+        emulator_docker_bridge: EmulatorDockerBridge,
+        on_skills_ready,
+        on_server_running,
+        on_server_stopped,
+    ):
         self.server_running = False
         self.server_process = None
-        self.current_active_skill = ''
+        self.current_active_skill = ""
         self.emulator_docker_bridge = emulator_docker_bridge
 
         self.on_skills_ready = on_skills_ready
@@ -29,10 +34,10 @@ class EmulatorPresenter:
     @staticmethod
     def __get_base_path():
         root_path = os.getcwd()
-        if 'bin' in root_path:
-            return '../'
+        if "bin" in root_path:
+            return "../"
 
-        return '.'
+        return "."
 
     def select_skill(self, skill_name: str):
         if skill_name == self.current_active_skill:
@@ -65,7 +70,7 @@ class EmulatorPresenter:
         self.request_skills()
 
     def stop_server(self):
-        print(f'is server running {self.server_running}')
+        print(f"is server running {self.server_running}")
         if self.server_running:
             self.emulator_docker_bridge.stop_server()
             self.server_running = False
@@ -74,20 +79,19 @@ class EmulatorPresenter:
     def refresh_files(self):
         self.emulator_docker_bridge.refresh_files()
 
-
     def retrieve_messages(self, add_row):
         reply = self.emulator_docker_bridge.retrieve_message()
         if reply:
-            if reply.docker_reply == 'skills':
+            if reply.docker_reply == "skills":
                 skills_as_array = reply.message.splitlines()
                 self.on_skills_ready(skills_as_array[2:-1])
-            elif reply.docker_reply == 'reply_message':
-                info_as_string = reply.info[reply.info.index('{'):]
-                info_as_string = info_as_string[:info_as_string.index('\n')]
+            elif reply.docker_reply == "reply_message":
+                info_as_string = reply.info[reply.info.index("{") :]
+                info_as_string = info_as_string[: info_as_string.index("\n")]
                 print(f"----> {info_as_string}")
                 info = InfoDebug(**json.loads(info_as_string))
                 add_row(reply.message, info)
-            elif reply.docker_reply == 'log':
+            elif reply.docker_reply == "log":
                 self.log_value = self.extract_chunk_log(self.log_value, reply.message)
                 if self.log_read:
                     self.log_read(self.log_value)
@@ -97,16 +101,16 @@ class EmulatorPresenter:
     @staticmethod
     def extract_chunk_log(log_value, message):
         if not message:
-            return ''
+            return ""
 
-        log_as_list = log_value.split('\n')
-        message_as_list = message.split('\n')
+        log_as_list = log_value.split("\n")
+        message_as_list = message.split("\n")
 
         new_log = []
         if log_as_list.__contains__(message_as_list[0]):
             index = log_as_list.index(message_as_list[0])
-            new_log = message_as_list[(len(log_as_list) - index - 1):]
+            new_log = message_as_list[(len(log_as_list) - index - 1) :]
         else:
             new_log = message_as_list
 
-        return '\n'.join(new_log)
+        return "\n".join(new_log)

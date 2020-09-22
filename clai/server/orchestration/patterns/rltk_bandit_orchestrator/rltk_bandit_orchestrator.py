@@ -17,11 +17,14 @@ import os
 import json
 import numpy as np
 
-from rltk import instantiate_from_file      # pylint: disable=import-error
+from rltk import instantiate_from_file  # pylint: disable=import-error
 
 from clai.server.orchestration.orchestrator import Orchestrator
 from clai.server.command_message import State, Action
-from clai.server.command_message import TerminalReplayMemory, TerminalReplayMemoryComplete
+from clai.server.command_message import (
+    TerminalReplayMemory,
+    TerminalReplayMemoryComplete,
+)
 from clai.server.logger import current_logger as logger
 
 from . import warm_start_datagen
@@ -29,12 +32,15 @@ from . import warm_start_datagen
 
 # pylint: disable=too-many-arguments,unused-argument,too-many-instance-attributes
 class RLTKBandit(Orchestrator):
-
     def __init__(self):
         super(RLTKBandit, self).__init__()
 
-        self._config_filepath = os.path.join(Path(__file__).parent.absolute(), 'config.yml')
-        self._bandit_config_filepath = os.path.join(Path(__file__).parent.absolute(), 'bandit_config.json')
+        self._config_filepath = os.path.join(
+            Path(__file__).parent.absolute(), "config.yml"
+        )
+        self._bandit_config_filepath = os.path.join(
+            Path(__file__).parent.absolute(), "bandit_config.json"
+        )
 
         self._noop_confidence = None
         self._agent = None
@@ -51,21 +57,21 @@ class RLTKBandit(Orchestrator):
 
     def load_bandit_state(self):
 
-        with open(self._bandit_config_filepath, 'r') as conf_file:
+        with open(self._bandit_config_filepath, "r") as conf_file:
             bandit_config = json.load(conf_file)
 
-        self._noop_confidence = bandit_config['noop_confidence']
-        self._warm_start = bandit_config['warm_start']
-        self._warm_start_type = bandit_config['warm_start_config']['type']
-        self._warm_start_kwargs = bandit_config['warm_start_config']['kwargs']
-        self._reward_match_threshold = bandit_config.get('reward_match_threshold', 0.7)
+        self._noop_confidence = bandit_config["noop_confidence"]
+        self._warm_start = bandit_config["warm_start"]
+        self._warm_start_type = bandit_config["warm_start_config"]["type"]
+        self._warm_start_kwargs = bandit_config["warm_start_config"]["kwargs"]
+        self._reward_match_threshold = bandit_config.get("reward_match_threshold", 0.7)
 
     def get_orchestrator_state(self):
 
         state = {
-            'agent': self._agent,
-            'action_order': self._action_order,
-            'warm_start': self._warm_start
+            "agent": self._agent,
+            "action_order": self._action_order,
+            "warm_start": self._warm_start,
         }
         return state
 
@@ -74,16 +80,16 @@ class RLTKBandit(Orchestrator):
         state = self.load()
         default_action_order = {self.noop_command: 0}
 
-        self._agent = state.get('agent', None)
+        self._agent = state.get("agent", None)
         if self._agent is None:
             self._agent = instantiate_from_file(self._config_filepath)
 
-        self._action_order = state.get('action_order', None)
+        self._action_order = state.get("action_order", None)
         if self._action_order is None:
             self._action_order = default_action_order
 
         self._n_actions = self._agent.num_actions
-        self._warm_start = state.get('warm_start', self._warm_start)
+        self._warm_start = state.get("warm_start", self._warm_start)
 
     def warm_start_orchestrator(self):
         """
@@ -92,50 +98,47 @@ class RLTKBandit(Orchestrator):
         """
 
         def noop_setup():
-            profile = 'noop-always'
+            profile = "noop-always"
             kwargs = {
-                'n_points': 1000,
-                'context_size': self._n_actions,
-                'noop_position': 0
+                "n_points": 1000,
+                "context_size": self._n_actions,
+                "noop_position": 0,
             }
             return profile, kwargs
 
         def ignore_skill_setup(skill_name):
             self.__add_to_action_order__(skill_name)
-            profile = 'ignore-skill'
+            profile = "ignore-skill"
             kwargs = {
-                'n_points': 1000,
-                'context_size': self._n_actions,
-                'skill_idx': self._action_order[skill_name]
+                "n_points": 1000,
+                "context_size": self._n_actions,
+                "skill_idx": self._action_order[skill_name],
             }
             return profile, kwargs
 
         def max_orchestrator_setup():
-            profile = 'max-orchestrator'
-            kwargs = {
-                'n_points': 1000,
-                'context_size': self._n_actions
-            }
+            profile = "max-orchestrator"
+            kwargs = {"n_points": 1000, "context_size": self._n_actions}
             return profile, kwargs
 
         def preferred_skill_orchestrator_setup(advantage_skill, disadvantage_skill):
             self.__add_to_action_order__(advantage_skill)
             self.__add_to_action_order__(disadvantage_skill)
-            profile = 'preferred-skill'
+            profile = "preferred-skill"
             kwargs = {
-                'n_points': 1000,
-                'context_size': self._n_actions,
-                'advantage_skillidx': self._action_order[advantage_skill],
-                'disadvantage_skillidx': self._action_order[disadvantage_skill]
+                "n_points": 1000,
+                "context_size": self._n_actions,
+                "advantage_skillidx": self._action_order[advantage_skill],
+                "disadvantage_skillidx": self._action_order[disadvantage_skill],
             }
             return profile, kwargs
 
         try:
             warm_start_methods = {
-                'noop': noop_setup,
-                'ignore-skill': ignore_skill_setup,
-                'max-orchestrator': max_orchestrator_setup,
-                'preferred-skill': preferred_skill_orchestrator_setup
+                "noop": noop_setup,
+                "ignore-skill": ignore_skill_setup,
+                "max-orchestrator": max_orchestrator_setup,
+                "preferred-skill": preferred_skill_orchestrator_setup,
             }
 
             method = warm_start_methods[self._warm_start_type.lower()]
@@ -150,14 +153,19 @@ class RLTKBandit(Orchestrator):
 
             self.save()
         except Exception as err:
-            logger.warning('Exception in warm starting orchestrator. Error: ' + str(err))
+            logger.warning(
+                "Exception in warm starting orchestrator. Error: " + str(err)
+            )
             raise err
 
-    def choose_action(self,
-                      command: State, agent_names: List[str],
-                      candidate_actions: Optional[List[Union[Action, List[Action]]]],
-                      force_response: bool,
-                      pre_post_state: str):
+    def choose_action(
+        self,
+        command: State,
+        agent_names: List[str],
+        candidate_actions: Optional[List[Union[Action, List[Action]]]],
+        force_response: bool,
+        pre_post_state: str,
+    ):
 
         if not candidate_actions:
             return None
@@ -166,9 +174,9 @@ class RLTKBandit(Orchestrator):
             candidate_actions = [candidate_actions]
 
         context = self.__build_context__(candidate_actions)
-        action_idx = self._agent.choose(t_id=command.command_id,
-                                        context=context,
-                                        num_arms=1)
+        action_idx = self._agent.choose(
+            t_id=command.command_id, context=context, num_arms=1
+        )
         suggested_action = self.__choose_action__(action_idx[0], candidate_actions)
 
         if suggested_action is None:
@@ -176,9 +184,9 @@ class RLTKBandit(Orchestrator):
 
         return suggested_action
 
-    def __build_context__(self,
-                          candidate_actions: Optional[List[Union[Action, List[Action]]]]
-                          ) -> np.array:
+    def __build_context__(
+        self, candidate_actions: Optional[List[Union[Action, List[Action]]]]
+    ) -> np.array:
 
         context = [0.0] * self._n_actions
 
@@ -203,9 +211,11 @@ class RLTKBandit(Orchestrator):
         max_action_order = max(self._action_order.values())
         self._action_order[agent_name] = max_action_order + 1
 
-    def __choose_action__(self,
-                          action_idx: int,
-                          candidate_actions: Optional[List[Union[Action, List[Action]]]]):
+    def __choose_action__(
+        self,
+        action_idx: int,
+        candidate_actions: Optional[List[Union[Action, List[Action]]]],
+    ):
 
         suggested_agent = None
         for agent_name, agent_idx in self._action_order.items():
@@ -222,26 +232,32 @@ class RLTKBandit(Orchestrator):
 
         return None
 
-    def record_transition(self,
-                          prev_state: TerminalReplayMemoryComplete,
-                          current_state_pre: TerminalReplayMemory):
+    def record_transition(
+        self,
+        prev_state: TerminalReplayMemoryComplete,
+        current_state_pre: TerminalReplayMemory,
+    ):
 
         try:
             prev_state_pre = prev_state.pre_replay
             prev_state_post = prev_state.post_replay
 
-            if prev_state_pre.command.action_suggested is None or \
-                    prev_state_post.command.action_suggested is None or \
-                    prev_state_post.command.action_suggested.suggested_command == self.noop_command:
+            if (
+                prev_state_pre.command.action_suggested is None
+                or prev_state_post.command.action_suggested is None
+                or prev_state_post.command.action_suggested.suggested_command
+                == self.noop_command
+            ):
                 return
 
             reward = float(prev_state_post.command.suggested_executed)
 
             currently_executed_command = current_state_pre.command.command
-            all_the_stuff_from_last_execution = \
-                prev_state_pre.command.action_suggested.suggested_command + \
-                prev_state_pre.command.action_suggested.description + \
-                prev_state_post.command.action_suggested.description
+            all_the_stuff_from_last_execution = (
+                prev_state_pre.command.action_suggested.suggested_command
+                + prev_state_pre.command.action_suggested.description
+                + prev_state_post.command.action_suggested.description
+            )
 
             base = set(currently_executed_command.split())
             reference = set(all_the_stuff_from_last_execution.split())
@@ -251,5 +267,7 @@ class RLTKBandit(Orchestrator):
             reward += float(match_score > self._reward_match_threshold)
 
             self._agent.observe(prev_state.post_replay.command.command_id, reward)
-        except Exception as err:    # pylint: disable=broad-except
-            logger.warning(f'Error in record_transition of bandit orchestrator. Error: {err}')
+        except Exception as err:  # pylint: disable=broad-except
+            logger.warning(
+                f"Error in record_transition of bandit orchestrator. Error: {err}"
+            )

@@ -13,20 +13,17 @@ from clai.tools.colorize_console import Colorize
 
 
 class ClaiReloadCommandRunner(CommandRunner):
-
     def __init__(self, agent_datasource: AgentDatasource):
         self.agent_datasource = agent_datasource
 
     def execute(self, state: State) -> Action:
         self.agent_datasource.reload()
 
-        text = Colorize() \
-            .complete() \
-            .append("Plugins reloaded.\n") \
-            .to_console()
+        text = Colorize().complete().append("Plugins reloaded.\n").to_console()
 
-        return Action(suggested_command=":",
-                      execute=True,
-                      description=text,
-                      origin_command=state.command
-                      )
+        return Action(
+            suggested_command=":",
+            execute=True,
+            description=text,
+            origin_command=state.command,
+        )

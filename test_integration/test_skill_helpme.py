@@ -9,12 +9,11 @@ from test_integration.contract_skills import ContractSkills
 
 
 class TestSkillHelpme(ContractSkills):
-
     def get_skill_name(self):
-        return 'helpme'
+        return "helpme"
 
     def get_commands_to_execute(self):
-        return ['pwd', 'apt-get install emacs']
+        return ["pwd", "apt-get install emacs"]
 
     def get_commands_expected(self):
-        return ['/opt/IBM/clai', 'apt']
+        return ["/opt/IBM/clai", "apt"]

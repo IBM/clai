@@ -17,26 +17,29 @@ from clai.server.command_message import State, Action
 
 # pylint: disable=too-many-arguments,unused-argument
 class MaxOrchestrator(Orchestrator):
-
     def __init__(self):
         super(MaxOrchestrator, self).__init__()
 
         self._config_path = os.path.join(
-            Path(__file__).parent.absolute(),
-            'config.json'
+            Path(__file__).parent.absolute(), "config.json"
         )
         self.__read_config__()
 
     def __read_config__(self):
 
-        with open(self._config_path, 'r') as fileobj:
+        with open(self._config_path, "r") as fileobj:
             config = json.load(fileobj)
 
-        self.threshold = config['threshold']
+        self.threshold = config["threshold"]
 
-    def choose_action(self, command: State, agent_names: List[str],
-                      candidate_actions: Optional[List[Union[Action, List[Action]]]],
-                      force_response: bool, pre_post_state: str) -> Optional[Action]:
+    def choose_action(
+        self,
+        command: State,
+        agent_names: List[str],
+        candidate_actions: Optional[List[Union[Action, List[Action]]]],
+        force_response: bool,
+        pre_post_state: str,
+    ) -> Optional[Action]:
         """Choose an action for CLAI to respond with"""
 
         if not candidate_actions:
