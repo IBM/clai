@@ -18,13 +18,15 @@ class PluginConfig:
                  default: List[str] = [],
                  installed: List[str] = [],
                  report_enable: bool = False,
-                 default_orchestrator: str = ""):
+                 default_orchestrator: str = "",
+                 user_install: bool = False):
         self.selected = selected
         self.default = default
         self.installed = installed
         self.report_enable = report_enable
         self.default_orchestrator = default_orchestrator
         self.orchestrator = orchestrator
+        self.user_install = user_install
 
 
 class PluginConfigJson(BaseModel):
@@ -34,3 +36,4 @@ class PluginConfigJson(BaseModel):
     installed: List[str] = []
     report_enable: bool = False
     orchestrator: Optional[str] = None
+    user_install: bool = False

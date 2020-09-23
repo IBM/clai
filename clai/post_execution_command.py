@@ -5,12 +5,18 @@
 # of this source tree for licensing information.
 #
 
+import importlib
 from typing import List
-
-import psutil
-
+from clai import PLATFORM
 from clai.server.clai_client import send_command_post_execute
 from clai.server.command_message import Process, ProcessesValues
+
+try:
+    PSUTIL = importlib.import_module('psutil')
+except ImportError:
+    if PLATFORM not in ('zos', 'os390'):
+        print('Error: psutil not installed')
+
 
 EXCLUDE_OWN_PROCESS = 1
 SIZE_PROCESS = 11
@@ -20,10 +26,16 @@ def map_processes(processes) -> List[Process]:
     return list(map(lambda _: Process(name=_['name']), processes))
 
 
+# pylint: disable=fixme
 def obtain_last_processes(user_name):
     process_changes = []
-    for process in psutil.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
-        process_changes.append(process.info)
+
+    if PLATFORM not in ('zos', 'os390'):
+        for process in PSUTIL.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
+            process_changes.append(process.info)
+    else:
+        # TODO: Figure out the equivilant on z/OS
+        pass
 
     porcess_changes = list(filter(lambda _: _['username'] == user_name, process_changes))
     porcess_changes.sort(key=lambda _: _['create_time'], reverse=True)

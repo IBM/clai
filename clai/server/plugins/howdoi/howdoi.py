@@ -5,9 +5,12 @@
 # of this source tree for licensing information.
 #
 
+import os
+from pathlib import Path
+
 from clai.tools.colorize_console import Colorize
 
-from clai.server.plugins.howdoi.data import Datastore
+from clai.server.searchlib.data import Datastore
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 from clai.server.plugins.howdoi.question_detection import QuestionDetection
@@ -18,7 +21,8 @@ from clai.server.logger import current_logger as logger
 class HowDoIAgent(Agent):
     def __init__(self):
         super(HowDoIAgent, self).__init__()
-        self.store = Datastore()
+        inifile_path = os.path.join(str(Path(__file__).parent.absolute()), 'config.ini')
+        self.store = Datastore(inifile_path)
         self.questionIdentifier = QuestionDetection()
 
     def compute_simple_token_similarity(self, src_sequence, tgt_sequence):
@@ -30,7 +34,10 @@ class HowDoIAgent(Agent):
     def get_next_action(self, state: State) -> Action:
 
         logger.info("================== In HowDoI Bot:get_next_action ========================")
-        logger.info("User Command: {}".format(state.command))
+        logger.info("State:\n\tCommand: {}\n\tError Code: {}\n\tStderr: {}".format(state.command,
+                                                                                   state.result_code,
+                                                                                   state.stderr))
+        logger.info("============================================================================")
 
         # Invoke "howdoi" plugin only when a question is asked
         is_question = self.questionIdentifier.is_question(state.command)
@@ -40,58 +47,93 @@ class HowDoIAgent(Agent):
                 suggested_command=state.command,
                 confidence=0.0
             )
-
-        # Query data store to find closest matching forum
-        forum = self.store.search(state.command, service='stack_exchange', size=1)
-
-        if forum:
-            # Find closes match b/w relevant forum for unix
-            logger.info("Success!!! Found relevant forums.")
-
-            # Find closes match b/w relevant forum and manpages for unix
-            manpages = self.store.search(forum[0]['Answer'], service='manpages', size=5)
-            if manpages:
-                logger.info("Success!!! found relevant manpages.")
-
-                command = manpages['commands'][-1]
-                confidence = manpages['dists'][-1]
-
-                logger.info("Command: {} \t Confidence:{}".format(command, confidence))
-
-                return Action(suggested_command="man {}".format(command),
-                              description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                              .append(f"I did little bit of internet searching for you.\n")
-                              .info()
-                              .append("Post: {}\n".format(forum[0]['Content'][:384] + " ..."))
-                              .append("Answer: {}\n".format(forum[0]['Answer'][:256] + " ..."))
-                              .append("Link: {}\n\n".format(forum[0]['Url']))
-                              .warning()
-                              .append("Do you want to try: man {}".format(command))
-                              .to_console(),
-                              confidence=confidence
-                              )
+        
+        apis:OrderedDict=self.store.get_apis()
+        helpWasFound = False
+        for provider in apis:
+            # We don't want to process the manpages provider... thats the provider
+            # that we use to clarify results from other providers
+            if provider == "manpages":
+                logger.info(f"Skipping search provider 'manpages'")
+                continue
+            
+            thisAPI:Provider = apis[provider]
+            
+            # Skip this provider if it isn't supported on the target OS
+            if not thisAPI.can_run_on_this_os():
+                logger.info(f"Skipping search provider '{provider}'")
+                logger.info(f"==> Excluded on platforms: {str(thisAPI.get_excludes())}")
+                continue # Move to next provider in list
+            
+            logger.info(f"Processing search provider '{provider}'")
+            
+            if thisAPI.has_variants():
+                logger.info(f"==> Has search variants: {str(thisAPI.get_variants())}")
+                variants:List = thisAPI.get_variants()
             else:
-                logger.info("Failure: Manpage search")
-                logger.info("============================================================================")
-
-                return Action(suggested_command=NOOP_COMMAND,
-                              description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                              .append(
-                                  f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
-                              .info()
-                              .append(f"Have you tried turning it OFF and ON again. ;)")
-                              .to_console(),
-                              confidence=0.0
-                              )
-        else:
-            logger.info("Failure: Forum search")
+                logger.info(f"==> Has no search variants")
+                variants:List = [None]
+            
+            # For each search variant supported by the current API, query
+            # the data store to find the closest matching data.  If there are
+            # no search variants (ie: the singleton variant case), the variants
+            # list will only contain a single, Nonetype value.
+            for variant in variants:
+        
+                if variant is not None:
+                    logger.info(f"==> Searching variant '{variant}'")
+                    data = self.store.search(state.command, service=provider, size=1, searchType=variant)
+                else:
+                    data = self.store.search(state.command, service=provider, size=1)
+                    
+                if data:
+                    logger.info(f"==> Success!!! Found a result in the {thisAPI}")
+    
+                    # Find closest match b/w relevant data and manpages for unix
+                    searchResult = thisAPI.extract_search_result(data)
+                    manpages = self.store.search(searchResult, service='manpages', size=5)
+                    if manpages:
+                        logger.info("==> Success!!! found relevant manpages.")
+        
+                        command = manpages['commands'][-1]
+                        confidence = manpages['dists'][-1]
+        
+                        logger.info("==> Command: {} \t Confidence:{}".format(command, confidence))
+                        
+                        # Set return data
+                        suggested_command="man {}".format(command)
+                        description=Colorize() \
+                            .emoji(Colorize.EMOJI_ROBOT).append(f"I did little bit of Internet searching for you, ") \
+                            .append(f"and found this in the {thisAPI}:\n") \
+                            .info() \
+                            .append(thisAPI.get_printable_output(data)) \
+                            .warning() \
+                            .append("Do you want to try: man {}".format(command)) \
+                            .to_console()
+                        
+                        # Mark that help was indeed found
+                        helpWasFound = True
+                        
+                        # We've found help; no need to keep searching
+                        break
+                
+            # If we found help, then break out of the outer loop as well
+            if helpWasFound:
+                break
+            
+        if not helpWasFound:
+            logger.info("Failure: Unable to be helpful")
             logger.info("============================================================================")
-            return Action(suggested_command=NOOP_COMMAND,
-                          description=Colorize().emoji(Colorize.EMOJI_ROBOT)
-                          .append(
-                              f"Sorry. It looks like you have stumbled across a problem that even internet doesn't have answer to.\n")
-                          .warning()
-                          .append(f"Have you tried turning it OFF and ON again. ;)")
-                          .to_console(),
-                          confidence=0.0
-                          )
+            
+            suggested_command=NOOP_COMMAND
+            description=Colorize().emoji(Colorize.EMOJI_ROBOT) \
+                .append(
+                    f"Sorry. It looks like you have stumbled across a problem that even the Internet doesn't have answer to.\n") \
+                .info() \
+                .append(f"Have you tried turning it OFF and ON again. ;)") \
+                .to_console()
+            confidence=0.0
+        
+        return Action(suggested_command=suggested_command,
+                      description=description,
+                      confidence=confidence)

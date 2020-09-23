@@ -1,14 +1,32 @@
 #!/bin/bash -e
+flags=""
+PLUGIN=$1
+CLAI_PATH=$2
+
+# Check for user passed args
+while test $# != 0
+do
+    case "$1" in
+      --user) 
+        USER_INSTALL=true
+        flags="$flags --user"
+      ;;
+      # add more flags here
+      *) 
+    esac
+    shift
+done
+
 
 install_darwin () {
     code=1
-    pushd /opt/local/share/clai/bin/clai/server/plugins/$1
-    if [ -f /opt/local/share/clai/bin/clai/server/plugins/$1/install_darwin.sh ]; then
-        eval "sh install_darwin.sh"
+    pushd $CLAI_PATH/clai/server/plugins/$PLUGIN
+    if [ -f $CLAI_PATH/clai/server/plugins/$PLUGIN/install_darwin.sh ]; then
+        eval "sh install_darwin.sh $flags"
         code=$?
     else
-        if [ -f /opt/local/share/clai/bin/clai/server/plugins/$1/install.sh ]; then
-            eval "sh install.sh"
+        if [ -f $CLAI_PATH/clai/server/plugins/$PLUGIN/install.sh ]; then
+            eval "sh install.sh $flags"
             code=$?
         fi
     fi
@@ -19,14 +37,14 @@ install_darwin () {
 
 install_linux () {
     code=1
-    cd /opt/local/share/clai/bin/clai/server/plugins/$1
+    cd $CLAI_PATH/clai/server/plugins/$PLUGIN
     eval "pwd"
-    if [ -f /opt/local/share/clai/bin/clai/server/plugins/$1/install_linux.sh ]; then
-        eval "sh install_linux.sh"
+    if [ -f $CLAI_PATH/clai/server/plugins/$PLUGIN/install_linux.sh ]; then
+        eval "sh install_linux.sh $flags"
         code=$?
     else
-        if [ -f /opt/local/share/clai/bin/clai/server/plugins/$1/install.sh ]; then
-            eval "sh install.sh"
+        if [ -f $CLAI_PATH/clai/server/plugins/$PLUGIN/install.sh ]; then
+            eval "sh install.sh $flags"
             code=$?
         fi
     fi
@@ -34,19 +52,25 @@ install_linux () {
     return $code
 }
 
+
 install_plugin () {
     UNAME=$(uname -s)
     if [[ "$UNAME" == "Darwin"* ]]; then
-        install_darwin $1
+        install_darwin $PLUGIN
     else
-        install_linux $1
+        install_linux $PLUGIN
     fi
     return $?
 }
 
-install_plugin $1
-if [ $? == 0 ]; then
-        echo "Installed plugins dependencies /opt/local/share/clai/bin/clai/server/plugins/$1/install.sh"
+if [ -z "$CLAI_PATH" ]; then
+    echo "Error: please pass the clai bin path using the --path flag"
+    exit 1
+fi
+
+install_plugin $PLUGIN
+if [[ $? == 0 ]]; then
+        echo "Installed plugins dependencies  $CLAI_PATH/clai/server/plugins/$1/install.sh"
 else
-        echo "The plugin don't have dependencies /opt/local/share/clai/bin/clai/server/plugins/$1/install.sh"
+        echo "The plugin doesn't have dependencies $CLAI_PATH/clai/server/plugins/$1/install.sh"
 fi
