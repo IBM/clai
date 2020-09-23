@@ -18,7 +18,7 @@ def is_mac():
     return platform.system() == 'Darwin'
 
 def is_zos():
-    return platform.system().lower() in ('zos', 'os390')
+    return platform.system().lower() in ('z/os', 'os/390')
 
 def is_rw_with_EBCDIC(file):
     # Assume that the file is read/writen with IBM-1047 on z/OS when
