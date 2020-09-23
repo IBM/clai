@@ -17,17 +17,13 @@ from install import clai_installed
 from install import register_the_user
 from install import append_setup_to_file
 from install import install_orchestration
-from install import install_plugins_dependencies
+from install import install_plugins
 
 from uninstall import execute as uninstall
 
 from clai.tools.file_util import get_setup_file
 from clai.tools.console_helper import print_error
 from clai.tools.console_helper import print_complete
-from clai.datasource.config_storage import ConfigStorage
-from clai.server.agent_datasource import AgentDatasource
-
-from clai import PLATFORM
 
 ACTIONS = ["install", "uninstall"]
 
@@ -144,23 +140,7 @@ def install(repo_path: str, install_path: str):
 
     install_orchestration(install_path)
 
-    agent_datasource = AgentDatasource(
-        config_storage=ConfigStorage(
-            alternate_path=f"{install_path}/configPlugins.json"
-        )
-    )
-    plugins = agent_datasource.all_plugins()
-    for plugin in plugins:
-        default = z_default = False
-        if PLATFORM in ('zos', 'os390'):
-            z_default = plugin.z_default
-        else:
-            default = plugin.default
-
-        if default or z_default:
-            installed = install_plugins_dependencies(install_path, plugin.pkg_name, False)
-            if installed:
-                agent_datasource.mark_plugins_as_installed(plugin.name, None)
+    install_plugins(install_path, False)
 
     print_complete("CLAI has been installed correctly, you need restart your shell.")
 
