@@ -7,7 +7,7 @@
 
 from typing import List, Dict
 
-from . import Provider
+from clai.server.searchlib.providers import Provider
 
 
 class Manpages(Provider):

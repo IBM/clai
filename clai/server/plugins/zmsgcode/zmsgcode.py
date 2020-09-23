@@ -13,7 +13,7 @@ from typing import List
 
 from clai.tools.colorize_console import Colorize
 
-from clai.server.searchlib import Datastore
+from clai.server.searchlib.data import Datastore
 from clai.server.agent import Agent
 from clai.server.command_message import State, Action, NOOP_COMMAND
 

@@ -11,7 +11,7 @@ from enum import Enum
 from typing import List, Dict
 from urllib.parse import urljoin
 
-from . import Provider
+from clai.server.searchlib.providers import Provider
 
 # Define permissible search scopings for KnowledgeCenter
 class KCscope(Enum):
