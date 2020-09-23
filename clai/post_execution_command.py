@@ -26,6 +26,7 @@ def map_processes(processes) -> List[Process]:
     return list(map(lambda _: Process(name=_['name']), processes))
 
 
+# pylint: disable=fixme
 def obtain_last_processes(user_name):
     process_changes = []
 
