@@ -23,7 +23,7 @@ my_clai = container(
 )
 
 INSTALL_CORRECTLY_MESSAGE = "CLAI has been installed correctly, you will need to restart your shell."
-UNINSTALL_CORRECTLY_MESSAGE = "CLAI has been uninstalled correctly, you need restart your shell."
+UNINSTALL_CORRECTLY_MESSAGE = "CLAI has been uninstalled correctly, you will need to restart your shell."
 
 
 def test_install_should_finish_correctly(my_clai):

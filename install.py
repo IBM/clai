@@ -449,9 +449,18 @@ def register_file(system):
         # as cp037 (IBM-037)
         if is_rw_with_EBCDIC(file):
             encoding = "cp1047"
-            newline = "\x85"
             left_bracket = "\xDD"
             right_bracket = "\xA8"
+            
+            # newline must be '\x85' when using IzODA and Rocket Pythons, but
+            # '\n' when using IBM Python.  Since we can only easily support one
+            # path at the moment, we're going to support IBM Python since it
+            # works better.  This code is only needed to run when .bashrc and/or
+            # .bash_profile is untagged; if the files are already tagged ASCII
+            # or EBCDIC, then everything works fine on both IzODA/Rocket IBM
+            # Pythons.  We will document this in known-issues.md and call it
+            # a day.
+            #newline = "\x85"
 
         print(f"registering {file}")
         append_to_file(file, "# CLAI setup"+newline, encoding)

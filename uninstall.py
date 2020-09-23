@@ -186,7 +186,7 @@ def execute(args):
     remove_setup_file(get_setup_file())
     remove_setup_register()
 
-    print_complete("CLAI has been uninstalled correctly, you need restart your shell.")
+    print_complete("CLAI has been uninstalled correctly, you will need to restart your shell.")
 
     return 0
 

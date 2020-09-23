@@ -57,4 +57,6 @@ instructions in [README.md](README.md), or you can run:
 
 #### IzODA Python 3.6
 
++ In order for install/uninstall to work properly your `.bashrc` and
+  `.bash_profile` files must be tagged either ISO8859-1 or IBM-1047 beforehand
 + The `zmsgcode` plugin fails to work due to an SSL validation failure
