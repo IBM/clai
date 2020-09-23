@@ -10,9 +10,10 @@ from collections import OrderedDict
 from typing import List, Dict
 
 from clai.server.logger import current_logger as logger
-from .se_provider import StackExchange
-from .kc_provider import KnowledgeCenter
-from .man_provider import Manpages
+from clai.server.searchlib.se_provider import StackExchange
+from clai.server.searchlib.kc_provider import KnowledgeCenter
+from clai.server.searchlib.man_provider import Manpages
+
 
 class Datastore:
     # Instance data members

@@ -8,10 +8,11 @@
 import re
 
 from enum import Enum
+
 from typing import List, Dict
 from urllib.parse import urljoin
 
-from .providers import Provider
+from clai.server.searchlib.providers import Provider
 
 # Define permissible search scopings for KnowledgeCenter
 class KCscope(Enum):
@@ -41,7 +42,7 @@ class KnowledgeCenter(Provider):
                     f"Invalid {self.name} search variant: '{variant.name}'"
                 )
 
-        self.__log_debug__("Provider initialized")
+        self.__log_debug__("z/OS KnowledgeCenter provider initialized")
 
     def get_variants(self) -> List[KCtype]:
         """Override the default get_variants() method so that it instead returns

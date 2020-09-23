@@ -1,5 +1,6 @@
 elasticsearch==7.0.5
 beautifulsoup4
+pluggy
 pytest==4.6.1
 
 # pytest "Add ons"

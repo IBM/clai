@@ -242,8 +242,7 @@ def remove(path):
     remove_tree(path)
 
 
-def install_plugins(install_path: str) -> AgentDatasource:
-    
+def install_plugins(install_path, user_install):
     agent_datasource = AgentDatasource(
         config_storage=ConfigStorage(alternate_path=f'{install_path}/configPlugins.json')
     )
@@ -256,7 +255,7 @@ def install_plugins(install_path: str) -> AgentDatasource:
             default = plugin.default
 
         if default or z_default:
-            installed = install_plugins_dependencies(install_path, plugin.pkg_name, False)
+            installed = install_plugins_dependencies(install_path, plugin.pkg_name, user_install)
             if installed:
                 agent_datasource.mark_plugins_as_installed(plugin.name, None)
     
@@ -419,7 +418,7 @@ def execute(args):
 
     install_orchestration(bin_path)
     if not no_skills:
-        save_report_info(unassisted, install_plugins(bin_path), bin_path, demo_mode)
+        save_report_info(unassisted, install_plugins(bin_path, user_install), bin_path, demo_mode)
 
     remove(f"{temp_path}")
 

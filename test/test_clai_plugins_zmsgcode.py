@@ -9,8 +9,8 @@ import os
 import unittest
 import tempfile
 
-import subprocess
 from subprocess import CompletedProcess
+import subprocess
 
 from builtins import classmethod
 from typing import List
@@ -21,16 +21,15 @@ from clai.tools.colorize_console import Colorize
 
 OS_NAME: str = os.uname().sysname.upper()
 
-@unittest.skipIf(OS_NAME not in ('OS/390', 'Z/OS'), "Test only valid on z/OS")
+@unittest.skipIf(OS_NAME not in ("OS/390", "Z/OS"), "Test only valid on z/OS")
 class MsgCodeAgentTest(unittest.TestCase):
     @classmethod
     def set_up_class(cls):
         _agent = MsgCodeAgent()
         cls.agent = _agent
 
-    # pylint: disable=bad-classmethod-argument
     @classmethod
-    def try_command(self, command_and_args: List[str]) -> Action:
+    def try_command(cls, command_and_args: List[str]) -> Action:
         result: CompletedProcess = subprocess.run(
             command_and_args,
             encoding='UTF8',
@@ -46,13 +45,13 @@ class MsgCodeAgentTest(unittest.TestCase):
             command = result.args
         result_code: str = str(result.returncode)
 
-        return self.scaffold_command_response(command=command,
-                                              result_code=result_code,
-                                              stdout=result.stdout,
-                                              stderr=result.stderr)
+        return cls.scaffold_command_response(command=command,
+                                             result_code=result_code,
+                                             stdout=result.stdout,
+                                             stderr=result.stderr)
 
     @classmethod
-    def scaffold_command_response(self, **kwargs) -> Action:
+    def scaffold_command_response(cls, **kwargs) -> Action:
         state = State(
             command_id='0',
             user_name='tester',
@@ -66,8 +65,8 @@ class MsgCodeAgentTest(unittest.TestCase):
         print(f"stderr: '{kwargs['stderr']}'")
         print("===========================")
 
-        #action = self.agent.get_next_action(state=state)
-        action = self.agent.post_execute(state=state)
+        #action = cls.agent.get_next_action(state=state)
+        action = cls.agent.post_execute(state=state)
 
         print("Input: {}".format(state.command))
         print("===========================")

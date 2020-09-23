@@ -11,22 +11,22 @@ import sys
 import json
 import argparse
 
-from install import (
-    download_file,
-    register_file,
-    clai_installed,
-    register_the_user,
-    append_setup_to_file,
-    install_orchestration,
-    install_plugins,
-)
+from install import download_file
+from install import register_file
+from install import clai_installed
+from install import register_the_user
+from install import append_setup_to_file
+from install import install_orchestration
+from install import install_plugins
 
 from uninstall import execute as uninstall
 
 from clai.tools.file_util import get_setup_file
 from clai.tools.console_helper import print_error
 from clai.tools.console_helper import print_complete
-
+from clai.datasource.stats_tracker import StatsTracker
+from clai.datasource.config_storage import ConfigStorage
+from clai.server.agent_datasource import AgentDatasource
 
 ACTIONS = ["install", "uninstall"]
 
@@ -143,7 +143,7 @@ def install(repo_path: str, install_path: str):
 
     install_orchestration(install_path)
 
-    install_plugins(install_path)
+    install_plugins(install_path, False)
 
     print_complete("CLAI has been installed correctly, you need restart your shell.")
 
