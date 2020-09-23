@@ -26,7 +26,11 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 + `Bash` Bash 4.3 or higher is required if you are working on z/OS
 + `Python 3.6` or higher
-  - For z/OS installations, we recommend Rocket Python or IBM Open Enterprise Python for z/OS
+  - For z/OS installations:
+    - [IBM Open Enterprise Python for z/OS](https://www.ibm.com/products/open-enterprise-python-zos)
+    - Rocket Python for z/OS
+      - [Directly from Rocket Software](https://www.rocketsoftware.com/product-categories/mainframe/python-for-zos)
+      - From [IzODA](https://izoda.github.io/site/) via its' [anaconda package channel](https://anaconda.org/izoda)
   - Please see [known-issues.md](known-issues.md) for notes on the idiosyncrasies involved in installing CLAI on z/OS 
 + `Homebrew` + `fswatch` if you are working on MacOS
 + `Docker` if you are using the containerized version of CLAI (see below)
