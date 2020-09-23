@@ -103,7 +103,7 @@ Example `config.ini`:
 
 Client code should import the `Datastore` object from `data.py`:
 
-    from clai.server.searchlib import Datastore
+    from clai.server.searchlib.data import Datastore
 
 To instantiate a new Datastore, pass the path to your skill's `config.ini` file
 to the constructor during skill initiation:
