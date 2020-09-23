@@ -24,9 +24,6 @@ from uninstall import execute as uninstall
 from clai.tools.file_util import get_setup_file
 from clai.tools.console_helper import print_error
 from clai.tools.console_helper import print_complete
-from clai.datasource.stats_tracker import StatsTracker
-from clai.datasource.config_storage import ConfigStorage
-from clai.server.agent_datasource import AgentDatasource
 
 ACTIONS = ["install", "uninstall"]
 

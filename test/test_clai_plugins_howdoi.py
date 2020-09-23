@@ -80,4 +80,3 @@ class SearchAgentTest(unittest.TestCase):
             self.print_and_verify(question, "man tcsh")
         else:
             self.print_and_verify(question, "man cmp")
-

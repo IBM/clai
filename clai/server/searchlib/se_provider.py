@@ -40,4 +40,3 @@ class StackExchange(Provider):
         ]
 
         return "\n".join(lines)
-    
