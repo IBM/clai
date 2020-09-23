@@ -20,15 +20,15 @@ from clai.server.command_message import State, Action, NOOP_COMMAND
 from clai.server.logger import current_logger as logger
 
 # Define constant strings for regular expressions
-REGEX_ZMSG:str = "^([.\s\S]*\s)?([A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})[:]?\s([.\s\S]*)$"
+REGEX_ZMSG:str = r"^([.\s\S]*\s)?([A-Z]{3,}[0-9]{2,}[A,D,E,I,W,R]{0,1})[:]?\s([.\s\S]*)$"
 REGEX_BPX:List[str] = [
-    "^.*FAILED WITH RC=[0-9A-F]{1,4},\s*RSN=([0-9A-F]{7,8})\s*.*$",
-    "^[.\s\S]*errno2=0x([0-9A-Z]{8})[.\s\S]*$",
-    "^[.\s\S]*0x([0-9A-Z]{8})[.\s\S]*$"
+    r"^.*FAILED WITH RC=[0-9A-F]{1,4},\s*RSN=([0-9A-F]{7,8})\s*.*$",
+    r"^[.\s\S]*errno2=0x([0-9A-Z]{8})[.\s\S]*$",
+    r"^[.\s\S]*0x([0-9A-Z]{8})[.\s\S]*$"
 ]
 REGEX_BPX_BADANSWER:List[str] = [
-    "^BPXMTEXT does not support reason code qualifier [0-9A-Z]{4}\s$",
-    "^[0-9A-F]{1,8}\([0-9A-F]{1,4}x\)\s$"
+    r"^BPXMTEXT does not support reason code qualifier [0-9A-Z]{4}\s$",
+    r"^[0-9A-F]{1,8}\([0-9A-F]{1,4}x\)\s$"
 ]
 
 class MsgCodeAgent(Agent):
