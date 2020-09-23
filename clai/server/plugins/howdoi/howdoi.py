@@ -62,7 +62,7 @@ class HowDoIAgent(Agent):
             # Skip this provider if it isn't supported on the target OS
             if not thisAPI.can_run_on_this_os():
                 logger.info(f"Skipping search provider '{provider}'")
-                logger.info(f"==> Excluded on platforms: {str(thisAPI.getExcludes())}")
+                logger.info(f"==> Excluded on platforms: {str(thisAPI.get_excludes())}")
                 continue # Move to next provider in list
             
             logger.info(f"Processing search provider '{provider}'")

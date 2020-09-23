@@ -19,7 +19,7 @@ The standardized external interface is defined through two classes:
  * `data.py:Datastore`
    * Defines the primary external interface for search providers
    * Methods:
-     * `getAPIs(self) -> OrderedDict`
+     * `get_apis(self) -> OrderedDict`
        * Returns an `OrderedDict` of APIs, where each member is stored in the
          order it was encountered in the configuration file
        * The dictionary key values are the search providers' names and are of
@@ -32,24 +32,24 @@ The standardized external interface is defined through two classes:
   * `providers.py:Provider`
     * Superclass for all search providers
     * Methods:
-      * `canRunOnThisOS(self) -> bool`
+      * `can_run_on_this_os(self) -> bool`
         * Returns `True` if this search provider can be used on the client OS
-      * `getExcludes(self) -> list`
+      * `get_excludes(self) -> list`
         * Returns a list of operating systems that the search provider cannot
           be run from
-      * `hasVariants(self) -> bool`
+      * `has_variants(self) -> bool`
         * Returns `True` if this search provider has more than one search
           variant
-      * `getVariants(self) -> list`
+      * `get_variants(self) -> list`
         * Returns a list of search variants supported by this search provider
     * All search providers must implement the following abstract methods:
       * `call(self, query:str, limit:int = 1, **kwargs)`
         * Perform a query on the string `query` using the
          implementation-specific parameters in `kwargs` and returning at most
          `limit` results
-      * `extractSearchResult(self, data:List[Dict]) -> str`
+      * `extract_search_result(self, data:List[Dict]) -> str`
         * Extract the result string from the data returned by an API search
-      * `getPrintableOutput(self, data:List[Dict]) -> str`
+      * `get_printable_output(self, data:List[Dict]) -> str`
         * Return an informative string that can be displayed to the user
 
 ## Configuration
@@ -116,7 +116,7 @@ to the constructor during skill initiation:
 
 Iterating through providers:
 
-    apis:OrderedDict=self.store.getAPIs()
+    apis:OrderedDict=self.store.get_apis()
         for provider in apis:
             if provider == "manpages":
                 print("We've found the Manpages provider!")
