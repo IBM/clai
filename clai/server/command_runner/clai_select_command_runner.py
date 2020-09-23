@@ -29,7 +29,7 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         plugin_to_select = extract_quoted_agent_name(plugin_to_select)
 
         agent_descriptor = self.agent_datasource.get_agent_descriptor(plugin_to_select)
-        
+
         plugins_config = self.config_storage.read_config(None)
 
         if not agent_descriptor:
@@ -55,7 +55,7 @@ class ClaiSelectCommandRunner(CommandRunner, PostCommandRunner):
         selected_plugin = self.agent_datasource.select_plugin(plugin_to_select, state.user_name)
         if selected_plugin:
             self.stats_tracker.log_activate_skills(state.user_name, plugin_to_select)
-            plugins_config = self.config_storage.read_config(state.user_name) 
+            plugins_config = self.config_storage.read_config(state.user_name)
             if plugins_config.selected is None:
                 plugins_config.selected = [selected_plugin.name]
             else:

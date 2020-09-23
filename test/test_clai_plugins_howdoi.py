@@ -6,155 +6,77 @@
 #
 
 import os
-import sys
 import unittest
+
+from builtins import classmethod
 
 from clai.server.command_message import State
 from clai.server.plugins.howdoi.howdoi import HowDoIAgent
-from builtins import classmethod
 
-OS_NAME:str = os.uname().sysname.upper()
+OS_NAME: str = os.uname().sysname.upper()
 
 
 @unittest.skip("Only for local testing")
 class SearchAgentTest(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):
+    def set_up_class(cls):
         _agent = HowDoIAgent()
         cls.agent = _agent
-        
-    @classmethod
-    def getQandA(cls):
-        question:str = ""
-        answer:str = ""
-        
-        callerFrame = sys._getframe(2) if hasattr(sys, "_getframe") else None
-        if callerFrame is not None:
-            method:str = callerFrame.f_code.co_name
-            
-            if method == "test_get_next_action_pwd_without_question":
-                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
-                    question = "pds"
-                    answer = "pds"
-                else:
-                    question = "pwd"
-                    answer = None
-            
-            elif method == "test_get_next_action_pwd_with_question":
-                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
-                    question = "What is a pds?"
-                    answer = "man readlink"
-                else:
-                    question = "What is pwd?"
-                    answer = "man pwd"
-            
-            elif method == "test_get_next_action_sudo":
-                question = "when to use sudo vs su?"
-                answer = "man su"
-            
-            elif method == "test_get_next_action_disk":
-                question = "find out disk usage per user?"
-                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
-                    answer = "man du"
-                else:
-                    answer = "man df"
-            
-            elif method == "test_get_next_action_zip":
-                question = "How to process gz files?"
-                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
-                    answer = "man dnctl"
-                else:
-                    answer = "man gzip"
-            
-            elif method == "test_get_next_action_pds":
-                question = "copy a PDS member?"
-                if OS_NAME == "OS/390" or OS_NAME == "Z/OS":
-                    answer = "man tcsh"
-                else:
-                    answer = "man cmp"
-        
-        return(question, answer)
+
+    def print_and_verify(self, question, answer):
+        state = State(user_name='tester', command_id='0', command=question)
+        action = self.agent.get_next_action(state=state)
+        print(f"Input: {state.command}")
+        print("===========================")
+        print(f"Response: {action.suggested_command}")
+        print("===========================")
+        print(f"Explanation: {action.description}")
+        self.assertEqual(answer, action.suggested_command)
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_without_question(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
-
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
+        if OS_NAME in ("OS/390", "Z/OS"):
+            self.print_and_verify("pds", "pds")
+        else:
+            self.print_and_verify("pds", None)
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_with_question(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
-
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
+        if OS_NAME in ("OS/390", "Z/OS"):
+            self.print_and_verify("What is a pds?", "man readlink")
+        else:
+            self.print_and_verify("What is pwd?", "man pwd")
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_sudo(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
-
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
+        self.print_and_verify("when to use sudo vs su?", "man su")
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_disk(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
-
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
+        question: str = "find out disk usage per user?"
+        if OS_NAME in ("OS/390", "Z/OS"):
+            self.print_and_verify(question, "man du")
+        else:
+            self.print_and_verify(question, "man df")
 
     @unittest.skip("Only for local testing")
     def test_get_next_action_zip(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
+        question: str = "How to process gz files?"
+        if OS_NAME in ("OS/390", "Z/OS"):
+            self.print_and_verify(question, "man dnctl")
+        else:
+            self.print_and_verify(question, "man gzip")
 
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
-    
     @unittest.skip("Only for local testing")
     def test_get_next_action_pds(self):
         self.agent.init_agent()
-        question, answer = self.getQandA()
-
-        state = State(user_name='tester', command_id='0', command=question)
-        action = self.agent.get_next_action(state=state)
-        print("Input: {}".format(state.command))
-        print("===========================")
-        print("Response: {}".format(action.suggested_command))
-        print("===========================")
-        print("Explanation: {}".format(action.description))
-        self.assertEqual(answer, action.suggested_command)
+        question: str = "copy a PDS member?"
+        if OS_NAME in ("OS/390", "Z/OS"):
+            self.print_and_verify(question, "man tcsh")
+        else:
+            self.print_and_verify(question, "man cmp")

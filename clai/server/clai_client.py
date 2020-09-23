@@ -15,7 +15,7 @@ from clai.server.socket_client_connector import SocketClientConnector
 from clai.server.web_socket_client_connector import WebSocketClientConnector
 from clai.server.logger import current_logger as logger
 
-DEFAULT_PORT = os.getenv('CLAI_PORT', 8010)
+DEFAULT_PORT = os.getenv('CLAI_PORT', '8010')
 LOCALHOST = 'localhost'
 
 

@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-# pylint: disable=too-few-public-methods,too-many-arguments,dangerous-default-value
+# pylint: disable=too-few-public-methods,too-many-arguments,dangerous-default-value,too-many-instance-attributes
 class AgentDescriptor:
     def __init__(self, pkg_name, name, exclude=[], description="", installed=False, default=False, z_default=False):
         self.pkg_name = pkg_name

@@ -7,14 +7,14 @@
 
 import importlib
 from typing import List
-from clai import platform
+from clai import PLATFORM
 from clai.server.clai_client import send_command_post_execute
 from clai.server.command_message import Process, ProcessesValues
 
 try:
     PSUTIL = importlib.import_module('psutil')
 except ImportError:
-    if platform != 'zos':
+    if PLATFORM not in ('zos', 'os390'):
         print('Error: psutil not installed')
 
 
@@ -26,10 +26,11 @@ def map_processes(processes) -> List[Process]:
     return list(map(lambda _: Process(name=_['name']), processes))
 
 
+# pylint: disable=fixme
 def obtain_last_processes(user_name):
     process_changes = []
 
-    if platform != 'zos':
+    if PLATFORM not in ('zos', 'os390'):
         for process in PSUTIL.process_iter(attrs=['pid', 'name', 'username', 'create_time']):
             process_changes.append(process.info)
     else:

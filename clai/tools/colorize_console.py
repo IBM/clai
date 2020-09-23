@@ -5,8 +5,7 @@
 # of this source tree for licensing information.
 #
 
-import unicodedata
-from clai import platform
+from clai import PLATFORM
 
 class Colorize:
     WARNING = "\033[91m"
@@ -14,8 +13,8 @@ class Colorize:
     COMPLETE = "\033[32m"
     NORMAL = "\033[0m"
 
-    
-    if platform == 'zos':
+
+    if PLATFORM in ('zos', 'os390'):
         EMOJI_ROBOT = '@'
         EMOJI_CHECK = '[x]'
         EMOJI_BOX = '[ ]'

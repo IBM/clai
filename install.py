@@ -5,7 +5,7 @@
 # of this source tree for licensing information.
 #
 
-# pylint: disable=no-name-in-module,import-error,too-many-statements
+# pylint: disable=no-name-in-module,import-error,too-many-statements,trailing-whitespace,bare-except
 import json
 import os
 import re
@@ -19,7 +19,7 @@ from distutils.dir_util import copy_tree
 from distutils.dir_util import remove_tree
 from distutils.file_util import copy_file
 
-from clai import platform
+from clai import PLATFORM
 from clai.datasource.config_storage import ConfigStorage
 from clai.datasource.stats_tracker import StatsTracker
 from clai.server.agent_datasource import AgentDatasource
@@ -27,7 +27,15 @@ from clai.server.orchestration.orchestrator_provider import OrchestratorProvider
 from clai.tools.anonymizer import Anonymizer
 from clai.tools.colorize_console import Colorize
 from clai.tools.console_helper import print_complete, print_error
-from clai.tools.file_util import append_to_file, get_rc_file, is_windows, get_setup_file, get_rc_files, is_zos, is_rw_with_EBCDIC
+from clai.tools.file_util import (
+    append_to_file,
+    get_rc_file,
+    is_windows,
+    get_setup_file,
+    get_rc_files,
+    is_zos,
+    is_rw_with_EBCDIC
+)
 
 SUPPORTED_SHELLS = ['bash']
 URL_BASH_PREEXEC = 'http://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh'
@@ -201,10 +209,13 @@ def recursively_tag_untagged_files_as_ebcdic(path):
                     stderr=subprocess.STDOUT
                 )
                 result = result.stdout.strip()
-                
-                match = re.match(r'(?P<type>\S+)\s+(?P<encoding>\S+)\s+T\=(?P<tagging>on|off)\s+(?P<filepath>.*)', result)
+
+                match = re.match(
+                    r'(?P<type>\S+)\s+(?P<encoding>\S+)\s+T\=(?P<tagging>on|off)\s+(?P<filepath>.*)',
+                    result
+                )
                 if match:
-                    tagging:str = match.group('tagging')
+                    tagging: str = match.group('tagging')
                     
                     # Files that are not already tagged will be retagged as EBCDIC
                     if tagging != "on":
@@ -229,6 +240,26 @@ def download_file(file_url, filename):
 def remove(path):
     print("cleaning %s" % path)
     remove_tree(path)
+
+
+def install_plugins(install_path, user_install):
+    agent_datasource = AgentDatasource(
+        config_storage=ConfigStorage(alternate_path=f'{install_path}/configPlugins.json')
+    )
+    plugins = agent_datasource.all_plugins()
+    for plugin in plugins:
+        default = z_default = False
+        if PLATFORM in ('zos', 'os390'):
+            z_default = plugin.z_default
+        else:
+            default = plugin.default
+
+        if default or z_default:
+            installed = install_plugins_dependencies(install_path, plugin.pkg_name, user_install)
+            if installed:
+                agent_datasource.mark_plugins_as_installed(plugin.name, None)
+    
+    return agent_datasource
 
 
 def install_plugins_dependencies(path, plugin, user_install):
@@ -316,7 +347,7 @@ def save_report_info(unassisted, agent_datasource, bin_path, demo_mode):
     stats_tracker.report_enable = enable_report
     stats_tracker.log_install(getpass.getuser())
 
-def mark_user_flag(bin_path:str, value:bool):
+def mark_user_flag(bin_path: str, value: bool):
     config_storage = ConfigStorage(
         alternate_path=f"{bin_path}/configPlugins.json"
     )
@@ -387,22 +418,7 @@ def execute(args):
 
     install_orchestration(bin_path)
     if not no_skills:
-        agent_datasource = AgentDatasource(
-            config_storage=ConfigStorage(alternate_path=f'{bin_path}/configPlugins.json'))
-        plugins = agent_datasource.all_plugins()
-        for plugin in plugins:
-            default = z_default = False
-            if platform == 'zos':
-                z_default = plugin.z_default
-            else:
-                default = plugin.default
-
-            if default or z_default:
-                installed = install_plugins_dependencies(bin_path, plugin.pkg_name, user_install)
-                if installed:
-                    agent_datasource.mark_plugins_as_installed(plugin.name, None)
-
-        save_report_info(unassisted, agent_datasource, bin_path, demo_mode)
+        save_report_info(unassisted, install_plugins(bin_path, user_install), bin_path, demo_mode)
 
     remove(f"{temp_path}")
 
@@ -440,8 +456,13 @@ def register_file(system):
         print(f"registering {file}")
         append_to_file(file, "# CLAI setup"+newline, encoding)
 
-        append_to_file(file, 'if ! '+left_bracket+' ${#preexec_functions'+left_bracket+'@'+right_bracket+'} -eq 0 '+right_bracket+'; then'+newline, encoding)
-        append_to_file(file, '  if ! '+left_bracket+left_bracket+' " ${preexec_functions'+left_bracket+'@'+right_bracket+'} " =~ " preexec_override_invoke " '+right_bracket+right_bracket+'; then'+newline, encoding)
+        append_to_file(file,
+                       'if ! '+left_bracket+' ${#preexec_functions'+left_bracket+
+                       '@'+right_bracket+'} -eq 0 '+right_bracket+'; then'+newline, encoding)
+        append_to_file(file,
+                       '  if ! '+left_bracket+left_bracket+' " ${preexec_functions'+
+                       left_bracket+'@'+right_bracket+'} " =~ " preexec_override_invoke " '+
+                       right_bracket+right_bracket+'; then'+newline, encoding)
         append_to_file(file, f"     source {get_setup_file()} "+newline, encoding)
         append_to_file(file, '  fi'+newline, encoding)
         append_to_file(file, 'else'+newline, encoding)
