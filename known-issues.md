@@ -4,7 +4,7 @@
 
 Fedora by default doesn't have Python3 and Pip3 installed. And the install process need install pythondev for install some packages.
 
-If you does not have Python installed we recomend to you execute
+If you does not have Python installed we recommend to you execute
 
 ```commandline
     sudo dnf install python37
