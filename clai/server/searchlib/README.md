@@ -127,4 +127,4 @@ Querying the `stack-exchange` search provider and extracting its first result:
     data = self.store.search(state.stderr, service="stack-exchange", size=1)
     if data:
         output:str = "Found the following result from the {}:\n{}" \
-            .format(str(thisAPI), thisAPI.extractSearchResult(data))
+            .format(str(thisAPI), thisAPI.extract_search_result(data))
