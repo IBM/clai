@@ -15,4 +15,4 @@ services:
       context: .
       dockerfile: Dockerfile.Dev
     volumes:
-        - .:/zclai
+        - .:/clai
