@@ -34,7 +34,7 @@ resolving, then later re-introducing character encoding problems.  Furthermore,
 an install process that worked on one level of Pip may not work with a
 subsequent level of Pip.  Its a mess.
 
-### "Known Good" Configurations
+### "Known Good" Python Configurations
 
 The best results we've had in installing CLAI on z/OS were with IBM Open
 Enterprise Python for z/OS 3.8, using Pip3 >= 20.0.0.
@@ -54,6 +54,11 @@ instructions in [README.md](README.md), or you can run:
 ```
 
 ### Known Problems
+
+#### General
+
++ The path to the env program must be `/usr/bin/env`
+  - If this is not the case, your system administrator will need to create a symbolic link: `ln -s /bin/env /usr/bin/env`
 
 #### IzODA Python 3.6
 
