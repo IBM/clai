@@ -10,7 +10,7 @@ submodule:
 	tar xf $(LR_MODULE)/data/bash/vocab.tar.xz --directory $(LR_MODULE)/data/bash/
 	# tar xf $(LR_MODULE)/data/bash.final/vocab.tar.xz --directory $(LR_MODULE)/data/bash.final/
 	# Set up nlp tools
-	tar xf $(LR_MODULE)/nlp_tools/spellcheck/most_common.tar.xz --directory $(LR_MODULE)/nlp_tools/spellcheck/
+	tar xf nlp_tools/spellcheck/most_common.tar.xz --directory nlp_tools/spellcheck/
 	
 db:
 	# Setup database tables
