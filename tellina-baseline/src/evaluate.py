@@ -74,15 +74,37 @@ def get_predictions(nlc2cmd_dl):
     return ground_truths, predicted_cmds, predicted_confds
 
 
-def compute_score(ground_truths, predicted_cmds, predicted_confds, metric_params):
+def get_score(prediction_scores):
 
-    score = float("-inf")
+    score = -1.0
+    if len(prediction_scores) == 0:
+        return score
+
+    has_positive_score = True in [x > 0 for x in prediction_scores]
+
+    if has_positive_score:
+        score = max(prediction_scores)
+    else:
+        score = sum(prediction_scores) / float(len(prediction_scores))
+
+    return score
+
+
+def compute_score(ground_truths, predicted_cmds, predicted_confds, metric_params):
+    
+    prediction_scores = []
 
     for grnd_truth_cmd in ground_truths:
         for i, predicted_cmd in enumerate(predicted_cmds):
+            
+            if predicted_cmd is None or len(predicted_cmd) == 0:
+                continue
+            
             predicted_confidence = predicted_confds[i]
             pair_score = compute_metric(predicted_cmd, predicted_confidence, grnd_truth_cmd, metric_params)
-            score = max(score, pair_score)
+            prediction_scores.append(pair_score)
+
+    score = get_score(prediction_scores)
 
     print('-' * 50)
     print(f'Ground truth: {ground_truths}')
