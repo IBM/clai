@@ -24,6 +24,9 @@ class GPT3(Agent):
         # user typed in, in natural language
         command = state.command
 
+        # truncate to first 1000 chars
+        command = command[:1000]
+
         try:
 
             response = requests.post(gpt3_endpoint, json={'text': command, 'use_cached_prompt' : True}).json()
