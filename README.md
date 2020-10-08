@@ -1,6 +1,3 @@
-:link: Check out the [`NLC2CMD Challenge`](https://ibm.biz/nlc2cmd) @ Neurips 2020
-
-
 ![CLAI Logo](https://www.dropbox.com/s/nbkfa59khtlcs79/clai-logo.png?raw=1)
 
 Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to bring the power of AI to the command line. Using CLAI, users of Bash can access a wide range of skills that will enhance their command line experience. This repository contains the source code and documentation to get you started.
@@ -27,8 +24,14 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 ### Prerequisites
 
-+ `Bash`
++ `Bash` Bash 4.3 or higher is required if you are working on z/OS
 + `Python 3.6` or higher
+  - For z/OS installations:
+    - [IBM Open Enterprise Python for z/OS](https://www.ibm.com/products/open-enterprise-python-zos)
+    - Rocket Python for z/OS
+      - [Directly from Rocket Software](https://www.rocketsoftware.com/product-categories/mainframe/python-for-zos)
+      - From [IzODA](https://izoda.github.io/site/) via its' [anaconda package channel](https://anaconda.org/izoda)
+  - Please see [known-issues.md](known-issues.md) for notes on the idiosyncrasies involved in installing CLAI on z/OS 
 + `Homebrew` + `fswatch` if you are working on MacOS
 + `Docker` if you are using the containerized version of CLAI (see below)
 
@@ -36,7 +39,9 @@ Command Line Artificial Intelligence `CLAI` is an open-sourced project aimed to 
 
 1. Open a Bash emulator or console.
 2. In the console navigate to the location of the CLAI project source code.
-3. Execute the following:
+3. Execute the necessary commands found in the preferred option below. You can specify the port with `--port`, the default is `8010`
+
+#### System Wide
 
 ```
 $ sudo ./install.sh
@@ -48,9 +53,26 @@ $ sudo ./install.sh
 $ sudo env "HOME=$HOME" ./install.sh
 ```
 
+#### User Install
+
+```
+$ ./install.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to install with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./install.sh --user
+```
+
+**In z/OS**, you need to update your [.bashrc](/utils/.bashrc),
+[.profile](/utils/.profile), and [.bash_profile](/utils/.bash_profile).
+
 After the installation is complete, you will be prompted to restart the shell before CLAI becomes active.
 
-#### Uninstalling CLAI
+### Uninstalling CLAI Natively
+
+#### System Wide
 
 To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
 
@@ -61,6 +83,20 @@ $ sudo ./uninstall.sh
 
 ```
 $ sudo env "HOME=$HOME" ./uninstall.sh
+```
+
+#### User Install
+
+To uninstall CLAI, execute the following command from the directory hosting the CLAI source code:
+
+```
+$ ./uninstall.sh --user
+```
+
+**In Fedora, Debian and Ubuntu**, you need to uninstall with this extra parameter:
+
+```
+$ env "HOME=$HOME" ./uninstall.sh --user
 ```
 
 As before, during installation, you will have to restart the shell for the changes to take effect.
@@ -75,7 +111,6 @@ $ ./BuildDockerImage.sh
 ```
 
 **Fedora and Ubuntu**
-
 ```
 $ sudo ./BuildDockerImage.sh
 ```
@@ -137,7 +172,7 @@ Warning: Permanently added '[localhost]:32782' (ECDSA) to the list of known host
 root@localhost's password:
 ...
 Research Docker Build.
-nohup: appending output to ‘nohup.out’
+nohup: appending output to 'nohup.out'
 [root@f61ce8a1c049 ~]#
 ```
 
@@ -157,6 +192,12 @@ You can activate (and install) a skill specifically by invoking:
 $ clai activate <skill-name>
 ```
 
+Or remove (and uninstall) a skill specifically by invoking:
+
+```
+$ clai deactivate <skill-name>
+```
+
 You can also start or stop the CLAI support as follows:
 
 ```
@@ -164,7 +205,7 @@ $ clai stop
 $ clai start
 ```
 
-> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is posible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
+> **Warning:** If you attempt to stop CLAI and start it again too rapidly, it is possible that you have to wait several seconds for internal process cleanup (socket closing and recycling) before the CLAI process will start completely.
 
 ### Configuring CLAI
 
@@ -229,3 +270,5 @@ Want to build your own skills? Get started with the [`CLAI API`](clai/server/plu
 ---------------
 
 The CLAI logo is available under the [`Free Art License`](http://artlibre.org/licence/lal/en/). It has been adopted and modified from the [`Bash logo`](https://github.com/odb/official-bash-logo).
+
+The fine people who developed and contributed to CLAI are listed on our [authors page](AUTHORS.md).

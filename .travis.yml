@@ -9,8 +9,9 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
-  - pip install -r requirements-emulator.txt
+  - pip install -r requirements_test.txt
+  - pip install -r requirements_dev.txt 
+  - pip install -r requirements_emulator.txt
 
 # command to run tests
 script:

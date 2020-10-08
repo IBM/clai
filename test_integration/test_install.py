@@ -22,8 +22,8 @@ my_clai = container(
     image='{my_clai_image.id}',
 )
 
-INSTALL_CORRECTLY_MESSAGE = "CLAI has been installed correctly, you need restart your shell."
-UNINSTALL_CORRECTLY_MESSAGE = "CLAI has been uninstalled correctly, you need restart your shell."
+INSTALL_CORRECTLY_MESSAGE = "CLAI has been installed correctly, you will need to restart your shell."
+UNINSTALL_CORRECTLY_MESSAGE = "CLAI has been uninstalled correctly, you will need to restart your shell."
 
 
 def test_install_should_finish_correctly(my_clai):
