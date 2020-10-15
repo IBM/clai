@@ -16,15 +16,15 @@ from clai.server.plugins.howdoi.howdoi import HowDoIAgent
 OS_NAME: str = os.uname().sysname.upper()
 
 
-@unittest.skip("Only for local testing")
+# @unittest.skip("Only for local testing")
 class SearchAgentTest(unittest.TestCase):
     @classmethod
-    def set_up_class(cls):
+    def setUpClass(cls):
         _agent = HowDoIAgent()
         cls.agent = _agent
 
     def print_and_verify(self, question, answer):
-        state = State(user_name='tester', command_id='0', command=question)
+        state = State(user_name="tester", command_id="0", command=question)
         action = self.agent.get_next_action(state=state)
         print(f"Input: {state.command}")
         print("===========================")
@@ -41,7 +41,7 @@ class SearchAgentTest(unittest.TestCase):
         else:
             self.print_and_verify("pds", None)
 
-    @unittest.skip("Only for local testing")
+    # @unittest.skip("Only for local testing")
     def test_get_next_action_pwd_with_question(self):
         self.agent.init_agent()
         if OS_NAME in ("OS/390", "Z/OS"):
@@ -80,3 +80,7 @@ class SearchAgentTest(unittest.TestCase):
             self.print_and_verify(question, "man tcsh")
         else:
             self.print_and_verify(question, "man cmp")
+
+
+if __name__ == "__main__":
+    unittest.main()
