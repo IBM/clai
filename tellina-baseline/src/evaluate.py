@@ -3,6 +3,12 @@ import time
 import os
 import json
 from datetime import datetime
+import tempfile
+import traceback
+
+import experiment_impact_tracker
+from experiment_impact_tracker import compute_tracker
+from experiment_impact_tracker.compute_tracker import ImpactTracker
 
 from submission_code import main as predictor
 from utils.metric_utils import compute_metric
@@ -16,6 +22,7 @@ def get_parser():
     parser.add_argument('--annotation_filepath', type=str, required=True)
     parser.add_argument('--params_filepath', type=str, required=True)
     parser.add_argument('--output_folderpath', type=str, required=True)
+    parser.add_argument('--mode', type=str, required=False, default='eval')
 
     return parser
 
@@ -46,7 +53,7 @@ def validate_predictions(predicted_cmds, predicted_confds, n_batch, result_cnt):
 
         assert 1 <= len(predicted_confds[i]) <= result_cnt, \
             f'{len(predicted_confds[i])} confidences predicted for an invocations. Expected between 1 and {result_cnt}'
-
+        
         assert not (False in [0.0 <= x <= 1.0 for x in predicted_confds[i]]), \
             f'Confidence value beyond the allowed range of [0.0, 1.0] found in predictions'
 
@@ -156,6 +163,47 @@ def evaluate_model(annotation_filepath, params_filepath):
     return result
 
 
+def compute_energyusage(annotation_filepath):
+
+    try:
+        tmplogdir = tempfile.mkdtemp()
+        print(f'Logging energy evaluation in directory: {tmplogdir}')
+
+        tracker = ImpactTracker(tmplogdir)
+        nlc2cmd_dl = get_dataloader(annotation_filepath)
+
+        tracker.launch_impact_monitor()
+        grnd_truth, _, _ = get_predictions(nlc2cmd_dl)
+        n = len(grnd_truth)
+
+        info = tracker.get_latest_info_and_check_for_errors()
+
+        tracker.p.terminate()
+        experiment_impact_tracker.data_utils.log_final_info(tracker.logdir)
+
+        stats = compute_tracker.read_latest_stats(tmplogdir)
+        energy_watts = stats.get('rapl_estimated_attributable_power_draw', 0.0)
+        energy_mwatts = (energy_watts * 1000.0) / n
+
+        result = {
+            'status': 'success',
+            'energy_mwh': energy_mwatts
+        }
+    
+    except Exception as err:
+        result = {
+            'status': 'error',
+            'error_message': str(err),
+            'energy_mwh': 0.0
+        }
+
+        print(f'Exception occurred in energy consumption computation')
+        print(traceback.format_exc())
+
+    finally:
+        return result
+
+
 if __name__ == '__main__':
     
     parser = get_parser()
@@ -163,7 +211,10 @@ if __name__ == '__main__':
 
     os.makedirs(args.output_folderpath, exist_ok=True)
 
-    result = evaluate_model(args.annotation_filepath, args.params_filepath)
+    if args.mode == 'eval':
+        result = evaluate_model(args.annotation_filepath, args.params_filepath)
+    elif args.mode == 'energy':
+        result = compute_energyusage(args.annotation_filepath)
 
     with open(os.path.join(args.output_folderpath, 'result.json'), 'w') as f:
         json.dump(result, f)

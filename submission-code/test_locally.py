@@ -47,7 +47,8 @@ def start_evaluation_process(submission_image, annotation_folder, annotation_fil
         f"python3 /nlc2cmd/src/evaluate.py " + 
             f"--annotation_filepath /annotation_folder/{annotation_filename} " +
             f"--params_filepath /params_folder/{params_filename} " +
-            f"--output_folderpath {DOCKER_IMG_LOGPATH}"
+            f"--output_folderpath {DOCKER_IMG_LOGPATH} " + 
+            f"--mode eval"
     ], stdout=stdout_file, stderr=stderr_file)
 
     return process, container_name
