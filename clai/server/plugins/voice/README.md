@@ -35,7 +35,7 @@ impaired community:
 ## Plugin setup
 
 To use the plugin, create a file named `openai_api.key` in the plugin folder with the API key as the
-file contents. To request OpenAI API access go to this [URL](https://forms.office.com/Pages/ResponsePage.aspx?id=VsqMpNrmTkioFJyEllK8s0v5E5gdyQhOuZCXNuMR8i1UQjFWVTVUVEpGNkg3U1FNRDVVRFg3U0w4Vi4u).
+file contents. To request OpenAI API access go to this [URL](https://openai.com/blog/openai-api/).
  
 
 ## Example Usage
