@@ -1,6 +1,17 @@
 #!/bin/bash
+flags=""
+
+# add all flags to one var to be passed onto the clai script
+while test $# != 0
+do
+    case "$1" in
+      *) flags="$flags $1"
+    esac
+    shift
+done
+
 function cleanUp() {
-rm -f $ERROR_LOG;
+rm -f $ERROR_LOG_FILE;
 }
 
 function clear_history() {
@@ -46,7 +57,20 @@ preexec_override_invoke() {
             LAST_COMMAND=$(eval 'cat $HISTFILE | tail -n 1')
             CURRENT_PWD=$(eval 'pwd')
 
-            ERROR_LOG_FILE=$(mktemp);
+            sys_name=`uname -s`
+            if [ "$sys_name" == "OS/390" ] || [ "$sys_name" == "z/OS" ]
+            then
+                random_str=`date +%Y%m%d%H%M%S`
+                if [[ ! "$TMPDIR" ]]
+                then
+                    ERROR_LOG_FILE="/tmp/tmp.$random_str"
+                else
+                    ERROR_LOG_FILE="$TMPDIR/tmp.$random_str"
+                fi
+                touch $ERROR_LOG_FILE
+            else
+                ERROR_LOG_FILE=$(mktemp);
+            fi
 
             trap cleanUp EXIT
             if [ "$current_command_index" -lt "$num_commands" ]
@@ -87,7 +111,7 @@ preexec_functions+=(preexec_override_invoke)
 
 #launch server
 if ! ps -Ao args | grep "[c]lai-run" > /dev/null 2>&1; then
-  eval nohup $CLAI_PATH/bin/clai-run new &
+  eval nohup $CLAI_PATH/bin/clai-run new $flags &
 fi
 
 NEXT_WAIT_TIME=0

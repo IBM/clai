@@ -8,4 +8,8 @@ echo "==============================================================="
 
 # Install Python3 dependencies
 echo ">> Installing python dependencies"
-pip3 install -r requirements.txt
+if [[ "$1" = "--user" ]]; then
+    pip3 install --user -r requirements.txt
+else
+    pip3 install -r requirements.txt
+fi

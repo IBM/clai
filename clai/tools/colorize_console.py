@@ -5,15 +5,23 @@
 # of this source tree for licensing information.
 #
 
+from clai import PLATFORM
+
 class Colorize:
     WARNING = "\033[91m"
     INFO = "\033[95m"
     COMPLETE = "\033[32m"
     NORMAL = "\033[0m"
 
-    EMOJI_ROBOT = '\U0001F916'
-    EMOJI_CHECK = '\u2611'
-    EMOJI_BOX = '\u25FB'
+
+    if PLATFORM in ('zos', 'os390'):
+        EMOJI_ROBOT = '@'
+        EMOJI_CHECK = '[x]'
+        EMOJI_BOX = '[ ]'
+    else:
+        EMOJI_ROBOT = '\U0001F916'
+        EMOJI_CHECK = '\u2611'
+        EMOJI_BOX = '\u25FB'
 
     def __init__(self):
         self._text_complete = ""

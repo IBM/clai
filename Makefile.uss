@@ -1,0 +1,68 @@
+#
+# Copyright (C) 2020 IBM. All Rights Reserved.
+#
+# See LICENSE.txt file in the root directory
+# of this source tree for licensing information.
+#
+
+# Makefile for the default z/OS USS make
+#
+# Author: Daniel Nicolas Gisolfi
+
+uid=`id -u`
+no-docker-compose = `type docker-compose 2> /dev/null`
+
+about:
+	@echo "Processing a z/OS USS make-style Makefile"
+
+init-test:
+	@python3 -m pip install -r requirements_test.txt 
+
+clean: about
+	-rm -f *.pyc *.pyo *.pyd *\$$py.class
+	# These two files will be updated by CLAI, we dont want to commit the testing data
+	-git checkout anonymize.json
+	-git checkout configPlugins.json
+
+test: about
+.IF no-docker-compose
+	@echo "docker-compose not in $(PATH), running tests locally"
+	$(MAKE) init-test
+	@python3 -m pytest $(PWD)/test
+.ELSE
+	@echo "running tests in a docker container"
+	@docker-compose run clai bash -c "cd /clai && make init-test && python3 -m pytest ./test"
+.END
+
+dev: about
+.IF no-docker-compose
+	@echo "docker-compose not in $(PATH), running development script locally"
+	@python3 develop.py install --path $(PWD)
+.ELSE
+	@echo "running development script in a docker container"
+	@docker-compose run clai bash -c "cd /clai && python3 develop.py install --path /clai && bash"
+.END
+	
+install: about
+.IF uid == 0
+	@echo "Installing CLAI with superuser privileges"
+	./install.sh
+.ELSE
+	@echo "You are not running as the superuser, will preform an install local to your user"
+	./install.sh --user
+.END
+
+uninstall: about
+.IF uid == 0
+	@echo "Unstalling CLAI with superuser privileges"
+	./uninstall.sh
+.ELSE
+	@echo "You are not running as the superuser, will preform an uninstalling local to your user"
+	./uninstall.sh --user
+.END
+
+MAKE:
+	intro
+	install
+
+.PHONY: intro init-test clean test dev install uninstall
