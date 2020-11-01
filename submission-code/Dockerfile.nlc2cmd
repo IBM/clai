@@ -5,7 +5,7 @@ FROM ubuntu:18.04
 # Set challenge metadata
 LABEL challenge="nlc2cmd <https://ibm.biz/nlc2cmd>"
 LABEL maintainer="Mayank Agarwal <mayank.agarwal@ibm.com>"
-LABEL nlc2cmdid="aa9a066afb0d7df3e4195290138be611"
+LABEL nlc2cmdid="1c0881349ae1b278ffd50594fc393ed8"
 
 
 # Update apt-get

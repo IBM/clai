@@ -191,7 +191,7 @@
 
                 sort  [ -b | --ignore-leading-blanks ] [ -d | --dictionary-order ] [ -f | --ignore-case ] [ -g | --general-numeric-sort ] [ -i | --ignore-nonprinting ] [ -M | --month-sort ] [ -h | --human-numeric-sort ] [ -n | --numeric-sort ] [ -R | --random-sort ] [ --random-source=FILE ] [ -r | --reverse ] [ --sort=WORD ] [ -V | --version-sort ] [--batch-size=nmerge] [ -c ] [--check[=mode]] [-C] [--compress-program=PROG] [-k POS,...] [--key=POS,...] [-m, --merge] [-o FILE] [--output=FILE] [-s | --stable] [-S SIZE] [--buffer-size=SIZE] [-t SEP] [--field-separator=SEP] [-T DIR] [--temporary-directory=DIR] [-u | --unique] [-z | --zero-terminated ] [--help] [--version] --files0-from=F
 
-                * ssh [-1246AaCfgKkMNnqsTtVvXxYy::] [-b bind_address] [-c cipher_spec] [-D port<[bind_address:]port>] [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11] [-i identity_file] [-L hostport<[bind_address:]port:host:hostport>] [-l login_name] [-m mac_spec,...] [-O ctl_cmd] [-o option] [-p port] [-Q option] [-R hostport<[bind_address:]port:host:hostport>] [-S ctl_path] [-W port<host:port>] [-w local_tun<local_tun[:remote_tun]>] hostname<[user@]hostname> [command]
+                * ssh [-1246AaCfgKkMNnqsTtVvXxYy::] [-b bind_address] [-c cipher_spec] [-D port<[bind_address:]port>] [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11] [-i identity_file] [-L hostport<[bind_address:]port:host:hostport>] [-l login_name] [-m mac_spec,...] [-O ctl_cmd] [-o option] [-p port] [-Q option] [-R hostport<[bind_address:]port:host:hostport>] [-S ctl_path] [-W port<host:port>] [-w local_tun<local_tun[:remote_tun]>] [-J hostname] hostname<[user@]hostname> [command]
 
                 * ssh-keygen [-q] [-b bits] [-t type] [-N new_passphrase] [-C comment] [-f output_keyfile]
                 
@@ -526,3 +526,177 @@
         sh [-c command] [-iIrsDO::] [+O] [--debugger] [--dump-po-strings] [--dump-strings] [--init-file file] [--rcfile file] [--login] [--noediting] [--noprofile] [--norc] [--posix] [--restricted] [--rpm-requires] [-v | --verbose] [--version] [--help] [file]
 
         * wget  [ -V ] [ --version ] [ -h ] [ --help ] [ -b ] [ --background ] [   -e command ] [   --execute command ] [   -o logfile ] [ --output-file[=logfile] ] [   -a logfile ] [ --append-output[=logfile] ] [ -d ] [ --debug ] [ -q ] [ --quiet ] [ -v ] [ --verbose ] [   -n -v ] [ --no-verbose ] [ --report-speed[=type] ] [   -i file ] [ --input-file[=file] ] [ -F ] [ --force-html ] [   -B URL ] [ --base[=URL] ] [ --config[=FILE] ] [ --bind-address[=ADDRESS] ] [   -t number ] [ --tries[=number] ] [   -O file ] [ --output-document[=file] ] [   -n -c ] [ --no-clobber ] [ --backups[=backups] ] [ -c ] [ --continue ] [ --progress[=type] ] [ -N ] [ --timestamping ] [ --no-use-server-timestamps ] [ -S ] [ --server-response ] [ --spider ] [   -T seconds ] [ --timeout[=seconds] ] [ --dns-timeout[=seconds] ] [ --connect-timeout[=seconds] ] [ --read-timeout[=seconds] ] [ --limit-rate[=limit-rate] ] [   -w seconds ] [ --wait[=seconds] ] [ --waitretry[=seconds] ] [ --random-wait ] [ --no-proxy ] [   -Q quota ] [ --quota[=quota] ] [ --no-dns-cache ] [ --restrict-file-names[=modes] ] [ --inet4-only ] [ --inet6-only ] [ --prefer-family[=prefer-family] ] [ --retry-connrefused ] [ --user[=user] ] [ --password[=password] ] [ --ask-password ] [ --no-iri ] [ --local-encoding[=encoding] ] [ --remote-encoding[=encoding] ] [ --unlink ] [   -n -d ] [ --no-directories ] [ -x ] [ --force-directories ] [   -n -H ] [ --no-host-directories ] [ --protocol-directories ] [ --cut-dirs[=number] ] [   -P prefix ] [ --directory-prefix[=prefix] ] [ --default-page[=name] ] [ -E ] [ --adjust-extension ] [ --http-user[=user] ] [ --http-password[=password] ] [ --no-http-keep-alive ] [ --no-cache ] [ --no-cookies ] [   --load-cookies file ] [   --save-cookies file ] [ --keep-session-cookies ] [ --ignore-length ] [ --header[=header-line] ] [ --max-redirect[=number] ] [ --proxy-user[=user] ] [ --proxy-password[=password] ] [ --referer[=url] ] [ --save-headers ] [   -U agent-string ] [ --user-agent[=agent-string] ] [ --post-data[=string] ] [ --post-file[=file] ] [ --method[=HTTP-Method] ] [ --body-data[=Data-String] ] [ --body-file[=Data-File] ] [ --content-disposition ] [ --content-on-error ] [ --trust-server-names ] [ --auth-no-challenge ] [ --secure-protocol[=protocol] ] [ --https-only ] [ --no-check-certificate ] [ --certificate[=file] ] [ --certificate-type[=type] ] [ --private-key[=file] ] [ --private-key-type[=type] ] [ --ca-certificate[=file] ] [ --ca-directory[=directory] ] [ --random-file[=file] ] [ --egd-file[=file] ] [ --warc-file[=file] ] [ --warc-header[=string] ] [ --warc-max-size[=size] ] [ --warc-cdx ] [ --warc-dedup[=file] ] [ --no-warc-compression ] [ --no-warc-digests ] [ --no-warc-keep-log ] [ --warc-tempdir[=dir] ] [ --ftp-user[=user] ] [ --ftp-password[=password] ] [ --no-remove-listing ] [ --no-glob ] [ --no-passive-ftp ] [ --preserve-permissions ] [ --retr-symlinks ] [ -r ] [ --recursive ] [   -l depth ] [ --level[=depth] ] [ --delete-after ] [ -k ] [ --convert-links ] [ -K ] [ --backup-converted ] [ -m ] [ --mirror ] [ -p ] [ --page-requisites ] [ --strict-comments ] [   -A acc_file,... ] [ --accept=acc_file,... ] [   -R rej_file,... ] [ --reject=rej_file,... ] [   --accept-regex=urlregex ] [   --reject-regex=urlregex ] [   --regex-type=regextype ] [   -D domain,... ] [ --domains[=domain,...] ] [   --exclude-domains domain,... ] [ --follow-ftp ] [ --follow-tags[=list] ] [ --ignore-tags[=list] ] [ --ignore-case ] [ -H ] [ --span-hosts ] [ -L ] [ --relative ] [   -I list ] [ --include-directories[=list] ] [   -X list ] [ --exclude-directories[=list] ] [   -n -p ] [ --no-parent ] [URL...]
+
+        shutdown [ -H | --halt ] [ -P | --poweroff ] [ -r | --reboot ] [ --no-wall ] [-hck::] [TIME] [STRING...]
+        
+        whereis [ -bmsu:: ] [ -B [DIRECTORY...] ] [ -M [DIRECTORY...] ] [ -S [DIRECTORY...] ] [ -f FILENAME ] [FILE...]
+        
+        pdfgrep [ -i | --ignore-case ] [ -H | --with-filename ] [ -h | --no-filename ] [ -n | --page-number ] [ -c | --count ] [ -C[=NUMBER] ] [ --context[=NUMBER] ] [ --color[=string] ] [ -R | -r | --recursive ] [ --exclude[=string] ] [ --include[=string] ] [ -q | --quiet ] [ --help ] [ -V | --version ] [PATTERN] [FILE...]
+        
+        lsb_release [ -v | --version ] [-i | --id ] [ -d | --description ] [ -r | --release ] [ -c | --codename ] [ -a | --all ] [ -s | --short ] [ -h | --help ]
+        
+        stat [ -L | --dereference ] [ -Z | --context ] [ -f | --file-system ] [ -c [string] ] [ --format[=string] ] [ --printf[=string] ] [ -t | --terse ] [ --help ] [ --version ] [FILE...]
+        
+        gnuplot [ -clear ] [ -gray ] [ -mono ] [ -persist ] [ -raise ] [ --noraise ] [ -tvtwm ] [FILE...]
+        
+        xdg-open [ --help ] [ --manual ] [ --version ] [FILE...]
+        
+        finddup [ --man ] [ -h | --help ] [ --version ] [ -n | --noaction ] [ -v | --verbose ] [ -q | --quiet ] [ -l | --link ] [ -o | --oldresult ] [ -i | --ignore-perms ] [ -d | --dir ] [FILE...]
+        
+        test [pattern]
+        
+        test [pattern] -a [pattern]
+        
+        test [pattern] -o [pattern]
+        
+        test -n [string]
+        
+        test -z [string]
+        
+        test [string] -eq [string]
+        
+        test [string] -ge [string]
+        
+        test [string] -gt [string]
+        
+        test [string] -le [string]
+        
+        test [string] -lt [string]
+        
+        test [string] -ne [string]
+        
+        test [file] -ef [file]
+        
+        test [file] -nt [file]
+        
+        test [file] -ot [file]
+        
+        test -b [file]
+        
+        test -c [file]
+        
+        test -d [file]
+        
+        test -e [file]
+        
+        test -f [file]
+        
+        test -g [file]
+        
+        test -G [file]
+        
+        test -h [file]
+        
+        test -k [file]
+        
+        test -L [file]
+        
+        test -O [file]
+        
+        test -p [file]
+        
+        test -r [file]
+        
+        test -s [file]
+        
+        test -S [file]
+        
+        test -t [file]
+        
+        test -u [file]
+        
+        test -w [file]
+        
+        test -x [file]
+        
+        test --help
+        
+        test --version
+        
+        printenv [ -0 | --null] [ --help ] [ --version ]
+        
+        free [ -b | --bytes ] [ -k | --kibi ] [ -m | --mebi ] [ -g | --gibi ] [ --tebi ] [ --pebi ] [ --kilo ] [ --mega ] [ --giga ] [ --tera ] [ --peta ] [ -h | --human ] [ -w | --wide ] [ -c | --count[=NUMBER] ] [ -l | --lohi ] [ -s | --seconds[=NUMBER]] [ --si ] [ -t | --total ] [ --help ] [ -V | --version ]
+        
+        lscpu [ -a | --all ] [ -x | --hex ] [ -s | --sysroot[=directory] ] [ -e | --extended[=list] | -p | --parse[=list] ]
+        
+        lscpu [ -b | --online ] [ -x | --hex ] [ -s | --sysroot[=directory] ] [ -e | --extended[=list] | -p | --parse[=list] ]
+        
+        lscpu [ -c | --offline ] [ -x | --hex ] [ -s | --sysroot[=directory] ] [ -e | --extended[=list] | -p | --parse[=list] ]
+        
+        lscpu [ -h | --help ]
+        
+        lscpu [ -V | --version ]
+ 
+        dmesg [ -C | --clear ] [ -c | --read-clear ] [ -D | --console-off ] [ -d | --show-delta ] [ -E | --console-on ] [ -e | --reltime ] [ -F | --file[=file] ] [ -f | --facility[=list] ] [ -H | --human ] [ -k | --kernel ] [ -L | --color[=when] ] [ -l | --level[=list] ] [ -n | --console-level[=level] ] [ -P | --nopager ] [ -r | --raw ] [ -S | --syslog ] [ -T | --ctime ] [ -t | --notime ] [ --time-format[=format] ] [ -u | --userspace ] [ -w | --follow ] [ -x | --decode ] [ -V | --version ] [ -h | --help ]
+
+        usb-devices
+        
+        journalctl [ --no-full | --full ] [ -a | --all ] [ -f | --follow ] [ -e | --pager-end ] [ -n | --lines ] [ --no-tail ] [ -r | --reverse ] [ --utc ] [ --no-hostname ] [ -x | --catalog ] [ -q | --quiet ] [ -m | --merge ] [ -b | --boot=[ID] ] [ --list-boots ] [ -k | --dmesg ] [ -t | --identifier[=SYSLOG_IDENTIFIER] ] [ -u | --unit=UNIT ] [ --user-unit ] [ -p | --priority ] [ -g | --grep ] [ -c | --cursor ] [ --after-cursor ] [ --show-cursor ] [ -S | --since  ] [ -U | --until ] [ -F | --field ] [ -N | --fields ] [ --system] [ --user ] [ -M | --machine ] [ -D | --directory[=DIR] ] [ --file[=GLOB] ] [ --new-id128 ] [ --header ] [ --disk-usage ] [ --vacuum-size] [ --vacuum-time] [ --vacuum-files ] [ --update-catalog ] [ --setup-keys ] [ --force ] [ --interval ] [ --verify ] [ --verify-key ] [ --sync ] [ --flush ] [ --rotate ] [ -h | --help ] [ --version ] [ --no-pager ]
+        
+        journalctl [ -o | --output=[short] ]
+        
+        journalctl [ -o | --output=[short-full] ]
+        
+        journalctl [ -o | --output=[short-iso] ]
+        
+        journalctl [ -o | --output=[short-iso-precise] ]
+        
+        journalctl [ -o | --output=[short-precise] ]
+        
+        journalctl [ -o | --output=[short-monotonic] ]
+        
+        journalctl [ -o | --output=[short-unix] ]
+        
+        journalctl [ -o | --output=[verbose] ]
+        
+        journalctl [ -o | --output=[export] ]
+        
+        journalctl [ -o | --output=[json] ]
+        
+        journalctl [ -o | --output=[json-pretty] ]
+        
+        journalctl [ -o | --output=[json-sse] ]
+        
+        journalctl [ -o | --output=[cat] ]
+        
+        pr [ -COLUMN | --columns[=COLUMN] ] [ -a | --across ] [ -c | --show-control-chars ] [ -d | --double-space ] [ -D | --date-format[=FORMAT] ] [ -e, --expand-tabs[=CHAR[WIDTH]] ] [ -F | -f | --form-feed ] [ -h | --header[=HEADER] ] [ -i | --output-tabs[=CHAR[WIDTH]] ] [ -J | --join-lines ] [ -l | --length[=PAGE_LENGTH] ] [ -m | --merge ] [ -n | --number-lines[=SEP[DIGITS]] ] [ -N | --first-line-number[=NUMBER] ] [ -o | --indent[=MARGIN] ] [ -r | --no-file-warnings ] [ -s | --separator[=CHAR] ] [ -S[STRING] | --sep-string[=STRING] ] [ -t | --omit-header ] [ -T | --omit-pagination ] [ -v | --show-nonprinting ] [ -w | --width[=PAGE_WIDTH] ] [ -W | --page-width[=PAGE_WIDTH] ] [ --help ] [ --version ] [FILE...]
+        
+        printf [FORMAT] [ARGUMENT] 
+        
+        printf [--help]
+        
+        printf [--version]
+        
+        shuf [ -e | --echo ] [ -i | --input[=string]] [ -n | --number[=number] ] [ -o | --output[=filename] ] [ --random-source[=filename] ] [ -z | --zero-terminated ] [FILE...]
+        
+        umask [-S] [FILE...]
+        
+        lsof [ -?abChlnNOPRtUvVX:: ] [ -A string ] [ -c string | +c number ] [ +d string | -d string ] [ +D number | -D string ] [ -e string | +e string ] [ -E | +E ] [ +f char | -f char ] [ -F char ] [ -g string ] [ -i ] [ -K string ] [ -l ] [ +L string | -L string ] [ +m string | -m string ] [ +M | -M ] [ -n ] [ -k string ] [ -o | -o string ] [ -p string ] [ -r string | +r string] [ -s string | +s string ] [ -S number ] [ -T string ] [ -u string ] [ -w | +w ] [ -x string ] 
+        
+        zip [ -a | --ascii ] [ -A | --adjust-sfx ] [ -AC | --archive-clear ] [ -AS | --archive-set ] [ -B | --binary ] [ -b FILE | --temp-path FILE ] [ -c | --entry-comments ] [ -C | --preserve-case ] [ -C2 | --preserve-case-2 ] [ -C5 | --preserve-case-5 ] [ -d | --delete ] [ -db | --display-bytes ] [ -dc | --display-counts ] [ -dd | --display-dots ] [ -df | --datafork ] [ -dg | --display-globaldots ] [ -ds string | --dot-size string ] [ -du | --display-usize ] [ -dv | --display-volume ] [ -D | --no-dir-entries ] [ -DF | --difference-archive ] [ -e | --encrypt ] [ -E | --longnames ] [ -f | --freshen ] [ -F | --fix ] [ -FF | --fixfix ] [ -FI | --fifo ] [ -FS | --filesync ] [ -g | --grow ] [ -h | --help ] [ -h2 | --more-help ] [ -i file... | --include file... ] [ -I | --no-image ] [ -ic | --ignore-case ] [ -j | --junk-paths ] [ -jj | --absolute-path ] [ -J | --junk-sfx ] [ -k | --DOS-names ] [ -l | --to-crlf ] [ -la | --log-append ] [ -lf file | --logfile-path file ] [ -li | --log-info ] [ -ll | --from-crlf ] [ -L | --license ] [ -m | --move ] [ -MM | --must-match ] [ -n string | --suffixes string ] [ -nw | --no-wild ] [ -N | --notes ] [ -o | --latest-time ] [ -O file | --output-file file ] [ -p | --paths ] [ -P string | --password string ] [ -q | --quiet ] [ -Q | --Q-flag=NUMBER ] [ -r | --recurse-paths ] [ -R | --recurse-patterns ] [ -RE | --regex ] [ -s string | --split-size string ] [ -sb | --split-bell ] [ -sc | --show-command ] [ -sf | --show-files ] [ -so | --show-options ] [ -sp | --split-pause ] [ -su | --show-unicode ] [ -sU | --show-just-unicode ] [ -sv | --split-verbose ] [ -S | --system-hidden ] [ -t string | --from-date string ] [ -tt string | --before-date string ] [ -T | --test ] [ -TT string | --unzip-command string ] [ -u | --update ] [ -U | --copy-entries ] [ -UN string | --unicode string ] [ -v | --verbose ] [ -V | --VMS-portable ] [ -VV | --VMS-specific ] [ -w | --VMS-versions ] [ -ww | --VMS-dot-versions ] [ -ws | --wild-stop-dirs ] [ -x file... | --exclude file... ] [ -X | --no-extra ] [ -y | --symlinks ] [ -z | --archive-comment ] [ -Z string | --compression-method string ] [ -! | --use-privileges ] [ -@ | --names-stdin ] [ -$ | --volume-label ] FILE...
+        
+        netstat [ -t | --tcp ] [ -u | --udp ] [ -w | --raw ] [ -l | --listening ] [ -a | --all ]  [ -n | --numeric ] [ --numeric-hosts ]  [ --numeric-ports ] [ --numeric-users ] [ -N | --symbolic ]  [ -e | --extend ]  [ -o | --timers ]  [ -p | --program ]  [ -v | --verbose ] [ -c | --continuous ]
+        
+        netstat [ -r | --route ] [ -e | --extend ] [ -v | --verbose ] [ -n | --numeric ] [ --numeric-hosts ] [ --numeric-ports ] [ --numeric-users ] [ -c | --continuous ]
+        
+        netstat [ -i | --interfaces ]  [ -a | --all ]  [ -e | --extend ]  [ -v | --verbose ] [ -p | --program ] [ -n | --numeric ] [ --numeric-hosts ] [ --numeric-ports ]  [ --numeric-users ] [ -c | --continuous ]
+        
+        netstat [ -g | --groups ] [ -n | --numeric ] [ --numeric-hosts ] [ --numeric-ports ] [ --numeric-users ] [ -c | --continuous ]
+        
+        netstat [ -M | --masquerade ] [ -e | --extend ] [ -n | --numeric ] [ --numeric-hosts ] [ --numeric-ports ] [ --numeric-users ] [ -c | --continuous ]
+        
+        netstat [ -s | --statistics ] [ -t | --tcp ] [ -u | --udp ] [ -w | --raw ]
+        
+        netstat [ -V | --version ]
+        
+        netstat [ -h | --help ]
+        
+        netstat [ -4 ] [ -6 ] [ -x | --unix ]  [ --inet | --ip ] [ --ax25 ] [ --ipx ] [ --netrom ] [ --ddp ]
+        
+        pdftotext [ --f[=number] ] [ --l[=number] ] [ --r[=number] ] [ --x[=number] ] [ --y[=number] ] [ --W[=number] ] [ --H[=number] ] [ --fixed[=number] ] [ -q ] [ -v ] [ -layout ] [ -raw ] [ -htmlmeta ] [ -bbox ] [ --bbox-layout ] [ -enc[=encname] ] [ -listenc ] [ -eol[=os] ] [ -nopgbrk ] [ -opw ] [ -upw ] [ -h | -help | --help ] [FILE...]
+        
+        fuser [ -f ] [ -u ] [ -v ] [ -a | -s ] [ -4 | -6 ] [ -c | -m | -n[=space]] [ -k | --kill ] [ -k ] [ -i ] [ -M ] [ -w ] [ -SIGNAL ] [NAME...]
+        
+        fuser [ -l ] [NAME...]
+        
+        fuser [ -V ] [NAME...]
