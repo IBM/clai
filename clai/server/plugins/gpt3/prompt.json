@@ -1,0 +1,23 @@
+[
+  {
+    "input": "List files",
+    "output": "ls -l"
+  },
+
+  {
+    "input": "Count files in a directory",
+    "output": "ls -l | wc -l"
+  },
+  {
+    "input": "Disk space used by home directory",
+    "output": "du ~"
+  },
+  {
+    "input": "Replace foo with bar in all .py files",
+    "output": "sed -i .bak -- 's/foo/bar/g' *.py"
+  },
+  {
+    "input": "Delete the models subdirectory",
+    "output": "rm -rf ./models"
+  }
+]

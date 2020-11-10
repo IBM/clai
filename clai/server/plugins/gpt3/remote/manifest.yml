@@ -1,6 +1,0 @@
-applications:
-- name: gpt3server
-  memory: 1G
-  path: .
-  buildpacks: 
-    - python_buildpack
