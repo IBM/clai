@@ -7,10 +7,10 @@
 
 # pylint: disable=no-name-in-module,import-error
 import getpass
+import io
 import json
 import os
 import sys
-import io
 from distutils.dir_util import remove_tree
 
 from clai.datasource.config_storage import ConfigStorage
@@ -100,16 +100,15 @@ def remove_setup_file(rc_file_path):
     os.remove(path)
 
 
-
 def remove_between(rc_file_path, start, end):
     path = os.path.expanduser(rc_file_path)
     if os.path.isfile(path):
         codeset = "utf-8"
         lines = []
         if is_rw_with_EBCDIC(path):
-        # The open() with encoding cp1047 (IBM-1047), working as cp037
-        # (IBM-037), doesn't identify the newline correctly.  Use \x85 to
-        # identify the newline.
+            # The open() with encoding cp1047 (IBM-1047), working as cp037
+            # (IBM-037), doesn't identify the newline correctly.  Use \x85 to
+            # identify the newline.
             codeset = "cp1047"
             newline = '\x85'
             for err_line in open(path, "r", encoding=codeset, errors="ignore").readlines():
@@ -120,7 +119,7 @@ def remove_between(rc_file_path, start, end):
                     i = i + 1
                     # not empty element or not the last emtpy element
                     if right_line or length != i:
-                        lines.append(right_line+newline)
+                        lines.append(right_line + newline)
         else:
             lines = open(path, "r",
                          encoding=codeset,
@@ -150,12 +149,14 @@ def remove_setup_register():
     for file in rc_files:
         remove_lines_setup(file)
 
+
 def is_user_install(bin_path):
     plugins_config = ConfigStorage(
         alternate_path=f"{bin_path}/configPlugins.json"
     ).read_config(None).user_install
 
     return plugins_config
+
 
 def execute(args):
     bin_path = os.getenv('CLAI_PATH', None)
@@ -171,9 +172,15 @@ def execute(args):
         sys.exit(0)
 
     path = clai_installed(get_setup_file())
-    if not path or bin_path is None:
+    print(f"path= {path}")
+    print(f"bin path= {bin_path}")
+
+    if not path and bin_path is None:
         print_error("CLAI is not installed.")
         sys.exit(1)
+
+    if not bin_path:
+        bin_path = path
 
     stat_uninstall(path)
     users = unregister_the_user(path)
