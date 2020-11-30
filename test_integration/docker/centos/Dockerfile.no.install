@@ -52,7 +52,7 @@ RUN yum install -y which
 RUN sudo yum install -y https://repo.ius.io/ius-release-el7.rpm
 
 RUN sudo yum -y update
-RUN sudo yum install -y python36u python36u-libs gcc python36u-devel python36u-pip
+RUN sudo yum install -y python36u python36u-libs gcc gcc-c++ python36u-devel python36u-pip
 
 RUN ln -sf /usr/bin/python3.6 /usr/bin/python3
 
