@@ -29,8 +29,10 @@ class ContractSkills:
         if self.is_auto_mode():
             execute_cmd(my_clai_module, "clai auto")
         skill_name = self.get_skill_name()
-        command_select = f"clai activate {skill_name}"
 
+        execute_cmd(my_clai_module, "clai deactivate gpt3")
+
+        command_select = f"clai activate {skill_name}"
         command_executed = execute_cmd(my_clai_module, command_select)
 
         assert f"\x1b[32m {skill_name} (Installed)" in command_executed, \
