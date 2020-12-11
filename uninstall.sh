@@ -44,9 +44,9 @@ if ! command_exists python3 ; then
   die "\n Sorry you need to have Python3 installed. Please install it and rerun this script."  1
 fi
 
-if ps -o args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
+if ps -Ao args -u `whoami` | grep "[c]lai-run" &> /dev/null ; then
   if [ ! $(uname) == 'OS/390' ] && [ ! $(uname) == 'z/OS' ]; then
-    running_process=$(ps -o args -u $(whoami) | grep "[c]lai-run" | head -1)
+    running_process=$(ps -Ao args -u $(whoami) | grep "[c]lai-run" | head -1)
     pkill -f "${running_process}"
   else
     clai_pid=$(ps -e -o pid,args -u `whoami` | grep "[c]lai-run" | head -1 | awk '{print $1}')
