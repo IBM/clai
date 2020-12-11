@@ -11,13 +11,13 @@ to the user.
 ## Implementation
 
 Currently, the skill activates automatically when an executed command results in a error. The skill 
-summarizes the error message and reads it back to the user. The summarization is a deterministic 
-procedure that includes the command run and the first line of the error message. The text-to-speech
+summarizes the error message and reads it back to the user. The summarization of the error message is
+achieved through the [GPT-3](https://openai.com/blog/openai-api/) model API. The text-to-speech
 conversion is achieved using the [`gTTS`](https://github.com/pndurette/gTTS) library, and the playback
 uses the [`ffplay`](https://ffmpeg.org/ffplay.html) package.
 
 While the current implementation has one fixed interaction pattern, there are smarter ways to interact 
-with the skill that can serve as inspiration for future enhacements. These include smarter summarization 
+with the skill that can serve as inspiration for future enhacements. These include more fine-tuned summarization 
 techniques to effectively convey the bash state information, more interaction patterns that might include 
 explicit invocation by the user for current bash state information, more legible speech synthesis for bash 
 syntax, etc.
@@ -30,6 +30,12 @@ impaired community:
 - [WebAIM Screen Reader User Survey Results](https://webaim.org/projects/screenreadersurvey8/)
 - [Vinux](https://wiki.vinuxproject.org/)
 - [Emacspeak](http://emacspeak.sourceforge.net/), [VoiceOver](https://www.apple.com/accessibility/mac/vision/)
+
+
+## Plugin setup
+
+To use the plugin, create a file named `openai_api.key` in the plugin folder with the API key as the
+file contents. To request OpenAI API access go to this [URL](https://openai.com/blog/openai-api/).
  
 
 ## Example Usage

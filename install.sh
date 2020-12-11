@@ -80,11 +80,13 @@ else
 fi
 
 if [ "$USER_INSTALL" == true ]; then
-  python3 -m pip install --user -r requirements.txt
+  python3 -m pip install --user -r requirements.txt --ignore-installed
   python3 -m pip install --user --upgrade keyrings.alt
+  python3 -m pip install --user -r requirements_utilities.txt --ignore-installed
 else
   python3 -m pip install -r requirements.txt --ignore-installed
   python3 -m pip install --upgrade keyrings.alt
+  python3 -m pip install -r requirements_utilities.txt --ignore-installed
 fi
 
 python3 install.py $flags --shell bash

@@ -1,1 +1,0 @@
-web: python3 run.py > stdout.txt 2>stderr.txt

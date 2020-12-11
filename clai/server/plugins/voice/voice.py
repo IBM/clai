@@ -6,11 +6,14 @@
 #
 
 import os
+import json
 import tempfile
 import subprocess
+from pathlib import Path
 
 from clai.server.agent import Agent
 from clai.server.command_message import Action, State, NOOP_COMMAND
+from clai.server.utilities.gpt3.gpt3 import GPT, Example
 
 from gtts import gTTS
 
@@ -19,18 +22,41 @@ class Voice(Agent):
 
     def __init__(self):
         super(Voice, self).__init__()
+
+        self._api_filename = "openai_api.key"
+        self._priming_filename = "priming.json"
         self._tmp_filepath = os.path.join(tempfile.gettempdir(), 'tts.mp3')
 
-    # pylint: disable=no-self-use
+        self._gpt_api = self.__init_gpt_api__()
+        self.__prime_gpt_model__()
+
+    def __init_gpt_api__(self):
+        curdir = str(Path(__file__).parent.absolute())
+        key_filepath = os.path.join(curdir, self._api_filename)
+        with open(key_filepath, 'r') as f:
+            key = f.read()
+
+        gpt_api = GPT()
+        gpt_api.set_api_key(key)
+        return gpt_api
+
+    def __prime_gpt_model__(self):
+        curdir = str(Path(__file__).parent.absolute())
+        priming_filepath = os.path.join(curdir, self._priming_filename)
+        with open(priming_filepath, 'r') as f:
+            priming_examples = json.load(f)
+
+        for priming_set in priming_examples:
+            ip, op = priming_set['input'], priming_set['output']
+            example = Example(ip, op)
+            self._gpt_api.add_example(example)
+
     def summarize_output(self, state):
-        cmd = str(state.command)
         stderr = str(state.stderr)
-        err_txt = stderr.split('\n')[0]  # Speak the first line
-
-        text = f'Error occurred for command {cmd}. ' \
-               f'Error is: {err_txt}'
-
-        return text
+        prompt = stderr.split('\n')[0]
+        gpt_summary = self._gpt_api.get_top_reply(prompt, strip_output_suffix=True)
+        summary = f"error. {gpt_summary}"
+        return summary
 
     def synthesize(self, text):
         """ Converts text to audio and saves to temp file """
