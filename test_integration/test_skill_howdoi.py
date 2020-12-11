@@ -17,9 +17,9 @@ class TestSkillHowDoI(ContractSkills):
         return 'howdoi'
 
     def get_commands_to_execute(self):
-        return ['pwd'] #['pwd', 'clai "howdoi" when to use sudo vs su?',
-                #'clai "howdoi" find out disk usage per user?',
-                #'clai "howdoi" How to process gz files?']
+        return ['pwd', 'clai "howdoi" when to use sudo vs su?',
+                'clai "howdoi" find out disk usage per user?',
+                'clai "howdoi" How to process gz files?']
 
     def get_commands_expected(self):
-        return ['/opt/IBM/clai'] #, 'su', 'df', 'gzip']
+        return ['/opt/IBM/clai', 'su', 'df', 'gzip']
