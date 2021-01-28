@@ -1,0 +1,6 @@
+---
+applications:
+  - name: nlc2cmd
+    memory: 64M
+    buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
+    env:

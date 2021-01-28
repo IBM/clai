@@ -1,7 +1,0 @@
-tensorflow==2.0.0-rc0
-nltk==3.4.5
-tqdm==4.9.0
-requests==2.20.0
-scipy
-cloudant==2.4.0
-numpy

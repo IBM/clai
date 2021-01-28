@@ -1,8 +1,0 @@
-nltk==3.4.5
-tqdm>=4.9.0
-nose>=1.1.2
-numpy>=1.7
-scipy>0.13.3
-six>=1.8
-bs4
-matplotlib

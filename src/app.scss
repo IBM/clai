@@ -1,0 +1,13 @@
+@import 'carbon-components/scss/globals/scss/vendor/@carbon/type/scss/font-family.scss';
+@import 'carbon-components/scss/globals/scss/vendor/@carbon/layout/scss/breakpoint.scss';
+@import 'carbon-components/scss/globals/scss/typography.scss';
+@import 'carbon-components/scss/globals/scss/vars.scss';
+
+@import './components/Info/info.scss';
+@import './components/PageHeader/page-header.scss';
+@import './content/LandingPage/landing-page.scss';
+@import './content/ParticipatePage/participate-page.scss';
+@import './content/ChallengePage/challenge-page.scss';
+@import './content/LeaderboardPage/leaderboard-page.scss';
+@import './content/PublicationsPage/publications-page.scss';
+@import './content/DonePage/done-page.scss';

@@ -1,0 +1,37 @@
+.participate-page__r1 {
+  padding-top: $spacing-05;
+  padding-bottom: $spacing-05;
+}
+
+.participation-page__p {
+  padding-top: $spacing-05;
+  padding-bottom: $spacing-02;
+}
+
+.disclaimer {
+  padding-top: $spacing-01;
+  font-size: small;
+  color: $disabled-03;
+  line-height: 1.2;
+}
+
+.suppress-border-bottom {
+  border-bottom: none;
+}
+
+.text-red {
+  color: red;
+}
+
+.scroll-offset {
+  margin-top: -80px;
+  padding-top: 80px;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.fill-blue {
+  fill: #0f62fe;
+}

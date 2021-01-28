@@ -1,0 +1,86 @@
+{
+  "name": "nlc2cmd-landing-page",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "git@github.ibm.com:Tathagata-Chakraborti1/nlc2cmd-at-neurips-2020.git",
+  "bugs": "https://github.ibm.com/Tathagata-Chakraborti1/nlc2cmd-at-neurips-2020/issues",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "react-scripts build",
+    "ci-check": "yarn format:diff",
+    "clean": "yarn cache clean && yarn install",
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"**/*.{js,md,scss}\"",
+    "format:diff": "prettier --list-different \"**/*.{js,md,scss}\"",
+    "format:staged": "prettier --write",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "deploy": "rm -rf ./build && yarn build && cf push -f manifest.yml"
+  },
+  "dependencies": {
+    "@carbon/grid": "^10.10.0",
+    "@carbon/icons-react": "^10.10.0",
+    "apollo-boost": "^0.4.7",
+    "carbon-components": "^10.10.3",
+    "carbon-components-react": "^7.10.3",
+    "carbon-icons": "^7.0.7",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
+    "graphql": "^15.0.0",
+    "react": "^16.8.6",
+    "react-apollo": "^3.1.4",
+    "react-dom": "^16.8.6",
+    "react-mathjax-preview": "^1.2.4",
+    "react-router-dom": "^5.0.0",
+    "react-router-hash-link": "^1.2.2",
+    "react-scripts": "2.1.8"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "node-sass": "^4.13.1",
+    "prettier": "^1.17.0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn format:staged",
+      "git add"
+    ],
+    "*.{scss,css}": [
+      "yarn format:staged",
+      "git add"
+    ],
+    "*.md": [
+      "yarn format:staged",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "jsxBracketSameLine": true,
+    "printWidth": 80,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
+}
