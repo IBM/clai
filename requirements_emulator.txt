@@ -1,2 +1,2 @@
 pytest-docker-tools==0.2.0
-Pillow==7.1.1
+Pillow==8.2.0
