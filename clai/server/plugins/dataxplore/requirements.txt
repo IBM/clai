@@ -1,5 +1,5 @@
 pandas==1.0.3
 numpy==1.17.2
 matplotlib==3.2.1
-Pillow==7.1.1
+Pillow==9.3.0
 imageloader==0.0.5
