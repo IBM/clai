@@ -123,7 +123,7 @@ def parse_args():
         action='store_true',
         default=False
     )
-
+def add_params(parser):
     parser.add_argument(
         '--port',
         help="port listen server",
